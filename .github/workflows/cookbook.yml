@@ -41,8 +41,10 @@ jobs:
         run: |
           echo "Processing cookbook type: ${{ inputs.category }}"
           echo "Using URL: ${{ inputs.url }}"
-          if node ./scripts/create-prompt.mjs "${{ inputs.category }}" "${{ inputs.url }}"; then
-            pnpm claude -p "query"
+          PROMPT=$(node ./scripts/create-prompt.mjs "${{ inputs.category }}" "${{ inputs.url }}")
+
+          if [[ -n ${PROMPT} ]]; then
+            claude --settings scripts/settings.json -p "$(cat ./prompt.txt)"
           else
           fi
         env:

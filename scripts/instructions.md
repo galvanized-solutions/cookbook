@@ -1,10 +1,9 @@
 ---
 name: website-recipe-parsing-instructions
-description: Use this document to understand how recipes must be parsed from their html webpage source into a recipe artifact. Please use the url input below contained in the original prompt to fetch a recipe from the internet. The website must be inspected for the  title, ingredients, instructions/directions and nutritional information (if available) must be identified and parsed into a standardized recipe format defined bellow. If a recipe cannot be parsed at all then a detailed explanation of what the reason should be provided as output.
+description: Use this document to understand how recipes must be parsed from their html webpage source into a recipe artifact. Please use the url input below contained in the original prompt to fetch a recipe from the internet, make sure you cache the initial document to reference later. The website must be inspected for the  title, ingredients, instructions/directions and nutritional information (if available) must be identified and parsed into a standardized recipe format defined bellow. If a recipe cannot be parsed at all then a detailed explanation of what the reason should be provided as output.
 inputs:
   - category
   - url
-  - filename
 ---
 
 Recipe parsing instructions:
@@ -26,7 +25,7 @@ Recipe parsing instructions:
 ## recipe schema definition
 - Below is an open api component specification please use it to parse the data into the data structures required
 - The following defines the type and a description that you can use to make a determination on how the information should be parsed.
-- Please use it to output defined below the yaml code block and save the file to "./recipes/{{filename}}" where filename is the input in the prompt
+- Please use it to output defined below the yaml code block and save the file to "./output/recipe.json"
 
 ```yaml
 components:
@@ -65,6 +64,12 @@ components:
           type: string
           format: uri
           description: 'The url provided in the prompt'
+        created_at:
+          type: string
+          description: Generated ISO 8601 timestamp of when the output file is created
+        updated_at:
+          type: string
+          description: Generated ISO 8601 timestamp of when the output file is created so it can be updated in the future
         servings:
           type: integer
           nullable: true
@@ -132,6 +137,8 @@ const ingredient = {
 const recipe = {
   title: 'string',
   category: 'string',
+  created_at: 'string',
+  updated_at: 'string',
   servings: 'string',
   img: 'string',
   url: 'string',

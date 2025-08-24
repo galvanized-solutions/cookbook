@@ -2,6 +2,29 @@ import fs from 'node:fs';
 
 const prompt_path = './prompt.txt';
 const error_log_path = './error.log';
+const output_log_path = './output.log';
+const settings_path = './scripts/settings.json';
+
+const settingJson = {
+  tools: [
+    'WebFetch',
+    'Read',
+    'Write',
+    'LS',
+    'TodoWrite',
+    'Edit',
+    'Grep'
+  ],
+  allow: [
+    'LS(.)',
+    'TodoWrite(./TODO.md)',
+    'Read(./scripts/instructions.md)',
+    'Read(./scripts/conversions.yaml)',
+    'Read(./CLAUDE.md)',
+    'Read(./output/recipe.json)',
+    'Write(./output/recipe.json)'
+  ]
+};
 
 function getCategoryPath(category) {
   switch (category) {
@@ -24,9 +47,12 @@ function main() {
     const filename = `${now.getFullYear()}_${now.getMonth() + 1}_${now.getDate()}_${category}.json`;
 
     if (url.startsWith('https://')) {
-      const prompt = `Please use the description in the ./scripts/instructions.md file and the inputs are as follows category: ${category}, the url: ${url} and filename: ${filename}`;
+      const prompt = `Please use the ./scripts/instructions.md file's description as your prompt information the inputs category: ${category}, url: ${url} to generate the recipe`;
 
-      fs.writeFileSync(prompt_path, prompt);
+      settingJson.allow.unshift(`WebFetch(${url})`);
+      fs.writeFileSync(settings_path, JSON.stringify(settingJson, null, 2));
+
+      console.log(prompt)
     } else {
       throw new Error('Invalid URL, website must use TLS/HTTPS');
     }

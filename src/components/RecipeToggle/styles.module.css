@@ -1,0 +1,85 @@
+.recipeContainer {
+  margin: 2rem 0;
+}
+
+.toggleContainer {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--ifm-color-primary);
+  width: fit-content;
+}
+
+.toggleButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: var(--ifm-background-color);
+  color: var(--ifm-color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.toggleButton:hover {
+  background: var(--ifm-color-primary-light);
+  color: white;
+}
+
+.toggleButton.active {
+  background: var(--ifm-color-primary);
+  color: white;
+}
+
+.recipeContent {
+  display: grid;
+  gap: 2rem;
+}
+
+.section {
+  background: var(--ifm-card-background-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--ifm-color-primary);
+  font-size: 1.2rem;
+}
+
+.ingredientsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredient {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-100);
+}
+
+.ingredient:last-child {
+  border-bottom: none;
+}
+
+.directionsList {
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.direction {
+  padding: 0.75rem 0;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .recipeContent {
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+  }
+}
