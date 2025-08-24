@@ -1,2 +1,2 @@
-# cookbook
-A document page to dynamically create cookbook recipies
+# Cookbook
+A document page to dynamically create cookbook recipes 
