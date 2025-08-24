@@ -1,0 +1,29 @@
+{
+  "name": "recipe-parser",
+  "description": "Parse recipes from URLs into standardized format",
+  "tools": [
+    "WebFetch",
+    "Read", 
+    "Write",
+    "LS",
+    "TodoWrite"
+  ],
+  "systemPrompt": "You are a recipe parsing assistant. Follow the instructions in scripts/instructions.md exactly. Parse recipes from provided URLs into the standardized JSON format using the conversion chart in scripts/conversions.yaml. Always create both metric and imperial versions of ingredients and directions.",
+  "parameters": {
+    "category": {
+      "type": "string",
+      "description": "Recipe category (appetizers, entrees, desserts)",
+      "required": true
+    },
+    "url": {
+      "type": "string", 
+      "description": "URL of the recipe to parse",
+      "required": true
+    },
+    "filename": {
+      "type": "string",
+      "description": "Output filename for the JSON file",
+      "required": true
+    }
+  }
+}

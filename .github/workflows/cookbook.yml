@@ -1,0 +1,50 @@
+name: Cookbook Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: 'Select cookbook category'
+        required: true
+        type: choice
+        options:
+          - appetizers
+          - entrees
+          - desserts
+      url:
+        description: 'Recipe URL (HTTPS only)'
+        required: true
+        type: string
+
+jobs:
+  process-cookbook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Run custom script
+        run: |
+          echo "Processing cookbook type: ${{ inputs.category }}"
+          echo "Using URL: ${{ inputs.url }}"
+          if node ./scripts/create-prompt.mjs "${{ inputs.category }}" "${{ inputs.url }}"; then
+            pnpm claude -p "query"
+          else
+          fi
+        env:
+          COOKBOOK_TYPE: ${{ inputs.category }}
+          COOKBOOK_URL: ${{ inputs.url }}

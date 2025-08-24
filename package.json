@@ -2,6 +2,7 @@
   "name": "cookbook",
   "version": "0.0.0",
   "private": true,
+  "description": "AI powered cookbook with recipes for every occasion",
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -15,6 +16,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.89",
     "@docusaurus/core": "3.8.1",
     "@docusaurus/preset-classic": "3.8.1",
     "@mdx-js/react": "^3.0.0",

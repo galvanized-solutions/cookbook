@@ -1,0 +1,6 @@
+claude:
+  name: Claude Code
+  title: Expert AI Assistant
+  url: https://www.anthropic.com/claude-code
+  image_url: https://github.com/yangshun.png
+  page: true

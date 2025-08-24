@@ -1,0 +1,76 @@
+.suggestCard {
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-800);
+  font-size: 0.9rem;
+}
+
+.select,
+.input {
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+  font-size: 1rem;
+  background-color: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  transition: border-color 0.2s ease;
+}
+
+.select:focus,
+.input:focus {
+  outline: none;
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 0 2px var(--ifm-color-primary-lightest);
+}
+
+.inputError {
+  border-color: var(--ifm-color-danger);
+}
+
+.inputError:focus {
+  border-color: var(--ifm-color-danger);
+  box-shadow: 0 0 0 2px var(--ifm-color-danger-lightest);
+}
+
+.errorMessage {
+  color: var(--ifm-color-danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.submitButton {
+  align-self: flex-start;
+  min-width: 140px;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .suggestCard {
+    margin: 0 1rem;
+  }
+  
+  .submitButton {
+    width: 100%;
+  }
+}
