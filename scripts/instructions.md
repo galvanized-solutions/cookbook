@@ -30,15 +30,9 @@ Recipe parsing instructions:
 ```yaml
 components:
   schemas:
-    ingredient:
+    measurement:
       type: object
       properties:
-        original:
-          type: string
-          description: 'The original text that has not been parsed, i.e. 2 white onions or 3/4 cup of whole wheat flour'
-        name:
-          type: string
-          description: 'The name of the ingredient that excludes the amount and unit, using the original i.e. white onion or whole wheat flour'
         quantity:
           type: string
           nullable: true
@@ -48,8 +42,29 @@ components:
           nullable: true
           description: 'The unit used to measure the quantity, if not a measurement system but a number of items like 2 white onions then it should be null'
       required:
-        - original
+        - quantity
+        - unit
+    
+    ingredient:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'The name of the ingredient that excludes the amount and unit, i.e. white onion or whole wheat flour'
+        original:
+          type: string
+          description: 'The original text that has not been parsed, i.e. 2 white onions or 3/4 cup of whole wheat flour'
+        metric:
+          $ref: '#/components/schemas/measurement'
+          description: 'Metric measurement for this ingredient'
+        imperial:
+          $ref: '#/components/schemas/measurement'
+          description: 'Imperial measurement for this ingredient'
+      required:
         - name
+        - original
+        - metric
+        - imperial
     
     recipe:
       type: object
@@ -83,39 +98,66 @@ components:
           type: object
           nullable: true
           properties:
+            base:
+              type: string
+              description: 'Base nutritional information without units'
             metric:
               type: string
+              description: 'Metric-specific nutrition info (kJ, etc.)'
             imperial:
               type: string
-          description: 'A string capturing the nutritional information'
+              description: 'Imperial-specific nutrition info (calories, etc.)'
+          description: 'Nutritional information with shared and measurement-specific content'
         notes:
           type: string
           nullable: true
           description: 'Any Claude or context notes that should be made when parsing the recipe or decisions if one of the instructions cannot be followed'
         ingredients:
-          type: object
-          properties:
-            metric:
-              type: array
-              items:
-                $ref: '#/components/schemas/ingredient'
-            imperial:
-              type: array
-              items:
-                $ref: '#/components/schemas/ingredient'
-          description: 'Ingredient arrays for both metric and imperial measurements'
+          type: array
+          items:
+            $ref: '#/components/schemas/ingredient'
+          description: 'Array of ingredients with both metric and imperial measurements'
         directions:
           type: object
           properties:
+            base:
+              type: array
+              items:
+                type: string
+              description: 'Shared direction steps that are identical across measurement systems'
             metric:
               type: array
               items:
-                type: string
+                type: object
+                properties:
+                  step:
+                    type: integer
+                    description: 'Step number to override (0-indexed)'
+                  text:
+                    type: string
+                    description: 'Metric-specific text for this step'
+                required:
+                  - step
+                  - text
+              description: 'Metric-specific overrides for steps that differ'
             imperial:
               type: array
               items:
-                type: string
-          description: 'Direction arrays for both metric and imperial measurements'
+                type: object
+                properties:
+                  step:
+                    type: integer
+                    description: 'Step number to override (0-indexed)'
+                  text:
+                    type: string
+                    description: 'Imperial-specific text for this step'
+                required:
+                  - step
+                  - text
+              description: 'Imperial-specific overrides for steps that differ'
+          required:
+            - base
+          description: 'Directions with shared base steps and measurement-specific overrides'
       required:
         - title
         - category
@@ -127,11 +169,16 @@ components:
 
 ## output format
 ```javascript
+const measurement = {
+  quantity: 'string', // nullable
+  unit: 'string'     // nullable
+};
+
 const ingredient = {
-  original: 'string',
   name: 'string',
-  quantity: 'number',
-  unit: 'string'
+  original: 'string',
+  metric: measurement,
+  imperial: measurement
 };
 
 const recipe = {
@@ -139,18 +186,26 @@ const recipe = {
   category: 'string',
   created_at: 'string',
   updated_at: 'string',
-  servings: 'string',
-  img: 'string',
+  servings: 'number', // nullable
+  img: 'string',      // nullable
   url: 'string',
-  nutrition: { metric: 'string', imperial: 'string' },
-  notes: 'string'
-  ingredients: {
-    metric: [ingredient],
-    imperial: [ingredient],
+  nutrition: {
+    base: 'string',     // shared nutrition info
+    metric: 'string',   // metric-specific (kJ, etc.)
+    imperial: 'string'  // imperial-specific (calories, etc.)
   },
+  notes: 'string',    // nullable
+  ingredients: [ingredient],
   directions: {
-    metric: ['string'],
-    imperial: ['string'],
+    base: ['string'],  // shared steps
+    metric: [{
+      step: 'number',  // 0-indexed step to override
+      text: 'string'   // metric-specific text
+    }],
+    imperial: [{
+      step: 'number',  // 0-indexed step to override
+      text: 'string'   // imperial-specific text
+    }]
   }
 };
 ```

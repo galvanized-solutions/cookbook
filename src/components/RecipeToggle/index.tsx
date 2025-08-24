@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
 import styles from './styles.module.css';
 
-type Ingredient = {
-  original: string;
-  name: string;
+type Measurement = {
   quantity: string | null;
   unit: string | null;
 };
 
+type Ingredient = {
+  name: string;
+  original: string;
+  metric: Measurement;
+  imperial: Measurement;
+};
+
+type DirectionOverride = {
+  step: number;
+  text: string;
+};
+
 type RecipeData = {
-  ingredients: {
-    metric: Ingredient[];
-    imperial: Ingredient[];
-  };
+  ingredients: Ingredient[];
   directions: {
-    metric: string[];
-    imperial: string[];
+    base: string[];
+    metric?: DirectionOverride[];
+    imperial?: DirectionOverride[];
   };
 };
 
@@ -26,8 +34,32 @@ interface RecipeToggleProps {
 export default function RecipeToggle({ recipe }: RecipeToggleProps): JSX.Element {
   const [isMetric, setIsMetric] = useState(true);
 
-  const currentIngredients = isMetric ? recipe.ingredients.metric : recipe.ingredients.imperial;
-  const currentDirections = isMetric ? recipe.directions.metric : recipe.directions.imperial;
+  // Process ingredients for current measurement system
+  const currentIngredients = recipe.ingredients.map(ingredient => {
+    const measurement = isMetric ? ingredient.metric : ingredient.imperial;
+    return {
+      ...ingredient,
+      currentMeasurement: measurement
+    };
+  });
+
+  // Process directions with base + overrides
+  const processDirections = () => {
+    const baseDirections = [...recipe.directions.base];
+    const overrides = isMetric ? recipe.directions.metric : recipe.directions.imperial;
+    
+    if (overrides) {
+      overrides.forEach(override => {
+        if (override.step < baseDirections.length) {
+          baseDirections[override.step] = override.text;
+        }
+      });
+    }
+    
+    return baseDirections;
+  };
+
+  const currentDirections = processDirections();
 
   return (
     <div className={styles.recipeContainer}>
@@ -52,8 +84,8 @@ export default function RecipeToggle({ recipe }: RecipeToggleProps): JSX.Element
           <ul className={styles.ingredientsList}>
             {currentIngredients.map((ingredient, index) => (
               <li key={index} className={styles.ingredient}>
-                {ingredient.quantity && ingredient.unit 
-                  ? `${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`
+                {ingredient.currentMeasurement.quantity && ingredient.currentMeasurement.unit 
+                  ? `${ingredient.currentMeasurement.quantity} ${ingredient.currentMeasurement.unit} ${ingredient.name}`
                   : ingredient.original
                 }
               </li>
