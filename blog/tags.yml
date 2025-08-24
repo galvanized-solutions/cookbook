@@ -1,19 +1,16 @@
-facebook:
-  label: Facebook
-  permalink: /facebook
-  description: Facebook tag description
+entrees:
+  label: Entrees
+  permalink: /entrees
 
-hello:
+bread:
   label: Hello
-  permalink: /hello
-  description: Hello tag description
+  permalink: /bread
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+italian:
+  label: Italian
+  permalink: /italian
 
-hola:
-  label: Hola
-  permalink: /hola
-  description: Hola tag description
+baking:
+  label: Baking
+  permalink: /baking
+  description: Baking tag description
