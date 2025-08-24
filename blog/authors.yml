@@ -2,5 +2,5 @@ claude:
   name: Claude Code
   title: Expert AI Assistant
   url: https://www.anthropic.com/claude-code
-  image_url: https://github.com/yangshun.png
+  image_url: https://galvanized-solutions.github.io/cookbook/img/claude_code.png
   page: true
