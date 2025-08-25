@@ -5,6 +5,7 @@ interface ServingsSliderProps {
   defaultServings: number;
   currentServings: number;
   onServingsChange: (servings: number) => void;
+  onReset?: () => void;
   min?: number;
   max?: number;
 }
@@ -13,6 +14,7 @@ export default function ServingsSlider({
   defaultServings, 
   currentServings, 
   onServingsChange,
+  onReset,
   min = 1,
   max = Math.max(defaultServings * 3, 24) // Default max is 3x original or 24, whichever is larger
 }: ServingsSliderProps): JSX.Element {
@@ -30,7 +32,11 @@ export default function ServingsSlider({
   };
 
   const resetToDefault = () => {
-    onServingsChange(defaultServings);
+    if (onReset) {
+      onReset(); // Use custom reset handler if provided
+    } else {
+      onServingsChange(defaultServings); // Fallback to default behavior
+    }
   };
 
   const multiplier = currentServings / defaultServings;

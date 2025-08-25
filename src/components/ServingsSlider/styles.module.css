@@ -116,8 +116,8 @@
 }
 
 .multiplierText {
-  background: var(--ifm-color-primary-lightest);
-  color: var(--ifm-color-primary-dark);
+  background: var(--ifm-color-primary);
+  color: white;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.85rem;
@@ -145,12 +145,12 @@
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .servingsInput {
     justify-content: center;
     min-width: auto;
   }
-  
+
   .slider {
     width: 100%;
   }

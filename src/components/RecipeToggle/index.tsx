@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ServingsSlider from '../ServingsSlider';
 import styles from './styles.module.css';
 
@@ -26,17 +26,51 @@ type RecipeData = {
     metric?: DirectionOverride[];
     imperial?: DirectionOverride[];
   };
-  servings?: number; // Add servings to recipe data
+  servings?: number;
 };
 
 interface RecipeToggleProps {
   recipe: RecipeData;
+  recipeId?: string; // Optional unique identifier for the recipe
 }
 
-export default function RecipeToggle({ recipe }: RecipeToggleProps): JSX.Element {
-  const [isMetric, setIsMetric] = useState(true);
+export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): JSX.Element {
   const defaultServings = recipe.servings || 1;
-  const [currentServings, setCurrentServings] = useState(defaultServings);
+  
+  // Local storage keys
+  const MEASUREMENT_KEY = 'cookbook-measurement-preference';
+  const getServingsKey = (id: string) => `cookbook-servings-${id}`;
+  
+  // Initialize state from localStorage or defaults
+  const [isMetric, setIsMetric] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(MEASUREMENT_KEY);
+      return saved ? JSON.parse(saved) : true;
+    }
+    return true;
+  });
+  
+  const [currentServings, setCurrentServings] = useState(() => {
+    if (typeof window !== 'undefined' && recipeId) {
+      const saved = localStorage.getItem(getServingsKey(recipeId));
+      return saved ? parseInt(saved) : defaultServings;
+    }
+    return defaultServings;
+  });
+
+  // Save measurement preference to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(MEASUREMENT_KEY, JSON.stringify(isMetric));
+    }
+  }, [isMetric]);
+
+  // Save servings preference to localStorage (per recipe)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && recipeId) {
+      localStorage.setItem(getServingsKey(recipeId), currentServings.toString());
+    }
+  }, [currentServings, recipeId]);
 
   // Helper function to scale ingredient quantities
   const scaleQuantity = (quantity: string | null, multiplier: number): string | null => {
@@ -127,6 +161,14 @@ export default function RecipeToggle({ recipe }: RecipeToggleProps): JSX.Element
     setCurrentServings(newServings);
   };
 
+  const handleServingsReset = () => {
+    setCurrentServings(defaultServings);
+    // Clear the localStorage for this recipe's servings
+    if (typeof window !== 'undefined' && recipeId) {
+      localStorage.removeItem(getServingsKey(recipeId));
+    }
+  };
+
   return (
     <div className={styles.recipeContainer}>
       <div className={styles.toggleContainer}>
@@ -148,6 +190,7 @@ export default function RecipeToggle({ recipe }: RecipeToggleProps): JSX.Element
         defaultServings={defaultServings}
         currentServings={currentServings}
         onServingsChange={handleServingsChange}
+        onReset={handleServingsReset}
       />
 
       <div className={styles.recipeContent}>
