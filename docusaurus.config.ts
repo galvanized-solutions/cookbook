@@ -81,6 +81,16 @@ const config: Config = {
       items: [
         { to: '/recipes', label: 'Recipes', position: 'left' },
         {
+          href: 'https://github.com/galvanized-solutions/cookbook/issues',
+          label: 'Recipe Requests',
+          position: 'right',
+        },
+        {
+          href: 'https://docs.anthropic.com/en/home',
+          label: 'Claude AI',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/galvanized-solutions/cookbook',
           label: 'GitHub',
           position: 'right',
