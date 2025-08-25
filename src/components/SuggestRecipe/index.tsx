@@ -11,9 +11,12 @@ interface SuggestRecipeProps {
 }
 
 export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNode {
+  const [activeTab, setActiveTab] = useState<'website' | 'text'>('website');
   const [category, setCategory] = useState<string>('');
   const [url, setUrl] = useState<string>('');
+  const [text, setText] = useState<string>('');
   const [urlError, setUrlError] = useState<string>('');
+  const [textError, setTextError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submitMessage, setSubmitMessage] = useState<string>('');
   const [submitError, setSubmitError] = useState<string>('');
@@ -52,14 +55,21 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       return;
     }
     
-    if (!url) {
-      setSubmitError('Please enter a URL');
-      return;
-    }
-    
-    if (!isValidHttpsUrl(url)) {
-      setSubmitError('Please enter a valid HTTPS URL');
-      return;
+    if (activeTab === 'website') {
+      if (!url) {
+        setSubmitError('Please enter a URL');
+        return;
+      }
+      
+      if (!isValidHttpsUrl(url)) {
+        setSubmitError('Please enter a valid HTTPS URL');
+        return;
+      }
+    } else {
+      if (!text.trim()) {
+        setSubmitError('Please enter recipe text');
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -77,7 +87,9 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       // Gather request metadata
       const timestamp = new Date().toISOString();
       const userAgent = navigator.userAgent;
-      const prompt = `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`;
+      const prompt = activeTab === 'website' 
+        ? `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`
+        : `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, text: ${text} to generate the recipe output as instructed`;
 
       // Create new branch
       const createBranchResponse = await fetch(
@@ -92,7 +104,9 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           },
           body: JSON.stringify({
             title: 'New recipe suggestion',
-            body: `prompt: ${prompt}\n category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`,
+            body: activeTab === 'website' 
+              ? `prompt: ${prompt}\n category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`
+              : `prompt: ${prompt}\n category: ${category}\ntext: ${text}\nRequest information: ${userAgent}`,
             labels: ["recipe-suggestion"]
           }),
         }
@@ -109,6 +123,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       // Clear form on success
       setCategory('');
       setUrl('');
+      setText('');
     } catch (error) {
       console.error('Error submitting recipe suggestion:', error);
       if (error.message.includes('GitHub token not configured')) {
@@ -147,27 +162,67 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
             </select>
           </div>
 
-          <div className={styles.fieldGroup}>
-            <label htmlFor="recipe-url" className={styles.label}>
-              Recipe URL
-            </label>
-            <input
-              type="url"
-              id="recipe-url"
-              name="url"
-              value={url}
-              onChange={handleUrlChange}
-              placeholder="https://example.com/recipe"
-              className={clsx(styles.input, urlError && styles.inputError)}
-              required
-            />
-            {urlError && <div className={styles.errorMessage}>{urlError}</div>}
+          <div className={styles.tabContainer}>
+            <div className={styles.tabButtons}>
+              <button
+                type="button"
+                className={clsx(styles.tabButton, activeTab === 'website' && styles.activeTab)}
+                onClick={() => setActiveTab('website')}
+              >
+                Website
+              </button>
+              <button
+                type="button"
+                className={clsx(styles.tabButton, activeTab === 'text' && styles.activeTab)}
+                onClick={() => setActiveTab('text')}
+              >
+                Text
+              </button>
+            </div>
+
+            <div className={styles.tabContent}>
+              {activeTab === 'website' ? (
+                <div className={styles.fieldGroup}>
+                  <label htmlFor="recipe-url" className={styles.label}>
+                    Recipe URL
+                  </label>
+                  <input
+                    type="url"
+                    id="recipe-url"
+                    name="url"
+                    value={url}
+                    onChange={handleUrlChange}
+                    placeholder="https://example.com/recipe"
+                    className={clsx(styles.input, urlError && styles.inputError)}
+                    required={activeTab === 'website'}
+                  />
+                  {urlError && <div className={styles.errorMessage}>{urlError}</div>}
+                </div>
+              ) : (
+                <div className={styles.fieldGroup}>
+                  <label htmlFor="recipe-text" className={styles.label}>
+                    Recipe Text
+                  </label>
+                  <textarea
+                    id="recipe-text"
+                    name="text"
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Paste the recipe text here..."
+                    className={clsx(styles.textarea, textError && styles.inputError)}
+                    rows={8}
+                    required={activeTab === 'text'}
+                  />
+                  {textError && <div className={styles.errorMessage}>{textError}</div>}
+                </div>
+              )}
+            </div>
           </div>
 
           <button
             type="submit"
             className={clsx('button button--primary', styles.submitButton)}
-            disabled={!category || !url || !!urlError || isSubmitting}
+            disabled={!category || (activeTab === 'website' ? (!url || !!urlError) : !text.trim()) || isSubmitting}
           >
             {isSubmitting ? 'Submitting...' : 'Suggest Recipe'}
           </button>

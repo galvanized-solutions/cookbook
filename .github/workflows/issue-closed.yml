@@ -1,0 +1,34 @@
+name: Issue Closed Handler
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  handle-closed-issue:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Echo Issue Information
+        run: |
+          echo "=== Issue Closed ==="
+          echo "Issue Number: ${{ github.event.issue.number }}"
+          echo "Issue Title: ${{ github.event.issue.title }}"
+          echo "Issue URL: ${{ github.event.issue.html_url }}"
+          echo "Issue State: ${{ github.event.issue.state }}"
+          echo "Issue Author: ${{ github.event.issue.user.login }}"
+          echo "Closed By: ${{ github.event.sender.login }}"
+          echo "Closed At: ${{ github.event.issue.closed_at }}"
+          echo "Created At: ${{ github.event.issue.created_at }}"
+          echo "Updated At: ${{ github.event.issue.updated_at }}"
+          echo ""
+          echo "=== Issue Labels ==="
+          echo '${{ toJSON(github.event.issue.labels) }}'
+          echo ""
+          echo "=== Issue Body ==="
+          echo "${{ github.event.issue.body }}"
+          echo ""
+          echo "=== Event Action ==="
+          echo "Action: ${{ github.event.action }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow Run ID: ${{ github.run_id }}"
