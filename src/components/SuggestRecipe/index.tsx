@@ -1,7 +1,9 @@
 import type {ReactNode} from 'react';
 import React, {useState} from 'react';
 import clsx from 'clsx';
+
 import Heading from '@theme/Heading';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
 interface SuggestRecipeProps {
@@ -12,6 +14,11 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
   const [category, setCategory] = useState<string>('');
   const [url, setUrl] = useState<string>('');
   const [urlError, setUrlError] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitMessage, setSubmitMessage] = useState<string>('');
+  const [submitError, setSubmitError] = useState<string>('');
+  const { siteConfig } = useDocusaurusContext();
+  const key = siteConfig.customFields?.GREAT_SUCCESS as string | undefined;
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -33,25 +40,84 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
+    // Clear previous messages
+    setSubmitMessage('');
+    setSubmitError('');
+    
     if (!category) {
-      alert('Please select a recipe category');
+      setSubmitError('Please select a recipe category');
       return;
     }
     
     if (!url) {
-      alert('Please enter a URL');
+      setSubmitError('Please enter a URL');
       return;
     }
     
     if (!isValidHttpsUrl(url)) {
-      alert('Please enter a valid HTTPS URL');
+      setSubmitError('Please enter a valid HTTPS URL');
       return;
     }
 
-    console.log('Recipe suggestion:', { category, url });
+    setIsSubmitting(true);
+
+    try {
+      // GitHub API configuration
+      const GREAT_SUCCESS = key;
+      const REPO_OWNER = 'galvanized-solutions';
+      const REPO_NAME = 'cookbook';
+
+      if (!GREAT_SUCCESS) {
+        throw new Error('GitHub token not configured');
+      }
+
+      // Gather request metadata
+      const timestamp = new Date().toISOString();
+      const userAgent = navigator.userAgent;
+
+      // Create new branch
+      const createBranchResponse = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `token ${GREAT_SUCCESS}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+          body: JSON.stringify({
+            title: 'New recipe suggestion',
+            body: `category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`,
+            labels: ["recipe-suggestion"]
+          }),
+        }
+      );
+
+      if (!createBranchResponse.ok) {
+        const errorData = await createBranchResponse.json();
+        throw new Error(`Failed to create PR: ${errorData.message}`);
+      }
+
+      const prData = await createBranchResponse.json();
+
+      setSubmitMessage(`Recipe suggestion submitted successfully! Pull request #${prData?.number} has been created.`);
+      // Clear form on success
+      setCategory('');
+      setUrl('');
+    } catch (error) {
+      console.error('Error submitting recipe suggestion:', error);
+      if (error.message.includes('GitHub token not configured')) {
+        setSubmitError('GitHub integration is not configured. Please contact the site administrator.');
+      } else {
+        setSubmitError(`Failed to submit recipe suggestion: ${error.message}`);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -100,10 +166,22 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           <button
             type="submit"
             className={clsx('button button--primary', styles.submitButton)}
-            disabled={!category || !url || !!urlError}
+            disabled={!category || !url || !!urlError || isSubmitting}
           >
-            Suggest Recipe
+            {isSubmitting ? 'Submitting...' : 'Suggest Recipe'}
           </button>
+          
+          {submitMessage && (
+            <div className={styles.successMessage}>
+              {submitMessage}
+            </div>
+          )}
+          
+          {submitError && (
+            <div className={styles.errorMessage}>
+              {submitError}
+            </div>
+          )}
         </form>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
+import 'dotenv/config';
+import { themes as prismThemes } from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
@@ -8,6 +9,9 @@ const config: Config = {
   title: "Claude's Cookbook",
   tagline: 'Tried and true, sure would do',
   favicon: 'img/favicon.svg',
+  customFields: {
+    GREAT_SUCCESS: process.env.GREAT_SUCCESS,
+  },
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {

@@ -44,6 +44,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build with Docusaurus
         run: pnpm run build
+        env:
+          SITE_URL: ${{ secrets.GREAT_SUCCESS }}  
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
