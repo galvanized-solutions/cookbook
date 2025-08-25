@@ -77,6 +77,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       // Gather request metadata
       const timestamp = new Date().toISOString();
       const userAgent = navigator.userAgent;
+      const prompt = `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`;
 
       // Create new branch
       const createBranchResponse = await fetch(
@@ -91,7 +92,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           },
           body: JSON.stringify({
             title: 'New recipe suggestion',
-            body: `category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`,
+            body: `prompt: ${prompt}\n category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`,
             labels: ["recipe-suggestion"]
           }),
         }
