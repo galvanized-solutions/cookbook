@@ -18,11 +18,11 @@ const settingJson = {
   allow: [
     'LS(.)',
     'TodoWrite(./TODO.md)',
-    'Read(./scripts/instructions.md)',
-    'Read(./scripts/conversions.yaml)',
+    'Read(./instructions.md)',
+    'Read(./conversions.yaml)',
     'Read(./CLAUDE.md)',
-    'Read(./output/recipe.json)',
-    'Write(./output/recipe.json)'
+    'Read(./recipe.json)',
+    'Write(./recipe.json)'
   ]
 };
 

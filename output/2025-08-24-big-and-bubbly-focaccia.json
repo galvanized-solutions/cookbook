@@ -1,0 +1,127 @@
+{
+  servings: 16,
+    ingredients: [
+    {
+        name: "King Arthur Unbleached All-Purpose Flour",
+        original: "3 cups (360g) King Arthur Unbleached All-Purpose Flour",
+        metric: { quantity: "360", unit: "g"
+      },
+        imperial: { quantity: "3", unit: "cups"
+      }
+    },
+    {
+        name: "table salt",
+        original: "1 1/2 teaspoons (9g) table salt",
+        metric: { quantity: "9", unit: "g"
+      },
+        imperial: { quantity: "1.5", unit: "teaspoons"
+      }
+    },
+    {
+        name: "granulated sugar",
+        original: "1 teaspoon (5g) granulated sugar",
+        metric: { quantity: "5", unit: "g"
+      },
+        imperial: { quantity: "1", unit: "teaspoon"
+      }
+    },
+    {
+        name: "instant yeast",
+        original: "1 teaspoon (3g) instant yeast",
+        metric: { quantity: "3", unit: "g"
+      },
+        imperial: { quantity: "1", unit: "teaspoon"
+      }
+    },
+    {
+        name: "warm water",
+        original: "1 1/4 cups warm water",
+        metric: { quantity: "284", unit: "g"
+      },
+        imperial: { quantity: "1.25", unit: "cups"
+      }
+    },
+    {
+        name: "extra-virgin olive oil",
+        original: "1 1/2 tablespoons (18g) extra-virgin olive oil",
+        metric: { quantity: "18", unit: "g"
+      },
+        imperial: { quantity: "1.5", unit: "tablespoons"
+      }
+    },
+    {
+        name: "extra-virgin olive oil, divided",
+        original: "2 tablespoons (26g) extra-virgin olive oil, divided",
+        metric: { quantity: "26", unit: "g"
+      },
+        imperial: { quantity: "2", unit: "tablespoons"
+      }
+    },
+    {
+        name: "flaky sea salt, for topping",
+        original: "Flaky sea salt, for topping",
+        metric: { quantity: null, unit: null
+      },
+        imperial: { quantity: null, unit: null
+      }
+    }
+  ],
+      directions: {
+    base: [
+      "Weigh or measure flour, salt, sugar, and yeast in a large bowl",
+      "Add water and olive oil, stir until thoroughly combined",
+      "Cover bowl and let sit for 15 minutes",
+      "Use wet hand to grab dough sections, lift and press into center",
+      "Circle bowl 8-12 times during each fold",
+      "Flip dough smooth side up after each fold",
+      "Repeat folding process 4 times total, waiting 15 minutes between each fold",
+      "After final fold, let dough rise 1 hour at room temperature",
+      "Spray 9\" square pan with nonstick spray",
+      "Add parchment paper strip across pan",
+      "Spray parchment and add olive oil to pan",
+      "Transfer dough to pan, flip to coat in oil",
+      "Let dough rise 1-1.5 hours until marshmallowy",
+      "Preheat oven",
+      "Dimple dough with oiled fingers",
+      "Drizzle remaining olive oil and sprinkle flaky salt",
+      "Bake 15-18 minutes",
+      "Remove from pan, return to oven 5-7 minutes to crisp sides"
+    ],
+      metric: [
+      {
+          step: 3,
+          text: "Use wet hand to grab dough sections, lift and press into center (water temperature should be 32°C to 43°C)"
+      },
+      {
+          step: 7,
+          text: "After final fold, let dough rise 1 hour at 21-24°C"
+      },
+      {
+          step: 10,
+          text: "Spray parchment and add 15ml olive oil to pan"
+      },
+      {
+          step: 13,
+          text: "Preheat oven to 246°C"
+      }
+    ],
+        imperial: [
+      {
+            step: 3,
+            text: "Use wet hand to grab dough sections, lift and press into center (water temperature should be 90°F to 110°F)"
+      },
+      {
+            step: 7,
+            text: "After final fold, let dough rise 1 hour at 70-75°F"
+      },
+      {
+            step: 10,
+            text: "Spray parchment and add 1 tablespoon olive oil to pan"
+      },
+      {
+            step: 13,
+            text: "Preheat oven to 475°F"
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 # Cookbook Project Context
 
 ## Measurement Conversions
-@scripts/instructions.md
-@scripts/conversions.yaml
+@./instructions.md
+@./conversions.yaml

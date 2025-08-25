@@ -1,0 +1,181 @@
+{
+  "title": "Braised Beef (Trinchado)",
+  "category": "entrees",
+  "url": "https://www.easyportugueserecipes.com/trinchado-braised-beef",
+  "created_at": "2025-08-25T00:00:00Z",
+  "updated_at": "2025-08-25T00:00:00Z",
+  "servings": 3,
+  "img": "https://www.easyportugueserecipes.com/wp-content/uploads/2014/08/dsc_0035.jpg",
+  "nutrition": null,
+  "notes": "Recipe converted from imperial measurements. Tablespoon measurements converted to ml as specified in instructions.",
+  "ingredients": [
+    {
+      "name": "cubed beef tenderloin",
+      "original": "1 pound cubed beef tenderloin",
+      "metric": {
+        "quantity": "454",
+        "unit": "g"
+      },
+      "imperial": {
+        "quantity": "1",
+        "unit": "pound"
+      }
+    },
+    {
+      "name": "butter",
+      "original": "3 tablespoons butter",
+      "metric": {
+        "quantity": "44",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "3",
+        "unit": "tablespoons"
+      }
+    },
+    {
+      "name": "salt",
+      "original": "1/2 teaspoon salt",
+      "metric": {
+        "quantity": "2.5",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1/2",
+        "unit": "teaspoon"
+      }
+    },
+    {
+      "name": "black pepper",
+      "original": "1/2 teaspoon black pepper",
+      "metric": {
+        "quantity": "2.5",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1/2",
+        "unit": "teaspoon"
+      }
+    },
+    {
+      "name": "paprika",
+      "original": "1/2 teaspoon paprika",
+      "metric": {
+        "quantity": "2.5",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1/2",
+        "unit": "teaspoon"
+      }
+    },
+    {
+      "name": "onion, sliced",
+      "original": "1 onion, sliced",
+      "metric": {
+        "quantity": "1",
+        "unit": null
+      },
+      "imperial": {
+        "quantity": "1",
+        "unit": null
+      }
+    },
+    {
+      "name": "Worcestershire sauce",
+      "original": "2.5 tablespoons Worcestershire sauce",
+      "metric": {
+        "quantity": "37",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "2.5",
+        "unit": "tablespoons"
+      }
+    },
+    {
+      "name": "small hot red chili peppers, stemmed and chopped (with seeds)",
+      "original": "2 small hot red chili peppers, stemmed and chopped (with seeds)",
+      "metric": {
+        "quantity": "2",
+        "unit": null
+      },
+      "imperial": {
+        "quantity": "2",
+        "unit": null
+      }
+    },
+    {
+      "name": "garlic cloves, minced",
+      "original": "4 garlic cloves, minced",
+      "metric": {
+        "quantity": "4",
+        "unit": null
+      },
+      "imperial": {
+        "quantity": "4",
+        "unit": null
+      }
+    },
+    {
+      "name": "flour",
+      "original": "1 tablespoon flour",
+      "metric": {
+        "quantity": "15",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1",
+        "unit": "tablespoon"
+      }
+    },
+    {
+      "name": "beef stock",
+      "original": "1/2 cup beef stock",
+      "metric": {
+        "quantity": "118",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1/2",
+        "unit": "cup"
+      }
+    },
+    {
+      "name": "Portuguese red wine",
+      "original": "1/2 cup Portuguese red wine",
+      "metric": {
+        "quantity": "118",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "1/2",
+        "unit": "cup"
+      }
+    },
+    {
+      "name": "Portuguese bread rolls (for serving)",
+      "original": "3-4 Portuguese bread rolls (for serving)",
+      "metric": {
+        "quantity": "3-4",
+        "unit": null
+      },
+      "imperial": {
+        "quantity": "3-4",
+        "unit": null
+      }
+    }
+  ],
+  "directions": {
+    "base": [
+      "Marinate beef in Worcestershire sauce, chilis, paprika, salt, and pepper for 2 hours in refrigerator",
+      "Brown beef in batches in butter",
+      "Cook onions and garlic, add flour",
+      "Add marinade, stock, and wine; simmer sauce",
+      "Return beef to pan, simmer 20-25 minutes until tender",
+      "Serve hot with bread rolls or fries"
+    ],
+    "metric": [],
+    "imperial": []
+  }
+}

@@ -12,12 +12,12 @@ Recipe parsing instructions:
 - Title should be the direct name if it is accessible
 - Nutritional facts are preferred but not required and detailed breakdowns are preferred
 - If servings represents the number of portions or how many it serves is not available then and can't be calculated from nutrition then use null
-- We will parse both ingredients, instructions/directions and nutrition for units and quantities of these units using the chart @scripts/conversions.yaml unless it is not contained in this file then it should be calculated using what information is accessible and added to the conversions.yaml
+- We will parse both ingredients, instructions/directions and nutrition for units and quantities of these units using the chart conversions.yaml unless it is not contained in this file then it should be calculated using what information is accessible and added to the conversions.yaml
 - Ingredients must be parsed first and it's conversions should be used to substitute and references to it in the directions when they are parsed 
 - When parsing measurements weight should be preferred if for example if grams and cups are provided grams should be used, the same applies for oz and cups oz should be preferred
 - If spoons are used to measure then please convert it to either ml or grams respectively and include the spoon measurement in parenthesis
-- If imperial measurements are used and the site ends in .co.uk or it is apparent from the site context then the imperial cup should be used for weight and liquid conversions using the @scripts/conversions.yaml
-- If imperial measurements are used and the url contains in .com then the US cup should be used for weight and liquid conversions using the @scripts/conversions.yaml
+- If imperial measurements are used and the site ends in .co.uk or it is apparent from the site context then the imperial cup should be used for weight and liquid conversions using the conversions.yaml
+- If imperial measurements are used and the url contains in .com then the US cup should be used for weight and liquid conversions using the conversions.yaml
 - If metric units are used then the metric cup should be used for weight and liquid conversions
 - For directions , as an example, if a direction's original text states heat oven to 475f it should be added to the imperial direction list and a then converted to celsius and stored in the metric directions list as a string in it's entirety.
 - 

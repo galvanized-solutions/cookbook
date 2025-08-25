@@ -20,6 +20,6 @@ yarn-debug.log*
 yarn-error.log*
 
 scripts/settings.json
-output/recipe.json
+recipe.json
 error.log
 .env
