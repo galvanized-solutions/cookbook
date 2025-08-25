@@ -19,6 +19,12 @@ type DirectionOverride = {
   text: string;
 };
 
+type Timing = {
+  prep_time?: string | null;
+  cook_time?: string | null;
+  total_time?: string | null;
+};
+
 type RecipeData = {
   ingredients: Ingredient[];
   directions: {
@@ -27,6 +33,7 @@ type RecipeData = {
     imperial?: DirectionOverride[];
   };
   servings?: number;
+  timing?: Timing | null;
 };
 
 interface RecipeToggleProps {
@@ -195,6 +202,31 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
         onServingsChange={handleServingsChange}
         onReset={handleServingsReset}
       />
+
+      {recipe.timing && (recipe.timing.prep_time || recipe.timing.cook_time || recipe.timing.total_time) && (
+        <div className={styles.timingContainer}>
+          <div className={styles.timingInfo}>
+            {recipe.timing.prep_time && (
+              <div className={styles.timingItem}>
+                <span className={styles.timingLabel}>Prep:</span>
+                <span className={styles.timingValue}>{recipe.timing.prep_time}</span>
+              </div>
+            )}
+            {recipe.timing.cook_time && (
+              <div className={styles.timingItem}>
+                <span className={styles.timingLabel}>Cook:</span>
+                <span className={styles.timingValue}>{recipe.timing.cook_time}</span>
+              </div>
+            )}
+            {recipe.timing.total_time && (
+              <div className={styles.timingItem}>
+                <span className={styles.timingLabel}>Total:</span>
+                <span className={styles.timingValue}>{recipe.timing.total_time}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className={styles.recipeContent}>
         <div className={styles.section}>

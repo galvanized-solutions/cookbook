@@ -11,20 +11,29 @@ inputs: [category, url]
 - Convert spoons to ml/grams, keep original in parenthesis
 - Domain-based cup conversions: .com = US cup, .co.uk = UK cup
 - Temperature conversions: F→C for metric, C→F for imperial
+- Extract timing information when available (prep, cook, total times)
 
 # Measurement Priority
 1. **Weight over volume** (454g not 2 cups)
 2. **Spoons→ml conversion** (15ml not 1 tbsp)
 3. **Regional cups**: .com=US (237ml), .co.uk=UK (284ml)
 
+# Timing Format
+- Extract prep_time, cook_time, total_time when available
+- Use standard format: "15 minutes", "1 hour 30 minutes", "45 mins"
+- Store as strings with units (not just numbers)
+- Use null if timing information not found
+
 # Schema
 ```yaml
 measurement: {quantity: string?, unit: string?}
+timing: {prep_time: string?, cook_time: string?, total_time: string?}
 ingredient: {name: string, original: string, metric: measurement, imperial: measurement}
 recipe: {
   title: string, category: string, url: string, 
   created_at: string, updated_at: string,
   servings: number?, img: string?, notes: string?,
+  timing: timing?,
   nutrition: {base: string, metric: string, imperial: string}?,
   ingredients: [ingredient],
   directions: {

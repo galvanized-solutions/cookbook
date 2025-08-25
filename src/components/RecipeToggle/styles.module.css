@@ -77,9 +77,67 @@
   line-height: 1.6;
 }
 
+/* Timing Display */
+.timingContainer {
+  margin: 1.5rem 0;
+}
+
+.timingInfo {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: var(--ifm-card-background-color);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.timingItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 80px;
+}
+
+.timingLabel {
+  font-size: 0.85rem;
+  color: var(--ifm-color-content-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.timingValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
 @media (min-width: 768px) {
   .recipeContent {
     grid-template-columns: 1fr 2fr;
     gap: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .timingInfo {
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .timingItem {
+    min-width: 70px;
+  }
+  
+  .timingLabel {
+    font-size: 0.8rem;
+  }
+  
+  .timingValue {
+    font-size: 0.9rem;
   }
 }

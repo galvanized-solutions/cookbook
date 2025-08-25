@@ -34,3 +34,19 @@ comfort-food:
 wine:
   label: Wine
   permalink: /wine
+
+vegetarian:
+  label: Vegetarian
+  permalink: /vegetarian
+
+chili:
+  label: Chili
+  permalink: /chili
+
+cauliflower:
+  label: Cauliflower
+  permalink: /cauliflower
+
+beans:
+  label: Beans
+  permalink: /beans
