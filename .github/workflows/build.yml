@@ -8,6 +8,7 @@ on:
     paths:
       # Docusaurus configuration files
       - recipes/**/*
+      - suggestions/**/*
       - "docusaurus.config.ts"
       - "sidebars.ts"
       - "tsconfig.json"

@@ -12,6 +12,38 @@ const config: Config = {
   customFields: {
     GREAT_SUCCESS: process.env.GREAT_SUCCESS,
   },
+  plugins: [
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        /**
+         * Required for any multi-instance plugin
+         */
+        id: 'suggestions',
+        /**
+         * URL route for the blog section of your site.
+         * *DO NOT* include a trailing slash.
+         */
+        routeBasePath: 'suggestions',
+        /**
+         * Path to data on filesystem relative to site dir.
+         */
+        path: './suggestions',
+        blogTitle: 'Recipe Suggestions',
+        blogDescription: 'Community-submitted recipes awaiting review',
+        showReadingTime: true,
+        blogSidebarTitle: 'All Suggestions',
+        blogSidebarCount: 'ALL',
+        editUrl: 'https://github.com/galvanized-solutions/cookbook/tree/main/',
+        feedOptions: {
+          type: ['rss', 'atom'],
+          xslt: true,
+          title: "Recipe Suggestions - Claude's Cookbook",
+          description: 'Latest recipe suggestions awaiting review'
+        },
+      },
+    ],
+  ],
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -59,7 +91,7 @@ const config: Config = {
           },
           editUrl:
             'https://github.com/galvanized-solutions/cookbook/tree/main/',
-          blogSidebarTitle: 'All Recipes',
+          blogSidebarTitle: 'All Tried & True',
           blogSidebarCount: 'ALL',
         },
         theme: {
@@ -80,6 +112,7 @@ const config: Config = {
       },
       items: [
         { to: '/recipes', label: 'Recipes', position: 'left' },
+        { to: '/suggestions', label: 'Suggestions', position: 'left' },
         {
           href: 'https://github.com/galvanized-solutions/cookbook/issues',
           label: 'Recipe Requests',

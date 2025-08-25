@@ -1,0 +1,173 @@
+name: Promote Recipe from Suggestions to Recipes
+
+on:
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'Recipe filename (without path, e.g., "2025-08-25-chocolate-cake.mdx")'
+        required: true
+        type: string
+      update_description:
+        description: 'Optional: Update recipe description or add notes'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  promote-recipe:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Validate input filename
+      run: |
+        FILENAME="${{ github.event.inputs.filename }}"
+        
+        # Check if filename ends with .mdx
+        if [[ ! "$FILENAME" =~ \.mdx$ ]]; then
+          echo "❌ Error: Filename must end with .mdx"
+          exit 1
+        fi
+        
+        # Check if file exists in suggestions
+        if [[ ! -f "suggestions/$FILENAME" ]]; then
+          echo "❌ Error: File 'suggestions/$FILENAME' does not exist"
+          echo "Available suggestions:"
+          ls -1 suggestions/*.mdx 2>/dev/null || echo "No .mdx files found in suggestions/"
+          exit 1
+        fi
+        
+        echo "✅ File validation passed"
+        echo "FILENAME=$FILENAME" >> $GITHUB_ENV
+
+    - name: Check if recipe already exists in recipes
+      run: |
+        if [[ -f "recipes/$FILENAME" ]]; then
+          echo "⚠️ Warning: File 'recipes/$FILENAME' already exists"
+          echo "This operation will overwrite the existing recipe"
+        else
+          echo "✅ No conflicting file found in recipes directory"
+        fi
+
+    - name: Move recipe file
+      run: |
+        echo "📁 Moving '$FILENAME' from suggestions/ to recipes/"
+        
+        # Create recipes directory if it doesn't exist
+        mkdir -p recipes/
+        
+        # Move the file
+        mv "suggestions/$FILENAME" "recipes/$FILENAME"
+        
+        echo "✅ Successfully moved recipe file"
+
+    - name: Update recipe metadata (if description provided)
+      if: ${{ github.event.inputs.update_description != '' }}
+      run: |
+        echo "📝 Updating recipe with provided description..."
+        
+        # Create a temporary file with the update
+        TEMP_FILE=$(mktemp)
+        DESCRIPTION="${{ github.event.inputs.update_description }}"
+        
+        # Add the description as a note at the end of the file
+        cp "recipes/$FILENAME" "$TEMP_FILE"
+        echo "" >> "$TEMP_FILE"
+        echo "## Promotion Notes" >> "$TEMP_FILE"
+        echo "" >> "$TEMP_FILE"
+        echo "$DESCRIPTION" >> "$TEMP_FILE"
+        echo "" >> "$TEMP_FILE"
+        echo "*Promoted from suggestions on $(date '+%Y-%m-%d')*" >> "$TEMP_FILE"
+        
+        # Replace the original file
+        mv "$TEMP_FILE" "recipes/$FILENAME"
+        
+        echo "✅ Updated recipe with promotion notes"
+
+    - name: Add promotion timestamp
+      run: |
+        echo "📅 Adding promotion timestamp..."
+        
+        # Add promotion date to the end of file if no description was provided
+        if [[ -z "${{ github.event.inputs.update_description }}" ]]; then
+          echo "" >> "recipes/$FILENAME"
+          echo "---" >> "recipes/$FILENAME"
+          echo "" >> "recipes/$FILENAME"
+          echo "*Promoted from suggestions on $(date '+%Y-%m-%d')*" >> "recipes/$FILENAME"
+        fi
+        
+        echo "✅ Added promotion timestamp"
+
+    - name: Create summary
+      run: |
+        echo "## Recipe Promotion Summary 🎉" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ **Successfully promoted recipe**: \`$FILENAME\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **From**: \`suggestions/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **To**: \`recipes/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Date**: $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [[ -n "${{ github.event.inputs.update_description }}" ]]; then
+          echo "- **Notes Added**: Yes" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- **Notes Added**: No" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "The recipe is now available in the main recipes collection! 🍽️" >> $GITHUB_STEP_SUMMARY
+
+    - name: Configure git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
+    - name: Commit changes
+      run: |
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "⚠️ No changes to commit"
+        else
+          COMMIT_MSG="🍽️ Promote recipe: $FILENAME from suggestions to recipes
+
+- Moved from suggestions/ to recipes/
+- Promoted on $(date '+%Y-%m-%d')
+$(if [[ -n "${{ github.event.inputs.update_description }}" ]]; then echo "- Added promotion notes"; fi)
+
+Co-authored-by: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>"
+
+          git commit -m "$COMMIT_MSG"
+          git push
+          
+          echo "✅ Changes committed and pushed successfully"
+        fi
+
+    - name: Post-promotion cleanup check
+      run: |
+        echo "🔍 Post-promotion verification:"
+        echo ""
+        
+        # Verify the file was moved successfully
+        if [[ -f "recipes/$FILENAME" ]]; then
+          echo "✅ Recipe successfully exists in recipes/ directory"
+        else
+          echo "❌ Error: Recipe not found in recipes/ directory"
+          exit 1
+        fi
+        
+        # Verify the file was removed from suggestions
+        if [[ ! -f "suggestions/$FILENAME" ]]; then
+          echo "✅ Recipe successfully removed from suggestions/ directory"
+        else
+          echo "❌ Warning: Recipe still exists in suggestions/ directory"
+        fi
+        
+        echo ""
+        echo "🎉 Recipe promotion completed successfully!"

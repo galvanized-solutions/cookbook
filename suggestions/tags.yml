@@ -1,0 +1,52 @@
+entrees:
+  label: Entrees
+  permalink: /entrees
+
+bread:
+  label: Bread
+  permalink: /bread
+
+italian:
+  label: Italian
+  permalink: /italian
+
+baking:
+  label: Baking
+  permalink: /baking
+  description: Baking tag description
+
+soup:
+  label: Soup
+  permalink: /soup
+
+french:
+  label: French
+  permalink: /french
+
+onions:
+  label: Onions
+  permalink: /onions
+
+comfort-food:
+  label: Comfort Food
+  permalink: /comfort-food
+
+wine:
+  label: Wine
+  permalink: /wine
+
+vegetarian:
+  label: Vegetarian
+  permalink: /vegetarian
+
+chili:
+  label: Chili
+  permalink: /chili
+
+cauliflower:
+  label: Cauliflower
+  permalink: /cauliflower
+
+beans:
+  label: Beans
+  permalink: /beans
