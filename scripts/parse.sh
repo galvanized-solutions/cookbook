@@ -12,4 +12,3 @@ if [[ -n "$PROMPT" ]]; then
 else
   echo "Error: Prompt generation failed."
 fi
-

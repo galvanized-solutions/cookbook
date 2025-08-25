@@ -14,3 +14,23 @@ baking:
   label: Baking
   permalink: /baking
   description: Baking tag description
+
+soup:
+  label: Soup
+  permalink: /soup
+
+french:
+  label: French
+  permalink: /french
+
+onions:
+  label: Onions
+  permalink: /onions
+
+comfort-food:
+  label: Comfort Food
+  permalink: /comfort-food
+
+wine:
+  label: Wine
+  permalink: /wine
