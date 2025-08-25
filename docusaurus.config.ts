@@ -50,7 +50,7 @@ const config: Config = {
           feedOptions: {
             type: ['rss', 'atom'],
             xslt: true,
-            title: "Claude's Cookbook Recipes",
+            title: "Claude's Recipes",
             description: 'Latest recipes from our cookbook'
           },
           editUrl:
@@ -69,7 +69,7 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Cook Book',
+      title: "Claude's Cookbook",
       logo: {
         alt: 'Cook Book Logo',
         src: 'img/logo.svg',

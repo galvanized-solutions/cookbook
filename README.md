@@ -1,4 +1,4 @@
-# Cookbook
+# Claude's Cookbook
 A document page to dynamically create cookbook recipes
 
 ## 🌐 Live Site
