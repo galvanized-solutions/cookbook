@@ -1,0 +1,43 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Simplified favicon version of the logo -->
+  <defs>
+    <linearGradient id="hatGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#f0f0f0"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#c1663f" opacity="0.9"/>
+  
+  <!-- Simplified chef's hat -->
+  <path d="M8 14 C8 10, 12 8, 16 8 C20 8, 24 10, 24 14 C24 12, 22 11, 20 11 C22 9, 20 7, 16 7 C12 7, 10 9, 12 11 C10 11, 8 12, 8 14 Z" 
+        fill="url(#hatGrad)" 
+        stroke="#e0e0e0" 
+        stroke-width="0.5"/>
+  
+  <!-- Hat band -->
+  <rect x="8" y="14" width="16" height="2" fill="#f8f8f8"/>
+  
+  <!-- Simple AI dots in hat -->
+  <circle cx="13" cy="11" r="0.8" fill="#c1663f"/>
+  <circle cx="19" cy="11" r="0.8" fill="#c1663f"/>
+  <line x1="13.8" y1="11" x2="18.2" y2="11" stroke="#c1663f" stroke-width="0.6"/>
+  
+  <!-- Simplified spoon -->
+  <ellipse cx="25" cy="22" rx="2" ry="3" fill="#e68a54" transform="rotate(20 25 22)"/>
+  <rect x="21" y="24" width="6" height="1" rx="0.5" fill="#e68a54" transform="rotate(20 24 24.5)"/>
+  
+  <!-- Recipe book -->
+  <rect x="4" y="20" width="6" height="8" rx="0.5" fill="#ffffff" stroke="#e68a54" stroke-width="0.6"/>
+  <rect x="5" y="22" width="4" height="0.6" fill="#c1663f" opacity="0.7"/>
+  <rect x="5" y="23.5" width="3" height="0.4" fill="#c1663f" opacity="0.5"/>
+  <rect x="5" y="25" width="4" height="0.4" fill="#c1663f" opacity="0.5"/>
+  
+  <!-- Steam lines -->
+  <g stroke="#e68a54" stroke-width="1" fill="none" opacity="0.8" stroke-linecap="round">
+    <path d="M12 6 Q12 4, 14 4"/>
+    <path d="M16 5 Q16 3, 18 3"/>
+    <path d="M20 6 Q20 4, 22 4"/>
+  </g>
+</svg>

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import SuggestRecipe from '@site/src/components/SuggestRecipe';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
@@ -20,8 +20,8 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            to="/recipes">
+            Browse Recipes 🍳
           </Link>
         </div>
       </div>
@@ -37,7 +37,13 @@ export default function Home(): ReactNode {
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
       <main>
-        <HomepageFeatures />
+        <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+          <div className="row">
+            <div className="col col--8 col--offset-2">
+              <SuggestRecipe />
+            </div>
+          </div>
+        </div>
       </main>
     </Layout>
   );

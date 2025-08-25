@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Cookbook',
   tagline: 'Tried and true, would redo',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -40,28 +40,24 @@ const config: Config = {
     [
       'classic',
       {
-        docs: {
-          sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+        docs: false, // Disable docs
+        blog: {
+          path: './recipes',
+          routeBasePath: '/recipes',
+          blogTitle: 'Recipes',
+          blogDescription: 'Delicious recipes tried and tested',
+          showReadingTime: true,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            xslt: true,
+            title: 'Cookbook Recipes',
+            description: 'Latest recipes from our cookbook'
+          },
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/galvanized-solutions/cookbook/tree/main/',
+          blogSidebarTitle: 'All Recipes',
+          blogSidebarCount: 'ALL',
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   feedOptions: {
-        //     type: ['rss', 'atom'],
-        //     xslt: true,
-        //   },
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        //   // Useful options to enforce blogging best practices
-        //   onInlineTags: 'warn',
-        //   onInlineAuthors: 'warn',
-        //   onUntruncatedBlogPosts: 'warn',
-        // },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -79,13 +75,7 @@ const config: Config = {
         src: 'img/logo.svg',
       },
       items: [
-        { to: '/blog', label: 'Blog', position: 'left' },
-        {
-          type: 'docSidebar',
-          sidebarId: 'recipes',
-          label: "Recipes",
-          position: 'left'
-        },
+        { to: '/recipes', label: 'Recipes', position: 'left' },
         {
           href: 'https://github.com/galvanized-solutions/cookbook',
           label: 'GitHub',
@@ -95,18 +85,7 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Tutorial',
-              to: '/docs/intro',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Cooks Book, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Galvanized Solutions, Inc.`,
     },
     prism: {
       theme: prismThemes.github,
