@@ -90,6 +90,15 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       const prompt = activeTab === 'website' 
         ? `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`
         : `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, text: ${text} to generate the recipe output as instructed`;
+      
+      const body = {
+        timestamp,
+        userAgent,
+        prompt,
+        category,
+        url: activeTab === 'website' ? url : null,
+        text: activeTab === 'text' ? text : null,
+      }
 
       // Create new branch
       const createBranchResponse = await fetch(
@@ -104,9 +113,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           },
           body: JSON.stringify({
             title: 'New recipe suggestion',
-            body: activeTab === 'website' 
-              ? `prompt: ${prompt}\n category: ${category}\nurl: ${url}\nRequest information: ${userAgent}`
-              : `prompt: ${prompt}\n category: ${category}\ntext: ${text}\nRequest information: ${userAgent}`,
+            body: body,
             labels: ["recipe-suggestion"]
           }),
         }
