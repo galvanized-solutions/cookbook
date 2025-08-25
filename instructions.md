@@ -10,6 +10,8 @@ Recipe parsing instructions:
 - A recipes ingredients could be in metric or imperial and we will need to parse both of these to separate entries so users can switch between the measurements systems easily
 - For all keys that cannot be found or determined then then the value for the key should be null
 - Title should be the direct name if it is accessible
+- Add the result of this to context title to derive a blog post name the name should be the yyyy-mm-dd-<kebob-case-recipe-name> where you use the derived title name to replace yyyy-mm-dd-<kebob-case-recipe-name.
+- The name above will be used to render the docusaurus post in ./recipes/<derived-name>.mdx and the ./output/<derived-name>.json
 - Nutritional facts are preferred but not required and detailed breakdowns are preferred
 - If servings represents the number of portions or how many it serves is not available then and can't be calculated from nutrition then use null
 - We will parse both ingredients, instructions/directions and nutrition for units and quantities of these units using the chart conversions.yaml unless it is not contained in this file then it should be calculated using what information is accessible and added to the conversions.yaml
@@ -25,7 +27,7 @@ Recipe parsing instructions:
 ## recipe schema definition
 - Below is an open api component specification please use it to parse the data into the data structures required
 - The following defines the type and a description that you can use to make a determination on how the information should be parsed.
-- Please use it to output defined below the yaml code block and save the file to "./output/recipe.json"
+- Please use it to output defined below the yaml code block and save the file to "./recipe.json"
 
 ```yaml
 components:
@@ -209,3 +211,8 @@ const recipe = {
   }
 };
 ```
+
+## Create a recipe post
+- The following must generate a docusaurus post using the custom components RecipeToggle and ServingsSlider to dynamically adjust the recipe units and ingredient quantities when used
+- After the recipe.json has been output use it to render the docusaurus post in the ./recipes/<derived-name>.mdx
+- When that has been created move the recipe.json to ./recipes/<derived-name>.json to keep a history of the outputs
