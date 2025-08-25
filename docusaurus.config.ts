@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Cookbook',
-  tagline: 'Tried and true, would redo',
+  title: "Claude's Cookbook",
+  tagline: 'Tried and true, sure would do',
   favicon: 'img/favicon.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -50,7 +50,7 @@ const config: Config = {
           feedOptions: {
             type: ['rss', 'atom'],
             xslt: true,
-            title: 'Cookbook Recipes',
+            title: "Claude's Cookbook Recipes",
             description: 'Latest recipes from our cookbook'
           },
           editUrl:

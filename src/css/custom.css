@@ -13,6 +13,12 @@
   --ifm-color-primary-light: #d57246;  /* Lighter burnt sienna */
   --ifm-color-primary-lighter: #db7e4d; /* Warm copper tone */
   --ifm-color-primary-lightest: #e68a54; /* Light pumpkin spice */
+  
+  /* Softer background colors for reduced eye strain */
+  --ifm-background-color: #fdfcfb;     /* Warm off-white with slight cream tint */
+  --ifm-background-surface-color: #faf9f7; /* Slightly warmer surface color */
+  --ifm-color-content-secondary: #6b5b73; /* Softer text color */
+  
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(193, 102, 63, 0.1);
 }
@@ -26,5 +32,11 @@
   --ifm-color-primary-light: #ea9662;  /* Soft pumpkin */
   --ifm-color-primary-lighter: #eda270; /* Light peach-orange */
   --ifm-color-primary-lightest: #f1ae7e; /* Lightest peach for contrast */
+  
+  /* Restore proper dark mode backgrounds */
+  --ifm-background-color: #1b1b1d;     /* Dark background */
+  --ifm-background-surface-color: #242526; /* Dark surface color */
+  --ifm-color-content-secondary: #b0b3b8; /* Light text for dark mode */
+  
   --docusaurus-highlighted-code-line-bg: rgba(230, 138, 84, 0.2);
 }
