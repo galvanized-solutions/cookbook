@@ -10,4 +10,7 @@ jobs:
     
     steps:
       - name: Echo Issue Information
-        run: echo ${{ toJson(github) }}
+        run: |
+          cat << OBJECT
+          ${{ toJson(github) }}
+          OBJECT
