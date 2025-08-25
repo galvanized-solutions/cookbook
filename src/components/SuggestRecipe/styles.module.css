@@ -56,13 +56,14 @@
 }
 
 .successMessage {
-  color: var(--ifm-color-success);
+  color: var(--ifm-font-color-base);
   font-size: 0.875rem;
   margin-top: 0.25rem;
   padding: 0.75rem;
   background-color: var(--ifm-color-success-lightest);
   border: 1px solid var(--ifm-color-success-light);
   border-radius: var(--ifm-global-radius);
+  font-weight: 600;
 }
 
 .submitButton {
