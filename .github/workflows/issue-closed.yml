@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Echo Issue Information
         run: |
+          echo $GITHUB_EVENT_NAME
           cat << OBJECT
           ${{ toJson(github) }}
           OBJECT
