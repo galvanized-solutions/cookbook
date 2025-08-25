@@ -214,5 +214,6 @@ const recipe = {
 
 ## Create a recipe post
 - The following must generate a docusaurus post using the custom components RecipeToggle and ServingsSlider to dynamically adjust the recipe units and ingredient quantities when used
+- Any tags should be added to recipe post should be added to the tags.yml if they are not already in there
 - After the recipe.json has been output use it to render the docusaurus post in the ./recipes/<derived-name>.mdx
-- When that has been created move the recipe.json to ./recipes/<derived-name>.json to keep a history of the outputs
+- When the mdx has been created rename the recipe.json to ./recipes/<derived-name>.json to keep a history of the output object
