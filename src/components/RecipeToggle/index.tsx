@@ -94,8 +94,9 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
         if (scaled === 2.5) return '2 1/2';
         if (scaled === 2.75) return '2 3/4';
         
-        // Otherwise return decimal
-        return scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(2);
+        // Round to nearest whole number for other values, minimum 1
+        const rounded = Math.round(scaled);
+        return (rounded < 1 ? 1 : rounded).toString();
       }
     }
     
@@ -108,7 +109,8 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
         if (!isNaN(whole) && !isNaN(fracNum) && !isNaN(fracDen)) {
           const total = whole + (fracNum / fracDen);
           const scaled = total * multiplier;
-          return scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(2);
+          const rounded = Math.round(scaled);
+          return (rounded < 1 ? 1 : rounded).toString();
         }
       }
     }
@@ -117,7 +119,8 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
     const numericValue = parseFloat(quantity);
     if (!isNaN(numericValue)) {
       const scaled = numericValue * multiplier;
-      return scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(2);
+      const rounded = Math.round(scaled);
+      return (rounded < 1 ? 1 : rounded).toString();
     }
     
     // If we can't parse it, return original
@@ -197,14 +200,28 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
         <div className={styles.section}>
           <h3>Ingredients</h3>
           <ul className={styles.ingredientsList}>
-            {currentIngredients.map((ingredient, index) => (
-              <li key={index} className={styles.ingredient}>
-                {ingredient.currentMeasurement.quantity && ingredient.currentMeasurement.unit 
-                  ? `${ingredient.currentMeasurement.quantity} ${ingredient.currentMeasurement.unit} ${ingredient.name}`
-                  : ingredient.original
-                }
-              </li>
-            ))}
+            {currentIngredients.map((ingredient, index) => {
+              const { quantity, unit } = ingredient.currentMeasurement;
+              
+              // Handle scaled ingredients with quantities
+              if (quantity) {
+                const displayText = unit 
+                  ? `${quantity} ${unit} ${ingredient.name}`
+                  : `${quantity} ${ingredient.name}`;
+                return (
+                  <li key={index} className={styles.ingredient}>
+                    {displayText}
+                  </li>
+                );
+              }
+              
+              // Fallback to original text for ingredients without quantities
+              return (
+                <li key={index} className={styles.ingredient}>
+                  {ingredient.original}
+                </li>
+              );
+            })}
           </ul>
         </div>
 

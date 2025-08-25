@@ -40,3 +40,9 @@
   
   --docusaurus-highlighted-code-line-bg: rgba(230, 138, 84, 0.2);
 }
+
+/* Fix hero banner text contrast in dark mode */
+[data-theme='dark'] .hero--primary .hero__title,
+[data-theme='dark'] .hero--primary .hero__subtitle {
+  color: var(--ifm-font-color-base) !important;
+}

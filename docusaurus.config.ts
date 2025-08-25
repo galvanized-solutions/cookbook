@@ -76,7 +76,7 @@ const config: Config = {
       title: "Claude's Cookbook",
       logo: {
         alt: 'Cook Book Logo',
-        src: 'img/logo.svg',
+        src: 'img/favicon.svg',
       },
       items: [
         { to: '/recipes', label: 'Recipes', position: 'left' },

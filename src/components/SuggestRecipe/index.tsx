@@ -14,7 +14,10 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
   const [activeTab, setActiveTab] = useState<'website' | 'text'>('website');
   const [category, setCategory] = useState<string>('');
   const [url, setUrl] = useState<string>('');
-  const [text, setText] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [ingredients, setIngredients] = useState<string>('');
+  const [directions, setDirections] = useState<string>('');
+  const [nutrition, setNutrition] = useState<string>('');
   const [urlError, setUrlError] = useState<string>('');
   const [textError, setTextError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -66,8 +69,8 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
         return;
       }
     } else {
-      if (!text.trim()) {
-        setSubmitError('Please enter recipe text');
+      if (!title.trim() || !ingredients.trim() || !directions.trim()) {
+        setSubmitError('Please fill in Title, Ingredients, and Directions (Nutrition is optional)');
         return;
       }
     }
@@ -89,7 +92,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       const userAgent = navigator.userAgent;
       const prompt = activeTab === 'website' 
         ? `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`
-        : `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, text: ${text} to generate the recipe output as instructed`;
+        : `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, text: {title: "${title}", ingredients: "${ingredients}", directions: "${directions}", nutrition: "${nutrition}"} to generate the recipe output as instructed`;
       
       const body = {
         timestamp,
@@ -97,7 +100,10 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
         prompt,
         category,
         url: activeTab === 'website' ? url : null,
-        text: activeTab === 'text' ? text : null,
+        title: activeTab === 'text' ? title : null,
+        ingredients: activeTab === 'text' ? ingredients : null,
+        directions: activeTab === 'text' ? directions : null,
+        nutrition: activeTab === 'text' ? nutrition : null,
       }
 
       // Create new branch
@@ -130,7 +136,10 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       // Clear form on success
       setCategory('');
       setUrl('');
-      setText('');
+      setTitle('');
+      setIngredients('');
+      setDirections('');
+      setNutrition('');
     } catch (error) {
       console.error('Error submitting recipe suggestion:', error);
       if (error.message.includes('GitHub token not configured')) {
@@ -206,20 +215,69 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
                   {urlError && <div className={styles.errorMessage}>{urlError}</div>}
                 </div>
               ) : (
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="recipe-text" className={styles.label}>
-                    Recipe Text
-                  </label>
-                  <textarea
-                    id="recipe-text"
-                    name="text"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Paste the recipe text here..."
-                    className={clsx(styles.textarea, textError && styles.inputError)}
-                    rows={8}
-                    required={activeTab === 'text'}
-                  />
+                <div className={styles.textFields}>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-title" className={styles.label}>
+                      Title *
+                    </label>
+                    <input
+                      id="recipe-title"
+                      name="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Recipe title"
+                      className={clsx(styles.input, textError && styles.inputError)}
+                      required={activeTab === 'text'}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-ingredients" className={styles.label}>
+                      Ingredients *
+                    </label>
+                    <textarea
+                      id="recipe-ingredients"
+                      name="ingredients"
+                      value={ingredients}
+                      onChange={(e) => setIngredients(e.target.value)}
+                      placeholder="List ingredients with quantities..."
+                      className={clsx(styles.textarea, textError && styles.inputError)}
+                      rows={4}
+                      required={activeTab === 'text'}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-directions" className={styles.label}>
+                      Directions *
+                    </label>
+                    <textarea
+                      id="recipe-directions"
+                      name="directions"
+                      value={directions}
+                      onChange={(e) => setDirections(e.target.value)}
+                      placeholder="Step-by-step cooking instructions..."
+                      className={clsx(styles.textarea, textError && styles.inputError)}
+                      rows={4}
+                      required={activeTab === 'text'}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-nutrition" className={styles.label}>
+                      Nutrition (Optional)
+                    </label>
+                    <textarea
+                      id="recipe-nutrition"
+                      name="nutrition"
+                      value={nutrition}
+                      onChange={(e) => setNutrition(e.target.value)}
+                      placeholder="Nutritional information, serving size, calories..."
+                      className={styles.textarea}
+                      rows={3}
+                    />
+                  </div>
+
                   {textError && <div className={styles.errorMessage}>{textError}</div>}
                 </div>
               )}
@@ -229,7 +287,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           <button
             type="submit"
             className={clsx('button button--primary', styles.submitButton)}
-            disabled={!category || (activeTab === 'website' ? (!url || !!urlError) : !text.trim()) || isSubmitting}
+            disabled={!category || (activeTab === 'website' ? (!url || !!urlError) : (!title.trim() || !ingredients.trim() || !directions.trim())) || isSubmitting}
           >
             {isSubmitting ? 'Submitting...' : 'Suggest Recipe'}
           </button>

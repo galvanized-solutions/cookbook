@@ -122,6 +122,12 @@
   min-height: 120px;
 }
 
+.textFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 @media (max-width: 768px) {
   .suggestCard {
     margin: 0 1rem;

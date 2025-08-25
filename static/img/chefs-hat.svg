@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="toqueFill" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e9edf0"/>
+    </linearGradient>
+    <linearGradient id="bandFill" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f7f9fb"/>
+      <stop offset="100%" stop-color="#dde3e8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- hat (taller crown + stronger flop; now facing straight) -->
+  <g>
+
+    <!-- taller, floppier crown -->
+    <path
+      d="M64 116
+         C48 88, 70 52, 110 60
+         C122 40, 160 40, 170 68
+         C198 58, 220 86, 212 118
+         C226 130, 214 154, 186 156
+         C176 172, 152 182, 128 180
+         C104 182, 86 174, 78 158
+         C52 156, 44 136, 64 116 Z"
+      fill="url(#toqueFill)"
+      stroke="#8ea0ad"
+      stroke-width="2.6"
+      stroke-linejoin="round"
+    />
+
+    <!-- band (base) -->
+    <g>
+      <rect x="68" y="146" width="120" height="50" rx="16"
+            fill="url(#bandFill)" stroke="#8ea0ad" stroke-width="2.5"/>
+      <ellipse cx="128" cy="146" rx="60" ry="12"
+               fill="none" stroke="#a7b6c3" stroke-width="2" opacity=".6"/>
+      <ellipse cx="128" cy="196" rx="60" ry="12"
+               fill="none" stroke="#a7b6c3" stroke-width="1.5" opacity=".35"/>
+
+      <!-- pleats on band -->
+      <path d="M92 148 V194" stroke="#a7b6c3" stroke-width="1.6" opacity=".7"/>
+      <path d="M110 148 V194" stroke="#a7b6c3" stroke-width="1.6" opacity=".6"/>
+      <path d="M128 148 V194" stroke="#a7b6c3" stroke-width="1.6" opacity=".55"/>
+      <path d="M146 148 V194" stroke="#a7b6c3" stroke-width="1.6" opacity=".6"/>
+      <path d="M164 148 V194" stroke="#a7b6c3" stroke-width="1.6" opacity=".7"/>
+    </g>
+  </g>
+</svg>
