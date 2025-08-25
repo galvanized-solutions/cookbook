@@ -113,7 +113,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           },
           body: JSON.stringify({
             title: 'New recipe suggestion',
-            body: body,
+            body: JSON.stringify(body, null, 2),
             labels: ["recipe-suggestion"]
           }),
         }
