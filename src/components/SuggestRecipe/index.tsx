@@ -1,5 +1,5 @@
-import type {ReactNode} from 'react';
-import React, {useState} from 'react';
+import type { ReactNode } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 
 import Heading from '@theme/Heading';
@@ -10,18 +10,20 @@ interface SuggestRecipeProps {
   className?: string;
 }
 
-export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNode {
-  const [activeTab, setActiveTab] = useState<'website' | 'text'>('website');
+export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactNode {
+  const [activeTab, setActiveTab] = useState<'import' | 'manual'>('import');
   const [category, setCategory] = useState<string>('');
   const [url, setUrl] = useState<string>('');
+  const [source, setSource] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [ingredients, setIngredients] = useState<string>('');
+  const [metadata, setMetadata] = useState<string>('');
   const [directions, setDirections] = useState<string>('');
   const [nutrition, setNutrition] = useState<string>('');
   const [urlError, setUrlError] = useState<string>('');
   const [textError, setTextError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [submitMessage, setSubmitMessage] = useState<string>('');
+  const [submitMessage, setSubmitMessage] = useState<string>({ message: '', link: '' });
   const [submitError, setSubmitError] = useState<string>('');
   const { siteConfig } = useDocusaurusContext();
   const key = siteConfig.customFields?.GREAT_SUCCESS as string | undefined;
@@ -48,28 +50,28 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
+
     // Clear previous messages
-    setSubmitMessage('');
+    setSubmitMessage({ message: '', link: '' });
     setSubmitError('');
-    
+
     if (!category) {
       setSubmitError('Please select a recipe category');
       return;
     }
-    
-    if (activeTab === 'website') {
+
+    if (activeTab === 'import') {
       if (!url) {
         setSubmitError('Please enter a URL');
         return;
       }
-      
+
       if (!isValidHttpsUrl(url)) {
         setSubmitError('Please enter a valid HTTPS URL');
         return;
       }
     } else {
-      if (!title.trim() || !ingredients.trim() || !directions.trim()) {
+      if (!source.trim() || !title.trim() || !ingredients.trim() || !directions.trim()) {
         setSubmitError('Please fill in Title, Ingredients, and Directions (Nutrition is optional)');
         return;
       }
@@ -90,21 +92,28 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
       // Gather request metadata
       const timestamp = new Date().toISOString();
       const userAgent = navigator.userAgent;
-      const prompt = activeTab === 'website' 
-        ? `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, url: ${url} to generate the recipe output as instructed`
-        : `Use the ./scripts/instructions.md file's description as your prompt information and the inputs category: ${category}, text: {title: "${title}", ingredients: "${ingredients}", directions: "${directions}", nutrition: "${nutrition}"} to generate the recipe output as instructed`;
-      
-      const body = {
+      const issueTitle = activeTab === 'import' ? `Import: ${url}` : `Manual ${title.trim()}`;
+      const prompt = activeTab === 'import'
+        ? {
+          action: 'import',
+          url,
+          category,
+        }
+        : {
+          action: 'manual',
+          title,
+          metadata,
+          ingredients,
+          directions,
+          nutrition,
+          category,
+        };
+
+      const body = JSON.stringify({
         timestamp,
         userAgent,
-        prompt,
-        category,
-        url: activeTab === 'website' ? url : null,
-        title: activeTab === 'text' ? title : null,
-        ingredients: activeTab === 'text' ? ingredients : null,
-        directions: activeTab === 'text' ? directions : null,
-        nutrition: activeTab === 'text' ? nutrition : null,
-      }
+        prompt
+      }, null, 2)
 
       // Create new branch
       const createBranchResponse = await fetch(
@@ -118,8 +127,8 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
             'X-GitHub-Api-Version': '2022-11-28',
           },
           body: JSON.stringify({
-            title: 'New recipe suggestion',
-            body: JSON.stringify(body, null, 2),
+            title: issueTitle,
+            body,
             labels: ["recipe-suggestion"]
           }),
         }
@@ -132,11 +141,13 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
 
       const prData = await createBranchResponse.json();
 
-      setSubmitMessage(`Recipe suggestion submitted successfully! Pull request #${prData?.number} has been created.`);
+      setSubmitMessage({ message: `Recipe suggestion submitted successfully! Request #${prData?.number} has been created.`, link: prData?.html_url });
       // Clear form on success
       setCategory('');
       setUrl('');
+      setSource('');
       setTitle('');
+      setMetadata('');
       setIngredients('');
       setDirections('');
       setNutrition('');
@@ -182,22 +193,22 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
             <div className={styles.tabButtons}>
               <button
                 type="button"
-                className={clsx(styles.tabButton, activeTab === 'website' && styles.activeTab)}
-                onClick={() => setActiveTab('website')}
+                className={clsx(styles.tabButton, activeTab === 'import' && styles.activeTab)}
+                onClick={() => setActiveTab('import')}
               >
-                Website
+                AI Import
               </button>
               <button
                 type="button"
-                className={clsx(styles.tabButton, activeTab === 'text' && styles.activeTab)}
-                onClick={() => setActiveTab('text')}
+                className={clsx(styles.tabButton, activeTab === 'manual' && styles.activeTab)}
+                onClick={() => setActiveTab('manual')}
               >
-                Text
+                AI Manual
               </button>
             </div>
 
             <div className={styles.tabContent}>
-              {activeTab === 'website' ? (
+              {activeTab === 'import' ? (
                 <div className={styles.fieldGroup}>
                   <label htmlFor="recipe-url" className={styles.label}>
                     Recipe URL
@@ -210,12 +221,26 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
                     onChange={handleUrlChange}
                     placeholder="https://example.com/recipe"
                     className={clsx(styles.input, urlError && styles.inputError)}
-                    required={activeTab === 'website'}
+                    required={activeTab === 'import'}
                   />
                   {urlError && <div className={styles.errorMessage}>{urlError}</div>}
                 </div>
               ) : (
                 <div className={styles.textFields}>
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-source" className={styles.label}>
+                      Source *
+                    </label>
+                    <input
+                      id="recipe-source"
+                      name="source"
+                      value={source}
+                      onChange={(e) => setSource(e.target.value)}
+                      placeholder="Recipe Source"
+                      className={clsx(styles.input, textError && styles.inputError)}
+                      required={activeTab === 'manual'}
+                    />
+                  </div>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="recipe-title" className={styles.label}>
                       Title *
@@ -227,10 +252,24 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="Recipe title"
                       className={clsx(styles.input, textError && styles.inputError)}
-                      required={activeTab === 'text'}
+                      required={activeTab === 'manual'}
                     />
                   </div>
-
+                  <div className={styles.fieldGroup}>
+                    <label htmlFor="recipe-metadata" className={styles.label}>
+                      Ingredients *
+                    </label>
+                    <textarea
+                        id="recipe-metadata"
+                        name="metadata"
+                      value={ingredients}
+                      onChange={(e) => setMetadata(e.target.value)}
+                      placeholder="Servings, Cook/Bake Time"
+                      className={clsx(styles.textarea, textError && styles.inputError)}
+                      rows={4}
+                      required={activeTab === 'manual'}
+                    />
+                  </div>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="recipe-ingredients" className={styles.label}>
                       Ingredients *
@@ -243,7 +282,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
                       placeholder="List ingredients with quantities..."
                       className={clsx(styles.textarea, textError && styles.inputError)}
                       rows={4}
-                      required={activeTab === 'text'}
+                      required={activeTab === 'manual'}
                     />
                   </div>
 
@@ -259,7 +298,7 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
                       placeholder="Step-by-step cooking instructions..."
                       className={clsx(styles.textarea, textError && styles.inputError)}
                       rows={4}
-                      required={activeTab === 'text'}
+                      required={activeTab === 'manual'}
                     />
                   </div>
 
@@ -287,17 +326,17 @@ export default function SuggestRecipe({className}: SuggestRecipeProps): ReactNod
           <button
             type="submit"
             className={clsx('button button--primary', styles.submitButton)}
-            disabled={!category || (activeTab === 'website' ? (!url || !!urlError) : (!title.trim() || !ingredients.trim() || !directions.trim())) || isSubmitting}
+            disabled={!category || (activeTab === 'import' ? (!url || !!urlError) : (!title.trim() || !ingredients.trim() || !directions.trim())) || isSubmitting}
           >
             {isSubmitting ? 'Submitting...' : 'Suggest Recipe'}
           </button>
-          
-          {submitMessage && (
+
+          {submitMessage?.message && (
             <div className={styles.successMessage}>
-              {submitMessage}
+              {submitMessage.message} <a href={submitMessage.link} target="_blank" rel="noopener noreferrer">View Request</a>
             </div>
           )}
-          
+
           {submitError && (
             <div className={styles.errorMessage}>
               {submitError}

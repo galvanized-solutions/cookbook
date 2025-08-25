@@ -1,5 +1,4 @@
 .suggestCard {
-  max-width: 500px;
   margin: 0 auto;
   box-shadow: var(--ifm-global-shadow-lw);
 }
