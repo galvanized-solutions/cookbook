@@ -135,13 +135,17 @@ jobs:
         if git diff --staged --quiet; then
           echo "⚠️ No changes to commit"
         else
-          COMMIT_MSG="🍽️ Promote recipe: $FILENAME from suggestions to recipes
+          # Create commit message with proper formatting
+          COMMIT_MSG="$(cat <<EOF
+        🍽️ Promote recipe: $FILENAME from suggestions to recipes
 
-- Moved from suggestions/ to recipes/
-- Promoted on $(date '+%Y-%m-%d')
-$(if [[ -n "${{ github.event.inputs.update_description }}" ]]; then echo "- Added promotion notes"; fi)
+        - Moved from suggestions/ to recipes/
+        - Promoted on $(date '+%Y-%m-%d')
+        $(if [[ -n "${{ github.event.inputs.update_description }}" ]]; then echo "- Added promotion notes"; fi)
 
-Co-authored-by: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>"
+        Co-authored-by: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+        EOF
+        )"
 
           git commit -m "$COMMIT_MSG"
           git push
