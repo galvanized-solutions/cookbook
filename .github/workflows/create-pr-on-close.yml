@@ -14,7 +14,7 @@ jobs:
         
       - name: Save issue data
         run: |
-          echo '${{ toJson(github.event.issue) }}' > issue.json
+          echo '${{ github.event.issue.body }}' > issue.json
         
       - name: Create branch from issue
         run: |
