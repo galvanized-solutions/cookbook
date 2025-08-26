@@ -1,8 +1,16 @@
----
-name: recipe-parser
-description: Parse recipe from URL/text to standardized JSON format. Extract title, ingredients, directions, nutrition. Save as ./output/recipe.json and create ./suggestions/YYYY-MM-DD-kebab-title.mdx
-inputs: [category, url]
----
+Parse recipe from URL/text to standardized JSON format. Extract title, ingredients, directions, nutrition. Save as ./output/recipe.json and create ./suggestions/YYYY-MM-DD-kebab-title.mdx
+
+# Inputs:
+category: string
+url: Https URL to a recipe
+
+# Validation
+- EXIT 1 if the @settings.json is not sufficient and log why
+- EXIT 1 with log message IF url input not HTTPS
+- FAIL EARLY and exit with a detailed message or error response if you cannot access the recipe webpage
+- EXIT 1 with log message IF webpage does not contain recipe
+- Evaluate permissions needed for instruction before processing
+- IF missing permissions LOG what is REQUIRED and EXIT 1
 
 # Core Rules
 - Parse ingredients with both metric/imperial measurements

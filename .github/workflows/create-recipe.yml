@@ -44,7 +44,7 @@ jobs:
           PROMPT=$(node ./scripts/create-prompt.mjs "${{ inputs.category }}" "${{ inputs.url }}")
 
           if [[ -n ${PROMPT} ]]; then
-            claude --settings scripts/settings.json -p "$(cat ./prompt.txt)"
+            claude --settings ./settings.json -p "${PROMPT}"
           else
           fi
         env:
