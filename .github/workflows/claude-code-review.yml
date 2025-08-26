@@ -1,8 +1,8 @@
 name: Claude Code Review
 
 on:
-  issues:
-    types: [closed]
+  pull_request:
+    types: [opened, synchronize]
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"
@@ -42,11 +42,15 @@ jobs:
 
           # Direct prompt for automated review (no @claude mention needed)
           direct_prompt: |
-              - From the issue close event get the body of the issue it should be JSON with the keys url and category
-              - Parse the body and set the variables URL and CATEGORY
-              - Substitute these values into the following prompt and follow all the instructions: 
+            Please review this pull request and provide feedback on:
+              - log any useful information to help me understand issues
+              - The description of the PR contains a json body
+              - Parse the body and get the URL and CATEGORY values
+              - Substitute those values into the following prompt and follow all the instruction: 
               - "Use the @instructions.md file and inputs category: ${CATEGORY} and url: ${URL} to generate a recipe"
-              - Create a new PR with any changes using the title of the new recipe generated from the instructions.md
+              - Create a new PR with any changes from the output of the instructions or create a new commit on this PR
+            
+            Be constructive and helpful in your feedback.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           # use_sticky_comment: true
