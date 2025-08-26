@@ -12,6 +12,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
+      - name: Save issue data
+        run: |
+          echo '${{ toJson(github.event.issue) }}' > issue.json
+        
       - name: Create branch from issue
         run: |
           # Create branch name from issue number
