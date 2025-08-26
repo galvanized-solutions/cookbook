@@ -152,9 +152,9 @@ Additional notes, tips, substitutions, or storage information.
 - **directions**: Object with base array, metric/imperial overrides (required)
 
 # Output Process
-1. **Parse** → save `./output/recipe.json`
-2. **Generate MDX** → save `./suggestions/YYYY-MM-DD-title.mdx` using template above
-3. **Rename** → rename `./output/recipe.json` → `./output/YYYY-MM-DD-title.json`
+1. **Generate a FILE_NAME** → store `YYYY-MM-DD-title` to use below
+2. **Save output** → save `./output/${FILE_NAME}.json`
+3. **Generate MDX** → save `./suggestions/${FILE_NAME}.mdx` using template above
 4. **Add tags** to `tags.yml` if missing (shared between blogs)
 
 # Workflow Notes
