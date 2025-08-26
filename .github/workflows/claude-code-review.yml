@@ -48,7 +48,7 @@ jobs:
               - Parse the body and get the URL and CATEGORY values
               - Substitute those values into the following prompt and follow all the instruction: 
               - "Use the @instructions.md file and inputs category: ${CATEGORY} and url: ${URL} to generate a recipe"
-              - Create a new PR with any changes from the output of the instructions or create a new commit on this PR
+              - Commit and update the branch with any changes from the output of the instructions or create a new commit on this PR
             
             Be constructive and helpful in your feedback.
 
