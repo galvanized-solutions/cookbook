@@ -2,7 +2,7 @@ name: Issue Closed Handler
 
 on:
   issues:
-    types: [closed]
+    types: [closed, opened]
 
 jobs:
   handle-closed-issue:
