@@ -368,9 +368,7 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
             ))}
           </ol>
           {showCelebration && (
-            <div className={styles.celebrationMessage}>
-              🎉 Congratulations! You've completed the recipe! 🎉
-            </div>
+            <div className={styles.celebrationMessage}></div>
           )}
         </div>
       </div>

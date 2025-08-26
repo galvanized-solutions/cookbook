@@ -168,14 +168,10 @@
 
 /* Celebration Messages */
 .celebrationMessage {
-  background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
   background-size: 300% 300%;
   animation: celebrationGradient 2s ease-in-out;
   color: white;
   text-align: center;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
   font-weight: bold;
   font-size: 1.1rem;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
