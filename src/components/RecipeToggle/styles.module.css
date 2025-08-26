@@ -1,6 +1,3 @@
-.recipeContainer {
-  margin: 2rem 0;
-}
 
 .toggleContainer {
   display: flex;
@@ -75,6 +72,135 @@
 .direction {
   padding: 0.75rem 0;
   line-height: 1.6;
+  transition: all 0.2s ease;
+}
+
+.direction.completed {
+  opacity: 0.6;
+}
+
+/* Directions Header */
+.directionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.resetStepsButton {
+  background: var(--ifm-color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetStepsButton:hover {
+  background: var(--ifm-color-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Step Container */
+.stepContainer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.stepCheckbox {
+  margin-top: 0.2rem;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.stepText {
+  cursor: pointer;
+  flex: 1;
+  line-height: 1.6;
+  transition: all 0.2s ease;
+}
+
+.completed .stepText {
+  text-decoration: line-through;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* Celebration Animation */
+.celebration {
+  position: absolute;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: celebrationBounce 2s ease-out forwards;
+  z-index: 1000;
+}
+
+@keyframes celebrationBounce {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0);
+    opacity: 1;
+  }
+  10% {
+    transform: translateY(-20px) rotate(45deg) scale(1);
+  }
+  20% {
+    transform: translateY(-40px) rotate(90deg) scale(1.2);
+  }
+  40% {
+    transform: translateY(-60px) rotate(180deg) scale(1);
+  }
+  60% {
+    transform: translateY(-40px) rotate(270deg) scale(1.1);
+  }
+  80% {
+    transform: translateY(-20px) rotate(315deg) scale(0.9);
+  }
+  100% {
+    transform: translateY(50px) rotate(360deg) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Celebration Messages */
+.celebrationMessage {
+  background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 300% 300%;
+  animation: celebrationGradient 2s ease-in-out;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+@keyframes celebrationGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.completedMessage {
+  background: var(--ifm-color-success);
+  color: white;
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* Recipe Container - needed for celebration positioning */
+.recipeContainer {
+  margin: 2rem 0;
+  position: relative;
 }
 
 /* Timing Display */

@@ -48,15 +48,6 @@ export default function ServingsSlider({
         <label htmlFor="servings-slider" className={styles.servingsLabel}>
           Servings
         </label>
-        {isModified && (
-          <button 
-            onClick={resetToDefault}
-            className={styles.resetButton}
-            title="Reset to original servings"
-          >
-            Reset
-          </button>
-        )}
       </div>
       
       <div className={styles.servingsControls}>
@@ -79,7 +70,15 @@ export default function ServingsSlider({
             onChange={handleInputChange}
             className={styles.numberInput}
           />
-          <span className={styles.servingsText}>servings</span>
+          {isModified && (
+            <button
+              onClick={resetToDefault}
+              className={styles.resetButton}
+              title="Reset to original servings"
+            >
+              Reset
+            </button>
+          )}
         </div>
       </div>
 
