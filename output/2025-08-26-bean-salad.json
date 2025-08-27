@@ -1,0 +1,151 @@
+{
+  "title": "Bean Salad",
+  "category": "salads",
+  "url": "https://www.culinaryhill.com/three-bean-salad/",
+  "created_at": "2025-08-26",
+  "updated_at": "2025-08-26",
+  "servings": 8,
+  "img": "https://www.culinaryhill.com/wp-content/uploads/2019/10/Three-Bean-Salad-Recipe-Culinary-Hill-LR-03SQ.jpg",
+  "notes": "This classic three bean salad gets better the longer it sits. Can be made with fresh or canned beans.",
+  "timing": {
+    "prep_time": "5 minutes",
+    "cook_time": "5 minutes",
+    "total_time": "10 minutes"
+  },
+  "nutrition": {
+    "base": "Per serving",
+    "metric": "854 kJ, 20g carbs, 1g protein, 14g fat",
+    "imperial": "204 kcal, 20g carbs, 1g protein, 14g fat"
+  },
+  "ingredients": [
+    {
+      "name": "red wine vinegar",
+      "original": "1 cup red wine vinegar",
+      "metric": {
+        "quantity": "237",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "8.0",
+        "unit": "fl oz"
+      }
+    },
+    {
+      "name": "\u00be cup granulated sugar)",
+      "original": "\u00be cup granulated sugar ((see note 1))",
+      "metric": {
+        "quantity": "178",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "6.0",
+        "unit": "fl oz"
+      }
+    },
+    {
+      "name": "\u00bd cup olive oil",
+      "original": "\u00bd cup olive oil",
+      "metric": {
+        "quantity": "118",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "4.0",
+        "unit": "fl oz"
+      }
+    },
+    {
+      "name": "garlic",
+      "original": "2 cloves garlic (minced)",
+      "metric": {
+        "quantity": "2.0",
+        "unit": "cloves"
+      },
+      "imperial": {
+        "quantity": "2.0",
+        "unit": "cloves"
+      }
+    },
+    {
+      "name": "Salt and freshly ground black pepper",
+      "original": "Salt and freshly ground black pepper",
+      "metric": {
+        "quantity": null,
+        "unit": null
+      },
+      "imperial": {
+        "quantity": null,
+        "unit": null
+      }
+    },
+    {
+      "name": "can cut green beans)",
+      "original": "1 (15-ounce) can cut green beans (drained, (see note 2))",
+      "metric": {
+        "quantity": "1.0",
+        "unit": "can"
+      },
+      "imperial": {
+        "quantity": "1.0",
+        "unit": "can"
+      }
+    },
+    {
+      "name": "can cut yellow wax beans)",
+      "original": "1 (15-ounce) can cut yellow wax beans (drained (see note 2))",
+      "metric": {
+        "quantity": "1.0",
+        "unit": "can"
+      },
+      "imperial": {
+        "quantity": "1.0",
+        "unit": "can"
+      }
+    },
+    {
+      "name": "can kidney beans)",
+      "original": "1 (15-ounce) can kidney beans (drained and rinsed (see note 3))",
+      "metric": {
+        "quantity": "1.0",
+        "unit": "can"
+      },
+      "imperial": {
+        "quantity": "1.0",
+        "unit": "can"
+      }
+    },
+    {
+      "name": "\u00bd cup chopped red onion)",
+      "original": "\u00bd cup chopped red onion ( (see note 4))",
+      "metric": {
+        "quantity": "118",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "4.0",
+        "unit": "fl oz"
+      }
+    },
+    {
+      "name": "\u00bc cup minced fresh parsley",
+      "original": "\u00bc cup minced fresh parsley",
+      "metric": {
+        "quantity": "59",
+        "unit": "ml"
+      },
+      "imperial": {
+        "quantity": "2.0",
+        "unit": "fl oz"
+      }
+    }
+  ],
+  "directions": {
+    "base": [
+      "In a small saucepan, combine vinegar, sugar, oil, garlic, 1 teaspoon salt, and 1/2 teaspoon pepper. Cook over medium heat until sugar dissolves, about 3 minutes. Remove from heat and pour into a bowl with a cover that is large enough to hold the salad.",
+      "Stir in green beans, wax beans, kidney beans, red onion, and parsley and toss until evenly coated. Cover and refrigerate at least 4 hours or overnight to blend flavors.",
+      "Remove from refrigerator at least 30 minutes before serving and bring to room temperature."
+    ],
+    "metric": [],
+    "imperial": []
+  }
+}

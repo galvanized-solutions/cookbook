@@ -2,7 +2,7 @@ name: Claude Code
 
 on:
   issues:
-    types: [opened]
+    types: [assigned]
 
 jobs:
   claude:
