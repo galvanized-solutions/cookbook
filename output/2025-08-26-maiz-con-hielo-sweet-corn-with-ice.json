@@ -1,0 +1,86 @@
+{
+  "title": "Maiz con Hielo (Sweet Corn with Ice)",
+  "category": "desserts",
+  "url": "https://www.simplyrecipes.com/maiz-con-hielo-recipe-11755623",
+  "created_at": "2025-08-26T15:28:00Z",
+  "updated_at": "2025-08-26T15:28:00Z",
+  "servings": 4,
+  "img": null,
+  "notes": "A refreshing Dominican dessert featuring sweet corn kernels served over shaved ice with condensed milk and cinnamon. This traditional summer treat is popular throughout the Caribbean.",
+  "timing": {
+    "prep_time": "15 minutes",
+    "cook_time": "15 minutes",
+    "total_time": "30 minutes"
+  },
+  "nutrition": null,
+  "ingredients": [
+    {
+      "name": "fresh corn kernels",
+      "original": "2 cups fresh corn kernels (about 2 ears)",
+      "metric": { "quantity": "473", "unit": "ml" },
+      "imperial": { "quantity": "2", "unit": "cups" }
+    },
+    {
+      "name": "water",
+      "original": "1/2 cup water",
+      "metric": { "quantity": "120", "unit": "ml" },
+      "imperial": { "quantity": "1/2", "unit": "cup" }
+    },
+    {
+      "name": "granulated sugar",
+      "original": "1/4 cup granulated sugar",
+      "metric": { "quantity": "50", "unit": "g" },
+      "imperial": { "quantity": "1/4", "unit": "cup" }
+    },
+    {
+      "name": "salt",
+      "original": "1/4 teaspoon salt",
+      "metric": { "quantity": "1.25", "unit": "ml" },
+      "imperial": { "quantity": "1/4", "unit": "teaspoon" }
+    },
+    {
+      "name": "shaved ice",
+      "original": "4 cups shaved ice",
+      "metric": { "quantity": "946", "unit": "ml" },
+      "imperial": { "quantity": "4", "unit": "cups" }
+    },
+    {
+      "name": "sweetened condensed milk",
+      "original": "1/2 cup sweetened condensed milk",
+      "metric": { "quantity": "120", "unit": "ml" },
+      "imperial": { "quantity": "1/2", "unit": "cup" }
+    },
+    {
+      "name": "evaporated milk",
+      "original": "1/4 cup evaporated milk",
+      "metric": { "quantity": "60", "unit": "ml" },
+      "imperial": { "quantity": "1/4", "unit": "cup" }
+    },
+    {
+      "name": "ground cinnamon",
+      "original": "1/2 teaspoon ground cinnamon",
+      "metric": { "quantity": "2.5", "unit": "ml" },
+      "imperial": { "quantity": "1/2", "unit": "teaspoon" }
+    },
+    {
+      "name": "vanilla extract",
+      "original": "1/2 teaspoon vanilla extract",
+      "metric": { "quantity": "2.5", "unit": "ml" },
+      "imperial": { "quantity": "1/2", "unit": "teaspoon" }
+    }
+  ],
+  "directions": {
+    "base": [
+      "In a medium saucepan, combine corn kernels, water, sugar, and salt. Bring to a boil over medium-high heat.",
+      "Reduce heat to medium and simmer for 10-15 minutes, stirring occasionally, until corn is tender and most of the liquid has evaporated.",
+      "Remove from heat and stir in vanilla extract. Let cool completely.",
+      "In a small bowl, whisk together sweetened condensed milk and evaporated milk until smooth.",
+      "To serve, fill 4 glasses or bowls with shaved ice.",
+      "Top each portion of ice with 1/2 cup of the cooled corn mixture.",
+      "Drizzle each serving with the milk mixture.",
+      "Sprinkle with ground cinnamon and serve immediately with spoons."
+    ],
+    "metric": [],
+    "imperial": []
+  }
+}
