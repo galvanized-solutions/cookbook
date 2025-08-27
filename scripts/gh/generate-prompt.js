@@ -1,0 +1,30 @@
+function main() {
+  const [_, __, bodyString] = process.argv;
+  const isImport = labelsString.includes('import');
+  const isManual = labelsString.includes('manual');
+
+  if (!isImport && !isManual) {
+    throw new Error('Issue must be labeled with either "import" or "manual"');
+  }
+
+  if (!bodyString.trim()) {
+    throw new Error('No issue body found');
+  }
+
+  const type = isImport ? 'import' : 'manual';
+  const body = JSON.parse(bodyString);
+
+  if (type === 'import' && body.url && body.category) {
+    console.log(`Use the instructions from @instructions.md file and inputs category: ${body.category} and url: ${body.url} to generate a recipe`);
+  } else if (type === 'manual' && body.title && body.metadata && body.ingredients && body.directions) {
+    console.log(`Use the instructions from @instructions.md file and inputs 
+      - category: ${body.category} 
+      - url: ${body.url} to generate a recipe
+      - metadata: ${body.metadata}
+      - ingredients: ${body.ingredients}
+      - directions: ${body.directions}
+      - nutrition: ${body.nutrition || ''}
+      - title: ${body.title}
+    `);
+  }
+}

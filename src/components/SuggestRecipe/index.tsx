@@ -102,6 +102,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
         : {
           action: 'manual',
           title,
+          url,
           metadata,
           ingredients,
           directions,
@@ -129,7 +130,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
           body: JSON.stringify({
             title: issueTitle,
             body,
-            labels: ["recipe-suggestion"]
+            labels: [activeTab]
           }),
         }
       );
@@ -229,7 +230,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
                 <div className={styles.textFields}>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="recipe-source" className={styles.label}>
-                      Source *
+                      Recipe URL *
                     </label>
                     <input
                       id="recipe-source"
@@ -257,7 +258,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
                   </div>
                   <div className={styles.fieldGroup}>
                     <label htmlFor="recipe-metadata" className={styles.label}>
-                      Ingredients *
+                      Servings, Cook/Bake Time *
                     </label>
                     <textarea
                         id="recipe-metadata"
