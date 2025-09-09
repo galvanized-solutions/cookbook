@@ -31,7 +31,7 @@ function getRecipeImage(imageUrl) {
 export async function fetchWithStructuredData() {
   let browser;
   try {
-    const issueBody = fs.readFileSync('/tmp/issue.json');
+    const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
     const body = JSON.stringify(issueBody, null, 2);
 
     console.error(body)
