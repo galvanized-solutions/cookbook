@@ -82,7 +82,7 @@ export async function fetchWithStructuredData() {
   }
 
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
@@ -92,13 +92,19 @@ export async function fetchWithStructuredData() {
       '--no-zygote',
       '--single-process',
       '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
       '--disable-background-timer-throttling',
       '--disable-backgrounding-occluded-windows',
       '--disable-renderer-backgrounding',
-      '--disable-features=TranslateUI',
-      '--disable-ipc-flooding-protection',
       '--disable-extensions',
-      '--disable-default-apps'
+      '--disable-plugins',
+      '--disable-default-apps',
+      '--disable-hang-monitor',
+      '--disable-prompt-on-repost',
+      '--disable-sync',
+      '--metrics-recording-only',
+      '--no-default-browser-check'
     ]
   });
   try {

@@ -52,13 +52,16 @@ jobs:
           ls -la /usr/bin/chromium* || echo "No chromium found in /usr/bin"
           /usr/bin/chromium --version || echo "Chromium version check failed"
 
-          # Set error handling
-          set -e
-
-          # Use the containerized recipe fetcher
+          # Use the containerized recipe fetcher (don't exit on error yet)
           echo "Starting recipe fetch..."
-          CATEGORY="$(node ./scripts/recipe-fetch.js)"
-          echo "Recipe fetch completed with category: $CATEGORY"
+          if CATEGORY="$(node ./scripts/recipe-fetch.js 2>&1)"; then
+            echo "Recipe fetch completed with category: $CATEGORY"
+          else
+            echo "Recipe fetch failed with error:"
+            echo "$CATEGORY"
+            echo "Retrying with debugging..."
+            node ./scripts/recipe-fetch.js || exit 1
+          fi
 
           # Verify output files
           echo "Checking output files:"
