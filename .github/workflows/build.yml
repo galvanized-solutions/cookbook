@@ -53,29 +53,21 @@ jobs:
             packages/app
           sparse-checkout-cone-mode: false
           fetch-depth: 0
-      
       - name: Copy source files to workspace
         run: |
-          echo "Current directory contents:"
-          ls -la
-          echo "Copying packages/app to /workspace/"
           cp -r packages/app /workspace/packages/
-          echo "Contents of /workspace after copy:"
-          ls -la /workspace/
-      # - name: Build with Docusaurus
-      #   run: |
-      #     cd /workspace/packages/app
-      #     pnpm run build
-      #   env:
-      #     FAT: ${{ secrets.FAT }}
-          
-      # - name: Setup Pages
-      #   uses: actions/configure-pages@v5
-        
-      # - name: Upload artifact
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: /workspace/packages/app/build
+      - name: Build with Docusaurus
+        run: |
+          cd /workspace
+          pnpm run build
+        env:
+          FAT: ${{ secrets.FAT }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: /workspace/packages/app/build
 
   deploy:
     environment:
