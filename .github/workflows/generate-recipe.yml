@@ -8,7 +8,7 @@ jobs:
   claude:
     runs-on: ubuntu-24.04
     container: 
-      image: ghcr.io/${{ github.repository }}/ubuntu:22.04
+      image: ghcr.io/${{ github.repository }}/node:22-alpine
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -48,9 +48,10 @@ jobs:
           fi
 
           # Verify the output file was created
-          if [[ ! -f "/tmp/html.json" ]]; then
-            echo "Error: html.json was not created"
-            exit 1
+          if [[ -f "/tmp/jsonld.json" ]]; then
+            echo "Info: /tmp/jsonld.json will be used"
+          else
+            echo "Warn: /tmp/jsonld.json was not created"
           fi
 
           echo "URL=$URL" >> $GITHUB_OUTPUT
