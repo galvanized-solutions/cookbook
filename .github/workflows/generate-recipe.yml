@@ -41,35 +41,14 @@ jobs:
 
           # Debug: Show what we received
           echo "Raw issue body:"
-          echo "${{ github.event.issue.body }}"
-          
+
           # Write issue body to file with proper escaping
           cat > /tmp/issue.json << 'EOF'
           ${{ github.event.issue.body }}
           EOF
 
-          echo "Contents of /tmp/issue.json:"
-          cat /tmp/issue.json
-
-          # Extract URL from issue body JSON
-          if [[ -f "/tmp/issue.json" ]] && [[ -s "/tmp/issue.json" ]]; then
-            URL=$(jq -r '.prompt.url // empty' /tmp/issue.json 2>/dev/null || echo "")
-            CATEGORY_INPUT=$(jq -r '.prompt.category // empty' /tmp/issue.json 2>/dev/null || echo "")
-          fi
-
-          # Validate URL was extracted
-          if [[ -z "$URL" ]]; then
-            echo "Error: Could not extract URL from issue body"
-            echo "Expected JSON format: {\"url\": \"https://example.com\", \"category\": \"appetizers\"}"
-            exit 1
-          fi
-
-          echo "Extracted URL: $URL"
-          echo "Extracted category: $CATEGORY_INPUT"
-
           # Use the containerized recipe fetcher
-          CATEGORY="$(node ./scripts/recipe-fetch.js "$URL")"
-          echo "CATEGORY from script: $CATEGORY"
+          CATEGORY="$(node ./scripts/recipe-fetch.js ${URL})"
 
           # Verify the output file was created
           if [[ ! -f "/tmp/html.json" ]]; then
