@@ -45,12 +45,12 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - name: Checkout packages/app only
+      - name: Checkout packages/app and workspace files
         uses: actions/checkout@v4
         with:
           ref: main
-          sparse-checkout: |
-            packages/app
+          path: /workspace
+          sparse-checkout: packages/app
           sparse-checkout-cone-mode: false
           fetch-depth: 0
       - name: Setup Pages
@@ -62,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./packages/app/build
+          path: /workspace
 
   deploy:
     environment:
