@@ -25,6 +25,46 @@ type Timing = {
   total_time?: string | null;
 };
 
+// JSON-LD Recipe format
+type JSONLDRecipe = {
+  "@context": string;
+  "@type": string;
+  name: string;
+  author?: {
+    "@type": string;
+    name: string;
+  };
+  datePublished?: string;
+  description?: string;
+  prepTime?: string;
+  cookTime?: string;
+  totalTime?: string;
+  recipeYield?: string;
+  recipeCategory?: string;
+  recipeCuisine?: string;
+  image?: string;
+  recipeIngredient: string[];
+  recipeInstructions: Array<{
+    "@type": string;
+    name?: string;
+    text: string;
+  }>;
+  nutrition?: {
+    "@type": string;
+    calories?: string;
+    fatContent?: string;
+    [key: string]: any;
+  };
+  customProperties?: {
+    metricIngredients?: string[];
+    imperialIngredients?: string[];
+    metricInstructions?: DirectionOverride[];
+    imperialInstructions?: DirectionOverride[];
+    sourceUrl?: string;
+  };
+};
+
+// Legacy format for backward compatibility
 type RecipeData = {
   ingredients: Ingredient[];
   directions: {
@@ -37,12 +77,117 @@ type RecipeData = {
 };
 
 interface RecipeToggleProps {
-  recipe: RecipeData;
+  recipe: JSONLDRecipe | RecipeData;
   recipeId?: string; // Optional unique identifier for the recipe
+  sourceUrl?: string; // Optional source URL for "View Original" tab
 }
 
-export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): JSX.Element {
-  const defaultServings = recipe.servings || 1;
+// Helper function to check if recipe is JSON-LD format
+const isJSONLDRecipe = (recipe: JSONLDRecipe | RecipeData): recipe is JSONLDRecipe => {
+  return '@context' in recipe && '@type' in recipe;
+};
+
+// Helper function to parse ISO 8601 duration to readable format
+const parseISO8601Duration = (duration: string): string => {
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+  if (!match) return duration;
+  
+  const hours = parseInt(match[1] || '0');
+  const minutes = parseInt(match[2] || '0');
+  
+  if (hours > 0 && minutes > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''}`;
+  } else {
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  }
+};
+
+// Helper function to extract servings number from recipeYield
+const parseServings = (recipeYield?: string): number => {
+  if (!recipeYield) return 1;
+  const match = recipeYield.match(/(\d+)/);
+  return match ? parseInt(match[1]) : 1;
+};
+
+// Helper function to parse ingredient into structured format
+const parseIngredient = (ingredient: string): Ingredient => {
+  // Extract quantity and unit from ingredient string like "1 cup (240ml) ingredient name"
+  const match = ingredient.match(/^([^(]+?)(?:\s*\(([^)]+)\))?\s+(.+)$/);
+  
+  if (match) {
+    const [, originalPart, metricPart, name] = match;
+    const originalTrimmed = originalPart.trim();
+    
+    // Parse imperial measurement (quantity + unit)
+    const imperialMatch = originalTrimmed.match(/^(\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+)\s*(.*)$/);
+    const imperial = imperialMatch ? {
+      quantity: imperialMatch[1],
+      unit: imperialMatch[2] || null
+    } : { quantity: null, unit: null };
+    
+    // Parse metric measurement if available
+    const metric = metricPart ? (() => {
+      const metricMatch = metricPart.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
+      return metricMatch ? {
+        quantity: metricMatch[1],
+        unit: metricMatch[2] || null
+      } : { quantity: null, unit: null };
+    })() : { quantity: null, unit: null };
+    
+    return {
+      name: name.trim(),
+      original: ingredient,
+      metric,
+      imperial
+    };
+  }
+  
+  // Fallback for ingredients without clear structure
+  return {
+    name: ingredient,
+    original: ingredient,
+    metric: { quantity: null, unit: null },
+    imperial: { quantity: null, unit: null }
+  };
+};
+
+// Convert JSON-LD recipe to internal format
+const convertJSONLDToRecipeData = (jsonldRecipe: JSONLDRecipe): RecipeData => {
+  // Parse ingredients - use combined format from recipeIngredient
+  const ingredients = jsonldRecipe.recipeIngredient.map(parseIngredient);
+  
+  // Parse directions from recipeInstructions
+  const baseDirections = jsonldRecipe.recipeInstructions.map(instruction => instruction.text);
+  
+  // Use custom properties for metric/imperial overrides if available
+  const directions = {
+    base: baseDirections,
+    metric: jsonldRecipe.customProperties?.metricInstructions || [],
+    imperial: jsonldRecipe.customProperties?.imperialInstructions || []
+  };
+  
+  // Parse timing from ISO 8601 format
+  const timing: Timing = {
+    prep_time: jsonldRecipe.prepTime ? parseISO8601Duration(jsonldRecipe.prepTime) : null,
+    cook_time: jsonldRecipe.cookTime ? parseISO8601Duration(jsonldRecipe.cookTime) : null,
+    total_time: jsonldRecipe.totalTime ? parseISO8601Duration(jsonldRecipe.totalTime) : null
+  };
+  
+  return {
+    ingredients,
+    directions,
+    servings: parseServings(jsonldRecipe.recipeYield),
+    timing: timing.prep_time || timing.cook_time || timing.total_time ? timing : null
+  };
+};
+
+export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeToggleProps): JSX.Element {
+  // Convert JSON-LD to internal format if needed
+  const recipeData: RecipeData = isJSONLDRecipe(recipe) ? convertJSONLDToRecipeData(recipe) : recipe;
+  
+  const defaultServings = recipeData.servings || 1;
 
   // Local storage keys
   const MEASUREMENT_KEY = 'cookbook-measurement-preference';
@@ -156,7 +301,7 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
 
   // Process ingredients for current measurement system with scaling
   const multiplier = currentServings / defaultServings;
-  const currentIngredients = recipe.ingredients.map(ingredient => {
+  const currentIngredients = recipeData.ingredients.map(ingredient => {
     const measurement = isMetric ? ingredient.metric : ingredient.imperial;
     const scaledMeasurement = {
       quantity: scaleQuantity(measurement.quantity, multiplier),
@@ -171,8 +316,8 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
 
   // Process directions with base + overrides
   const processDirections = () => {
-    const baseDirections = [...recipe.directions.base];
-    const overrides = isMetric ? recipe.directions.metric : recipe.directions.imperial;
+    const baseDirections = [...recipeData.directions.base];
+    const overrides = isMetric ? recipeData.directions.metric : recipeData.directions.imperial;
 
     if (overrides) {
       overrides.forEach(override => {
@@ -279,25 +424,25 @@ export default function RecipeToggle({ recipe, recipeId }: RecipeToggleProps): J
         onReset={handleServingsReset}
       />
 
-      {recipe.timing && (recipe.timing.prep_time || recipe.timing.cook_time || recipe.timing.total_time) && (
+      {recipeData.timing && (recipeData.timing.prep_time || recipeData.timing.cook_time || recipeData.timing.total_time) && (
         <div className={styles.timingContainer}>
           <div className={styles.timingInfo}>
-            {recipe.timing.prep_time && (
+            {recipeData.timing.prep_time && (
               <div className={styles.timingItem}>
                 <span className={styles.timingLabel}>Prep:</span>
-                <span className={styles.timingValue}>{recipe.timing.prep_time}</span>
+                <span className={styles.timingValue}>{recipeData.timing.prep_time}</span>
               </div>
             )}
-            {recipe.timing.cook_time && (
+            {recipeData.timing.cook_time && (
               <div className={styles.timingItem}>
                 <span className={styles.timingLabel}>Cook:</span>
-                <span className={styles.timingValue}>{recipe.timing.cook_time}</span>
+                <span className={styles.timingValue}>{recipeData.timing.cook_time}</span>
               </div>
             )}
-            {recipe.timing.total_time && (
+            {recipeData.timing.total_time && (
               <div className={styles.timingItem}>
                 <span className={styles.timingLabel}>Total:</span>
-                <span className={styles.timingValue}>{recipe.timing.total_time}</span>
+                <span className={styles.timingValue}>{recipeData.timing.total_time}</span>
               </div>
             )}
           </div>

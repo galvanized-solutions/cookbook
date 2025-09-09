@@ -56,9 +56,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Docusaurus
-        run: |
-          cd packages/app
-          pnpm run build
+        run: pnpm run build
         env:
           FAT: ${{ secrets.FAT }}
       - name: Upload artifact
