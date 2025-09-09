@@ -27,5 +27,5 @@ jobs:
             Please follow the steps below:
               - PR contains a JSON body with inputs for instructions.md
               - Get url as URL and category as CATEGORY values for substitution into prompt below:
-              - "Use the @instructions.md file and inputs category: ${CATEGORY} and url: ${URL} to generate a recipe"
+              - "Use the @scripts/instructions.md file and the category: ${CATEGORY} input to complete the task"
 

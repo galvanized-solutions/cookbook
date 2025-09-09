@@ -15,9 +15,9 @@ function main() {
   const body = JSON.parse(bodyString);
 
   if (type === 'import' && body.url && body.category) {
-    console.log(`Use the instructions from @instructions.md file and inputs category: ${body.category} and url: ${body.url} to generate a recipe`);
+    console.log(`Use the instructions from @scripts/instructions.md file and inputs category: ${body.category} and url: ${body.url} to generate a recipe`);
   } else if (type === 'manual' && body.title && body.metadata && body.ingredients && body.directions) {
-    console.log(`Use the instructions from @instructions.md file and inputs 
+    console.log(`Use the instructions from @scripts/instructions.md file and inputs 
       - category: ${body.category} 
       - url: ${body.url} to generate a recipe
       - metadata: ${body.metadata}

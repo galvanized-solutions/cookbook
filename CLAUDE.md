@@ -16,5 +16,5 @@
 There will be an image file that could be of any format it will be /tmp/recipe.{jpg|png|*} we cannot know what format it is until the time it runs.
 
 ## Measurement Conversions
-@instructions.md
-@conversions.yaml
+@scripts/instructions.md
+@scripts/conversions.yaml

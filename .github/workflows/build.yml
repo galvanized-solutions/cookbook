@@ -86,6 +86,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/${{ github.repository }}/node:22-alpine
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     needs: [build]
     if: ${{ always() && (needs.build.result == 'success' || inputs.deploy_only) }}
     steps:

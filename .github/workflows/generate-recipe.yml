@@ -40,12 +40,6 @@ jobs:
 
           # Use the containerized recipe fetcher
           node ./scripts/recipe-fetch.js "$URL"
-          
-          # Verify the output file was created
-          if [[ ! -f "/tmp/html.json" ]]; then
-            echo "Error: html.json was not created"
-            exit 1
-          fi
 
           # Verify the output file was created
           if [[ ! -f "/tmp/html.json" ]]; then
@@ -53,26 +47,21 @@ jobs:
             exit 1
           fi
 
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "category=${CATEGORY:-main}" >> $GITHUB_OUTPUT
+          # Verify the output file was created
+          if [[ ! -f "/tmp/html.json" ]]; then
+            echo "Error: html.json was not created"
+            exit 1
+          fi
+
+          echo "URL=$URL" >> $GITHUB_OUTPUT
+          echo "CATEGORY=${CATEGORY:-main}" >> $GITHUB_OUTPUT
 
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           prompt: |
-            Parse the fetched recipe data from ./output/recipe.json and convert it to the standardized format according to @instructions.md.
-            
-            The recipe.json contains:
-            - html: Raw HTML content from the recipe webpage
-            - jsonLd: Structured JSON-LD data (may be null if not present)
-            
-            Use the jsonLd data as the primary source if available, otherwise parse the HTML content.
-            
-            Recipe URL: ${{ steps.fetch.outputs.url }}
-            Recipe Category: ${{ steps.fetch.outputs.category }}
-            
-            Follow the measurement conversion rules from @conversions.yaml and create both the JSON output file and MDX suggestion file as specified in the instructions.
+            Use the @scripts/instructions.md file and the category: ${CATEGORY} input to complete the instructions
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
       - name: Create PR from Claude response
@@ -89,13 +78,13 @@ jobs:
           git push --set-upstream origin "${BRANCH_NAME}"
           gh pr create --head "${BRANCH_NAME}" --base main --title "${{ github.event.issue.number }} recipe suggestion" --body "New Recipe processed by Claude"
 
-      - name: Upload artifacts even if Build failed
-        if: ${{ always() }}              # runs on success or failure (not if job is cancelled)
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            ./output/**
-            ./suggestions/**
-          if-no-files-found: ignore
-          retention-days: 7
+      # - name: Upload artifacts even if Build failed
+      #   if: ${{ always() }}              # runs on success or failure (not if job is cancelled)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: build-artifacts
+      #     path: |
+      #       ./output/**
+      #       ./suggestions/**
+      #     if-no-files-found: ignore
+      #     retention-days: 7
