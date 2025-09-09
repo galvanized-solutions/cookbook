@@ -39,6 +39,8 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/${{ github.repository }}/node:22-alpine
+      volumes:
+        - /workspace:/workspace
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -49,6 +51,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          path: /workspace/packages/app
           sparse-checkout: packages/app
           sparse-checkout-cone-mode: false
           fetch-depth: 0
