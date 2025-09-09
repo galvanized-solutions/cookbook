@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import fs from 'node:fs';
 import https from 'node:https';
+import { URL } from 'node:url';
 
 function getRecipeImage(imageUrl) {
   const imageFormat = imageUrl.split('.').pop();
@@ -22,6 +23,22 @@ function getRecipeImage(imageUrl) {
   });
 }
 
+function recursiveGetJsonLd(parsedLd) {
+  if (Array.isArray(parsedLd)) {
+    const newLd = parsedLd?.[0];
+
+    if (newLd) {
+      return recursiveGetJsonLd(newLd);
+    }
+  } else if (typeof parsedLd === 'object') {
+    if (parsedLd) {
+      return parsedLd;
+    }
+  }
+
+  return null;
+}
+
 /**
  * Enhanced version that also extracts JSON-LD structured data
  * @param {string} issueBody - The URL to scrape
@@ -29,88 +46,162 @@ function getRecipeImage(imageUrl) {
  * @returns {Promise<{html: string, jsonLd: Object[]}>} The rendered HTML and extracted JSON-LD data
  */
 export async function fetchWithStructuredData() {
-  let browser;
+  const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
+  const body = JSON.parse(issueBody, null, 2);
+
+  if (!body?.prompt?.url) {
+    throw new ReferenceError('url is required on body');
+  }
+
+  if (!body?.prompt?.category) {
+    throw new ReferenceError('url is required on body');
+  }
+
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',  // Uses /tmp instead of /dev/shm
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
+    ]
+  });
   try {
-    const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
-    const body = JSON.parse(issueBody, null, 2);
-
-    console.error(body)
-
-    if (!body?.prompt?.url) {
-      throw new ReferenceError('url is required on body');
-    }
-
-    if (!body?.prompt?.category) {
-      throw new ReferenceError('url is required on body');
-    }
-    const url = body.prompt.url;
-
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    });
-
     const page = await browser.newPage();
 
-    // Block images for faster loading
+    // Set page timeouts
+    await page.setDefaultTimeout(60000);
+    await page.setDefaultNavigationTimeout(60000);
+
+    // Only allow essential resources for JSON-LD extraction
     await page.setRequestInterception(true);
     page.on('request', (req) => {
       const resourceType = req.resourceType();
+      const url = req.url();
 
-      if (resourceType === 'image' || resourceType === 'media' || resourceType === 'font') {
-        req.abort();
-      } else {
+      // Only allow document and essential scripts/stylesheets from the main domain
+      const mainDomain = new URL(body.prompt.url).hostname;
+      const requestDomain = new URL(url).hostname;
+
+      // Allow main document
+      if (resourceType === 'document') {
         req.continue();
+        return;
+      }
+
+      // Allow scripts and stylesheets from the main domain only
+      if ((resourceType === 'script' || resourceType === 'stylesheet') && 
+          (requestDomain === mainDomain || requestDomain.includes(mainDomain))) {
+        req.continue();
+        return;
+      }
+
+      // Allow common CDNs that might contain essential scripts
+      const allowedCDNs = [
+        'cdn.jsdelivr.net',
+        'cdnjs.cloudflare.com',
+        'unpkg.com',
+        'ajax.googleapis.com'
+      ];
+
+      if ((resourceType === 'script' || resourceType === 'stylesheet') && 
+          allowedCDNs.some(cdn => url.includes(cdn))) {
+        req.continue();
+        return;
+      }
+
+      // Block everything else (images, fonts, tracking, ads, etc.)
+      req.abort();
+    });
+
+    // Debug response errors
+    page.on('response', response => {
+      if (response.status() >= 400) {
+        console.log(`HTTP ${response.status()}: ${response.url()}`);
       }
     });
 
     await page.setViewport({ width: 1920, height: 1080 });
+    
+    // More realistic browser headers
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 30000
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
     });
 
-    // Extract JSON-LD data
+    console.log(`Navigating to: ${body.prompt.url}`);
+    await page.goto(body.prompt.url, {
+      waitUntil: 'networkidle0',
+      timeout: 60000
+    });
+
+    // Human-like delay after navigation
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+
+    // Wait for recipe content to load (try multiple selectors)
+    try {
+      await page.waitForSelector('[itemtype*="Recipe"], script[type="application/ld+json"], .recipe', {
+        timeout: 10000
+      });
+    } catch (e) {
+      console.log('Recipe selectors not found, proceeding anyway...');
+    }
+
+    // Extract JSON-LD data with better error handling
     const jsonLd = await page.evaluate(() => {
       const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-      let data = null;
+      console.log(`Found ${scripts.length} JSON-LD scripts`);
+      
+      let recipeData = null;
 
-      scripts.forEach((script) => {
+      scripts.forEach((script, index) => {
         try {
           const parsed = JSON.parse(script.textContent);
+          console.log(`Script ${index}:`, parsed['@type'] || 'No @type');
 
-          if (parsed?.length) {
-            data = parsed
+          // Look for Recipe type in various structures
+          if (parsed['@type'] === 'Recipe') {
+            recipeData = parsed;
+          } else if (Array.isArray(parsed)) {
+            const recipe = parsed.find(item => item['@type'] === 'Recipe');
+            if (recipe) recipeData = recipe;
+          } else if (parsed['@graph']) {
+            const recipe = parsed['@graph'].find(item => item['@type'] === 'Recipe');
+            if (recipe) recipeData = recipe;
           }
         } catch (e) {
-          console.error('Failed to parse JSON-LD:', e);
+          console.error(`Failed to parse JSON-LD script ${index}:`, e.message);
         }
       });
 
-      return data;
+      return recipeData;
     });
 
     const html = await page.content();
 
     fs.writeFileSync('/tmp/html.json', JSON.stringify(html, null, 2));
 
-    if (jsonLd?.length) {
-      const [recipeJsonLd] = jsonLd;
+    if (jsonLd) {
+      console.log('Found recipe JSON-LD data');
+      fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(jsonLd, null, 2));
 
-      fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(recipeJsonLd, null, 2));
-
-      if (recipeJsonLd?.image?.url) {
-        console.log('Getting image', recipeJsonLd?.image?.url)
-        getRecipeImage(recipeJsonLd.image.url);
+      // Handle image URL (could be string or object)
+      const imageUrl = typeof jsonLd.image === 'string' ? jsonLd.image : jsonLd.image?.url;
+      
+      if (imageUrl) {
+        console.log('Downloading recipe image:', imageUrl);
+        getRecipeImage(imageUrl);
       } else {
-        console.error('Unable to locate image', jsonLd?.image?.url);
+        console.log('No recipe image found in JSON-LD');
       }
+    } else {
+      console.log('No recipe JSON-LD data found');
     }
 
     console.log(body.prompt.category);
@@ -123,6 +214,4 @@ export async function fetchWithStructuredData() {
   }
 }
 
-const [_, __, URL] = process.argv;
-
-await fetchWithStructuredData(URL);
+await fetchWithStructuredData();

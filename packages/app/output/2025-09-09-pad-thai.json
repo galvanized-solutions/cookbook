@@ -1,0 +1,137 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Recipe",
+  "name": "Pad Thai",
+  "author": {
+    "@type": "Person",
+    "name": "Claude"
+  },
+  "datePublished": "2025-09-09",
+  "description": "A restaurant-quality Pad Thai recipe that tastes just as good as takeout from good Thai restaurants. Made with chicken, rice noodles, and a perfectly balanced sauce of tamarind, brown sugar, and fish sauce. This recipe uses ingredients you can find at the supermarket while delivering authentic Thai flavors.",
+  "prepTime": "PT20M",
+  "cookTime": "PT10M",
+  "totalTime": "PT30M",
+  "recipeYield": "2-3 servings",
+  "recipeCategory": "Entrees",
+  "recipeCuisine": "Thai",
+  "image": "https://www.recipetineats.com/tachyon/2020/01/Chicken-Pad-Thai_9-SQ.jpg",
+  "recipeIngredient": [
+    "125g (4oz) Chang's Pad Thai dried rice sticks",
+    "1 1/2 tbsp (22ml) tamarind puree, NOT concentrate",
+    "3 tbsp (45ml) packed brown sugar",
+    "2 tbsp (30ml) fish sauce",
+    "1 1/2 tbsp (22ml) oyster sauce",
+    "2-3 tbsp (30-45ml) vegetable or canola oil",
+    "1/2 onion, sliced (brown, yellow)",
+    "2 garlic cloves, finely chopped",
+    "150g (5oz) chicken breast or thigh, thinly sliced",
+    "2 eggs, lightly whisked",
+    "1 1/2 cups (355ml) bean sprouts",
+    "1/2 cup (120ml) firm tofu, cut into 3cm/1 1/4\" batons",
+    "1/4 cup (60ml) garlic chives, cut into 3cm/1 1/4\" pieces",
+    "1/4 cup (60ml) finely chopped peanuts",
+    "Lime wedges (essential)",
+    "Ground chilli or cayenne pepper (optional)",
+    "More bean sprouts"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "name": "Step 1",
+      "text": "Place noodles in a large bowl, pour over plenty of boiling water. Soak for 5 minutes, then drain in a colander and quickly rinse under cold water. Don't leave them sitting around for more than 5-10 minutes."
+    },
+    {
+      "@type": "HowToStep", 
+      "name": "Step 2",
+      "text": "Mix sauce ingredients (tamarind puree, brown sugar, fish sauce, oyster sauce) in small bowl."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 3", 
+      "text": "Heat 2 tbsp oil in a large non-stick pan (or well seasoned skillet) over high heat. Add garlic and onion, cook for 30 seconds."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 4",
+      "text": "Add chicken and cook for 1 1/2 minutes until mostly cooked through."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 5", 
+      "text": "Push to one side of the pan, pour egg in on the other side. Scramble using the wooden spoon (add touch of extra oil if pan is too dry), then mix into chicken."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 6",
+      "text": "Add bean sprouts, tofu, noodles then sauce."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 7",
+      "text": "Toss gently for about 1 1/2 minutes until sauce is absorbed by the noodles."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 8", 
+      "text": "Add garlic chives and half the peanuts. Toss through quickly then remove from heat."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 9",
+      "text": "Serve immediately, sprinkled with remaining peanuts and lime wedges on the side, with a sprinkle of chilli and a handful of extra bean sprouts on the side if desired (this is the Thai way!). Squeeze over lime juice to taste before eating."
+    }
+  ],
+  "nutrition": {
+    "@type": "NutritionInformation",
+    "calories": "650 kcal",
+    "servingSize": "1 serving"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating", 
+    "ratingValue": "4.95",
+    "ratingCount": "405"
+  },
+  "customProperties": {
+    "metricIngredients": [
+      "125g Chang's Pad Thai dried rice sticks",
+      "22ml tamarind puree, NOT concentrate", 
+      "45ml packed brown sugar",
+      "30ml fish sauce",
+      "22ml oyster sauce",
+      "30-45ml vegetable or canola oil", 
+      "1/2 onion, sliced (brown, yellow)",
+      "2 garlic cloves, finely chopped",
+      "150g chicken breast or thigh, thinly sliced",
+      "2 eggs, lightly whisked",
+      "355ml bean sprouts",
+      "120ml firm tofu, cut into 3cm batons",
+      "60ml garlic chives, cut into 3cm pieces", 
+      "60ml finely chopped peanuts",
+      "Lime wedges (essential)",
+      "Ground chilli or cayenne pepper (optional)",
+      "More bean sprouts"
+    ],
+    "imperialIngredients": [
+      "4oz Chang's Pad Thai dried rice sticks",
+      "1 1/2 tbsp tamarind puree, NOT concentrate",
+      "3 tbsp packed brown sugar", 
+      "2 tbsp fish sauce",
+      "1 1/2 tbsp oyster sauce",
+      "2-3 tbsp vegetable or canola oil",
+      "1/2 onion, sliced (brown, yellow)",
+      "2 garlic cloves, finely chopped", 
+      "5oz chicken breast or thigh, thinly sliced",
+      "2 eggs, lightly whisked",
+      "1 1/2 cups bean sprouts",
+      "1/2 cup firm tofu, cut into 1 1/4\" batons",
+      "1/4 cup garlic chives, cut into 1 1/4\" pieces",
+      "1/4 cup finely chopped peanuts",
+      "Lime wedges (essential)",
+      "Ground chilli or cayenne pepper (optional)",
+      "More bean sprouts"
+    ],
+    "metricInstructions": [],
+    "imperialInstructions": [],
+    "sourceUrl": "https://www.recipetineats.com/chicken-pad-thai/"
+  }
+}

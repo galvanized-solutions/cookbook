@@ -74,3 +74,23 @@ cured:
 snack:
   label: Snack
   permalink: /snack
+
+thai:
+  label: Thai
+  permalink: /thai
+
+noodles:
+  label: Noodles
+  permalink: /noodles
+
+chicken:
+  label: Chicken
+  permalink: /chicken
+
+stir-fry:
+  label: Stir-fry
+  permalink: /stir-fry
+
+asian:
+  label: Asian
+  permalink: /asian

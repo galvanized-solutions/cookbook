@@ -1,7 +1,7 @@
 function main() {
   const [_, __, bodyString] = process.argv;
-  const isImport = labelsString.includes('import');
-  const isManual = labelsString.includes('manual');
+  const isImport = bodyString.includes('import');
+  const isManual = bodyString.includes('manual');
 
   if (!isImport && !isManual) {
     throw new Error('Issue must be labeled with either "import" or "manual"');
@@ -15,10 +15,10 @@ function main() {
   const body = JSON.parse(bodyString);
 
   if (type === 'import' && body.url && body.category) {
-    console.log(`Use the instructions from @scripts/instructions.md file and inputs category: ${body.category} and url: ${body.url} to generate a recipe`);
+    console.log(`Use the @scripts/instructions.md file and input: category "${body.category}"`);
   } else if (type === 'manual' && body.title && body.metadata && body.ingredients && body.directions) {
-    console.log(`Use the instructions from @scripts/instructions.md file and inputs 
-      - category: ${body.category} 
+    console.log(`Use the @scripts/instructions-manual.md file and the inputs:
+      - category: ${body.category}
       - url: ${body.url} to generate a recipe
       - metadata: ${body.metadata}
       - ingredients: ${body.ingredients}
@@ -28,3 +28,5 @@ function main() {
     `);
   }
 }
+
+main()
