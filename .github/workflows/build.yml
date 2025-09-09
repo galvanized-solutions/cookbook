@@ -45,40 +45,44 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - name: Check workspace contents
-        run: | 
-          echo "Contents of /workspace:"
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: /tmp/checkout
+          sparse-checkout: |
+            packages/app
+          sparse-checkout-cone-mode: false
+          fetch-depth: 0
+      
+      - name: Copy source files to workspace
+        run: |
+          echo "Copying packages/app to /workspace/"
+          mv /tmp/checkout/packages/app /workspace/packages/app
+          echo "Contents of /workspace after copy:"
           ls -la /workspace/
-          echo "Current working directory:"
-          pwd
-          echo "Checking for pnpm:"
-          which pnpm
-          echo "Checking for node_modules:"
-          ls -la /workspace/node_modules/ | head -10
+      # - name: Build with Docusaurus
+      #   run: |
+      #     cd /workspace/packages/app
+      #     pnpm run build
+      #   env:
+      #     FAT: ${{ secrets.FAT }}
           
-  #     - name: Checkout packages/app and workspace files
-  #       uses: actions/checkout@v4
-  #       with:
-  #         sparse-checkout-cone-mode: false
-  #         fetch-depth: 0
-  #     - name: Build with Docusaurus
-  #       run: pnpm run build
-  #       env:
-  #         FAT: ${{ secrets.FAT }}
-  #     - name: Setup Pages
-  #       uses: actions/configure-pages@v5
-  #     - name: Upload artifact
-  #       uses: actions/upload-pages-artifact@v3
-  #       with:
-  #         path: /workspace/packages/app/build
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v5
+        
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: /workspace/packages/app/build
 
-  # deploy:
-  #   environment:
-  #     name: github-pages
-  #     url: ${{ steps.deployment.outputs.page_url }}
-  #   runs-on: ubuntu-24.04
-  #   needs: build
-  #   steps:
-  #     - name: Deploy to GitHub Pages
-  #       id: deployment
-  #       uses: actions/deploy-pages@v4
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
