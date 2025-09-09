@@ -1,6 +1,9 @@
 name: Build and Deploy Docusaurus to Pages
 on:
   # Runs on pushes targeting the default branch
+  workflow_run:
+      workflows: ["Build and Push Cookbook Containers"]            # exact name of Workflow A
+      types: [completed]
   push:
     branches: ["main"]
     paths:
@@ -28,8 +31,8 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pipeline-pages-${{ github.event.pull_request.number || github.ref }}"
-  # We want to wait, not cancel the one that’s already running
-  cancel-in-progress: false
+  # We want to wait, cancel if the image build is happening
+  cancel-in-progress: true
 
 jobs:
   build:

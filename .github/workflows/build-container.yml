@@ -36,7 +36,7 @@ env:
 concurrency:
   group: "pipeline-pages-${{ github.event.pull_request.number || github.ref }}"
   # We want to wait, not cancel the one that’s already running
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build-ubuntu:
