@@ -31,6 +31,13 @@ on:
 env:
   REGISTRY: ghcr.io
 
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pipeline-pages-${{ github.event.pull_request.number || github.ref }}"
+  # We want to wait, not cancel the one that’s already running
+  cancel-in-progress: false
+
 jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
