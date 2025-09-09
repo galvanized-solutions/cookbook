@@ -59,7 +59,7 @@ jobs:
           echo "Current directory contents:"
           ls -la
           echo "Copying packages/app to /workspace/"
-          cp -r packages/app /workspace/
+          mv ./packages/app /workspace/packages/app
           echo "Contents of /workspace after copy:"
           ls -la /workspace/
       # - name: Build with Docusaurus
