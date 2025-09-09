@@ -1,0 +1,116 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Recipe",
+  "name": "Milk Tart",
+  "author": {
+    "@type": "Person",
+    "name": "Claude"
+  },
+  "datePublished": "2025-09-09",
+  "description": "A traditional South African dessert with a sugary crust and sweet, milky custard filling, sprinkled with cinnamon and chilled. This authentic melktert recipe creates two lovely pies with a cookie-like crust and smooth custard.",
+  "prepTime": "PT30M",
+  "cookTime": "PT20M",
+  "totalTime": "PT50M",
+  "recipeYield": "16 servings",
+  "recipeCategory": "Dessert",
+  "recipeCuisine": "South African",
+  "image": "https://www.allrecipes.com/thmb/io7sCkXhHBobTvSlmvRv8imugBU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/2106127-0288bd8cb0ea45888b193bcf696764e0.jpg",
+  "recipeIngredient": [
+    "0.5 cup (113g) butter, softened",
+    "1 cup (200g) white sugar",
+    "1 egg",
+    "2 cups (250g) all-purpose flour",
+    "2 teaspoons (10ml) baking powder",
+    "1 pinch salt",
+    "4 cups (980ml) milk",
+    "1 teaspoon (5ml) vanilla extract",
+    "1 tablespoon (15ml) butter",
+    "2.5 tablespoons (37ml) all-purpose flour",
+    "2.5 tablespoons (37ml) cornstarch",
+    "0.5 cup (100g) white sugar",
+    "2 eggs, beaten",
+    "0.5 teaspoon (2.5ml) ground cinnamon"
+  ],
+  "recipeInstructions": [
+    {
+      "@type": "HowToStep",
+      "name": "Step 1",
+      "text": "Preheat oven to 350 degrees F (175 degrees C)."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 2", 
+      "text": "In a medium mixing bowl, cream together 1/2 cup butter or margarine and 1 cup sugar. Add 1 egg and beat until mixture is smooth. In a separate bowl, mix together 2 cups flour, baking powder, and salt. Stir flour mixture into sugar mixture just until ingredients are thoroughly combined. Press mixture into bottom and sides of two 9-inch pie pans."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 3",
+      "text": "Bake in preheated oven for 10 to 15 minutes, until golden brown."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 4",
+      "text": "In a large saucepan, combine milk, vanilla extract, and 1 tablespoon butter or margarine. Bring to a boil over medium heat, then remove from burner."
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Step 5",
+      "text": "In a separate bowl, mix together 2 1/2 tablespoons flour, cornstarch, and 1/2 cup sugar. Add beaten eggs to sugar mixture and whisk until smooth. Slowly whisk mixture into milk. Return pan to heat and bring to a boil, stirring constantly. Boil and stir 5 minutes. Pour half of mixture into each pastry shell. Sprinkle with cinnamon. Chill before serving."
+    }
+  ],
+  "nutrition": {
+    "@type": "NutritionInformation",
+    "calories": "241 calories",
+    "fatContent": "9g",
+    "saturatedFatContent": "5g",
+    "cholesterolContent": "57mg",
+    "sodiumContent": "146mg",
+    "carbohydrateContent": "36g",
+    "fiberContent": "1g",
+    "sugarContent": "22g",
+    "proteinContent": "5g"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.6",
+    "ratingCount": "150"
+  },
+  "customProperties": {
+    "metricIngredients": [
+      "113g butter, softened",
+      "200g white sugar",
+      "1 egg",
+      "250g all-purpose flour", 
+      "10ml baking powder",
+      "1 pinch salt",
+      "980ml milk",
+      "5ml vanilla extract",
+      "15ml butter",
+      "37ml all-purpose flour",
+      "37ml cornstarch",
+      "100g white sugar",
+      "2 eggs, beaten",
+      "2.5ml ground cinnamon"
+    ],
+    "imperialIngredients": [
+      "0.5 cup butter, softened",
+      "1 cup white sugar",
+      "1 egg",
+      "2 cups all-purpose flour",
+      "2 teaspoons baking powder", 
+      "1 pinch salt",
+      "4 cups milk",
+      "1 teaspoon vanilla extract",
+      "1 tablespoon butter",
+      "2.5 tablespoons all-purpose flour",
+      "2.5 tablespoons cornstarch",
+      "0.5 cup white sugar",
+      "2 eggs, beaten",
+      "0.5 teaspoon ground cinnamon"
+    ],
+    "metricInstructions": [],
+    "imperialInstructions": [],
+    "sourceUrl": "https://www.allrecipes.com/recipe/16738/milk-tart/",
+    "internalCategory": "desserts"
+  }
+}

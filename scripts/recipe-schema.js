@@ -1,16 +1,16 @@
-const measurement = {
+export const measurement = {
   quantity: 'string', // nullable - The amount of the ingredient to be used, i.e. 2, or 3/4
   unit: 'string'      // nullable - The unit used to measure the quantity
 };
 
-const ingredient = {
+export const ingredient = {
   name: 'string',     // The name of the ingredient that excludes the amount and unit
   original: 'string', // The original text that has not been parsed
   metric: measurement,    // Metric measurement for this ingredient
   imperial: measurement   // Imperial measurement for this ingredient
 };
 
-const recipe = {
+export const recipe = {
   title: 'string',        // The title of the recipe from the website
   category: 'string',     // The category provided in the prompt instructions
   created_at: 'string',   // Generated ISO 8601 timestamp of when the output file is created
@@ -38,8 +38,3 @@ const recipe = {
   }
 };
 
-export {
-  measurement,
-  ingredient,
-  recipe
-};

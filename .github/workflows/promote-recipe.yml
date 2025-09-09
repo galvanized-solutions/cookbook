@@ -15,7 +15,7 @@ on:
 
 jobs:
   promote-recipe:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     steps:
     - name: Checkout repository
@@ -34,10 +34,10 @@ jobs:
         fi
         
         # Check if file exists in suggestions
-        if [[ ! -f "suggestions/$FILENAME" ]]; then
-          echo "❌ Error: File 'suggestions/$FILENAME' does not exist"
+        if [[ ! -f "packages/app/suggestions/$FILENAME" ]]; then
+          echo "❌ Error: File 'packages/app/suggestions/$FILENAME' does not exist"
           echo "Available suggestions:"
-          ls -1 suggestions/*.mdx 2>/dev/null || echo "No .mdx files found in suggestions/"
+          ls -1 packages/app/suggestions/*.mdx 2>/dev/null || echo "No .mdx files found in packages/app/suggestions/"
           exit 1
         fi
         
@@ -46,8 +46,8 @@ jobs:
 
     - name: Check if recipe already exists in recipes
       run: |
-        if [[ -f "recipes/$FILENAME" ]]; then
-          echo "⚠️ Warning: File 'recipes/$FILENAME' already exists"
+        if [[ -f "packages/app/recipes/$FILENAME" ]]; then
+          echo "⚠️ Warning: File 'packages/app/recipes/$FILENAME' already exists"
           echo "This operation will overwrite the existing recipe"
         else
           echo "✅ No conflicting file found in recipes directory"
@@ -55,13 +55,13 @@ jobs:
 
     - name: Move recipe file
       run: |
-        echo "📁 Moving '$FILENAME' from suggestions/ to recipes/"
+        echo "📁 Moving '$FILENAME' from packages/app/suggestions/ to packages/app/recipes/"
         
         # Create recipes directory if it doesn't exist
-        mkdir -p recipes/
+        mkdir -p packages/app/recipes/
         
         # Move the file
-        mv "suggestions/$FILENAME" "recipes/$FILENAME"
+        mv "packages/app/suggestions/$FILENAME" "packages/app/recipes/$FILENAME"
         
         echo "✅ Successfully moved recipe file"
 
@@ -75,7 +75,7 @@ jobs:
         DESCRIPTION="${{ github.event.inputs.update_description }}"
         
         # Add the description as a note at the end of the file
-        cp "recipes/$FILENAME" "$TEMP_FILE"
+        cp "packages/app/recipes/$FILENAME" "$TEMP_FILE"
         echo "" >> "$TEMP_FILE"
         echo "## Promotion Notes" >> "$TEMP_FILE"
         echo "" >> "$TEMP_FILE"
@@ -84,7 +84,7 @@ jobs:
         echo "*Promoted from suggestions on $(date '+%Y-%m-%d')*" >> "$TEMP_FILE"
         
         # Replace the original file
-        mv "$TEMP_FILE" "recipes/$FILENAME"
+        mv "$TEMP_FILE" "packages/app/recipes/$FILENAME"
         
         echo "✅ Updated recipe with promotion notes"
 
@@ -94,10 +94,10 @@ jobs:
         
         # Add promotion date to the end of file if no description was provided
         if [[ -z "${{ github.event.inputs.update_description }}" ]]; then
-          echo "" >> "recipes/$FILENAME"
-          echo "---" >> "recipes/$FILENAME"
-          echo "" >> "recipes/$FILENAME"
-          echo "*Promoted from suggestions on $(date '+%Y-%m-%d')*" >> "recipes/$FILENAME"
+          echo "" >> "packages/app/recipes/$FILENAME"
+          echo "---" >> "packages/app/recipes/$FILENAME"
+          echo "" >> "packages/app/recipes/$FILENAME"
+          echo "*Promoted from suggestions on $(date '+%Y-%m-%d')*" >> "packages/app/recipes/$FILENAME"
         fi
         
         echo "✅ Added promotion timestamp"
@@ -108,8 +108,8 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "✅ **Successfully promoted recipe**: \`$FILENAME\`" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **From**: \`suggestions/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **To**: \`recipes/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **From**: \`packages/app/suggestions/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **To**: \`packages/app/recipes/$FILENAME\`" >> $GITHUB_STEP_SUMMARY
         echo "- **Date**: $(date '+%Y-%m-%d %H:%M UTC')" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         
@@ -139,7 +139,7 @@ jobs:
           COMMIT_MSG="$(cat <<EOF
         🍽️ Promote recipe: $FILENAME from suggestions to recipes
 
-        - Moved from suggestions/ to recipes/
+        - Moved from packages/app/suggestions/ to packages/app/recipes/
         - Promoted on $(date '+%Y-%m-%d')
         $(if [[ -n "${{ github.event.inputs.update_description }}" ]]; then echo "- Added promotion notes"; fi)
 
@@ -159,18 +159,18 @@ jobs:
         echo ""
         
         # Verify the file was moved successfully
-        if [[ -f "recipes/$FILENAME" ]]; then
-          echo "✅ Recipe successfully exists in recipes/ directory"
+        if [[ -f "packages/app/recipes/$FILENAME" ]]; then
+          echo "✅ Recipe successfully exists in packages/app/recipes/ directory"
         else
-          echo "❌ Error: Recipe not found in recipes/ directory"
+          echo "❌ Error: Recipe not found in packages/app/recipes/ directory"
           exit 1
         fi
         
         # Verify the file was removed from suggestions
-        if [[ ! -f "suggestions/$FILENAME" ]]; then
-          echo "✅ Recipe successfully removed from suggestions/ directory"
+        if [[ ! -f "packages/app/suggestions/$FILENAME" ]]; then
+          echo "✅ Recipe successfully removed from packages/app/suggestions/ directory"
         else
-          echo "❌ Warning: Recipe still exists in suggestions/ directory"
+          echo "❌ Warning: Recipe still exists in packages/app/suggestions/ directory"
         fi
         
         echo ""

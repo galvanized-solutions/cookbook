@@ -50,3 +50,43 @@ cauliflower:
 beans:
   label: Beans
   permalink: /beans
+
+beef:
+  label: Beef
+  permalink: /beef
+
+portuguese:
+  label: Portuguese
+  permalink: /portuguese
+
+braised:
+  label: Braised
+  permalink: /braised
+
+spicy:
+  label: Spicy
+  permalink: /spicy
+
+seafood:
+  label: Seafood
+  permalink: /seafood
+
+mussels:
+  label: Mussels
+  permalink: /mussels
+
+salads:
+  label: Salads
+  permalink: /salads
+
+american:
+  label: American
+  permalink: /american
+
+vegan:
+  label: Vegan
+  permalink: /vegan
+
+gluten-free:
+  label: Gluten Free
+  permalink: /gluten-free

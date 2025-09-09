@@ -1,0 +1,62 @@
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV NODE_VERSION=22
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    gnupg \
+    ca-certificates \
+    apt-transport-https \
+    software-properties-common \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js (matching package.json engines requirement)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs
+
+# Install additional dependencies for headless Chrome
+RUN apt-get update && apt-get install -y \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libxss1 \
+    libxtst6 \
+    libgbm1 \
+    xdg-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Chrome dependencies are installed above
+# Let puppeteer download and manage its own Chromium
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Set working directory
+WORKDIR /workspace
+
+# Set up user first
+RUN groupadd -r claude && useradd -r -g claude -G audio,video claude \
+    && mkdir -p /home/claude/Downloads \
+    && chown -R claude:claude /home/claude \
+    && chown -R claude:claude /workspace
+
+# Copy workspace config and package files
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml generate-prompt.sh ./
+
+# Switch to claude user for puppeteer installation
+USER claude
+
+# Install dependencies and let puppeteer download Chromium as claude user
+RUN pnpm install --frozen-lockfile && pnpm puppeteer browsers install chrome
+
+COPY ./scripts ./scripts

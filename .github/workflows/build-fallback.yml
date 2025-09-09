@@ -1,34 +1,7 @@
-# Build and deploy Docusaurus site to GitHub Pages
-name: Build and Deploy Docusaurus to Pages
+name: Build and Deploy Docusaurus (Fallback)
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-    paths:
-      # Docusaurus configuration files
-      - packages/app/recipes/**/*
-      - packages/app/suggestions/**/*
-      - packages/app/docusaurus.config.ts
-      - packages/app/sidebars.ts
-      - packages/app/tsconfig.json
-      
-      # Package and dependency files
-      - "package.json"
-      - packages/app/package.json
-      - "pnpm-lock.yaml"
-      - "pnpm-workspace.yaml"
-      
-      # Source code (components, pages, CSS)
-      - packages/app/src/**/*
-      
-      # Static assets
-      - packages/app/static/**/*
-      
-      # GitHub workflows (to rebuild when workflow changes)
-      - ".github/workflows/build.yml"
-
-  # Allows you to run this workflow manually from the Actions tab
+  # This workflow can be triggered manually if the container build fails
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -46,11 +19,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    container: 
-      image: ghcr.io/${{ github.repository }}/cookbook:latest
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     environment:
       name: github-pages
     steps:
@@ -58,8 +26,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Build with Docusaurus
         run: pnpm run build
         env:

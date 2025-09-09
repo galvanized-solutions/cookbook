@@ -24,3 +24,6 @@ recipe.json
 error.log
 .env
 .secrets
+output/**
+package/app/build/**
+package/app/node_modules/**
