@@ -68,8 +68,19 @@ jobs:
           pnpm run build
         env:
           FAT: ${{ secrets.FAT }}
+          
+      - name: Check build output
+        run: |
+          echo "Looking for build output:"
+          find /workspace -name "build" -type d
+          echo "Contents of /workspace/packages/app:"
+          ls -la /workspace/packages/app/
+          echo "Checking if build directory exists:"
+          ls -la /workspace/packages/app/build/ || echo "Build directory not found"
+          
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
