@@ -34,6 +34,8 @@ export async function fetchWithStructuredData() {
     const issueBody = fs.readFileSync('/tmp/issue.json');
     const body = JSON.stringify(issueBody, null, 2);
 
+    console.error(body)
+
     if (!body?.prompt?.url) {
       throw new ReferenceError('url is required on body');
     }
