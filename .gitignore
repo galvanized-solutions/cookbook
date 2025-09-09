@@ -27,3 +27,4 @@ error.log
 output/**
 package/app/build/**
 package/app/node_modules/**
+node_modules/**

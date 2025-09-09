@@ -35,6 +35,7 @@ on:
 permissions:
   contents: read
   pages: write
+  packages: read
   id-token: write
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
@@ -46,8 +47,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    container: 
-      image: ghcr.io/${{ github.repository }}/cookbook:latest
+    container:
+      image: ghcr.io/${{ github.repository }}/node:22-alpine
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}

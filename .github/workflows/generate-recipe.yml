@@ -8,7 +8,7 @@ jobs:
   claude:
     runs-on: ubuntu-24.04
     container: 
-      image: ghcr.io/${{ github.repository }}/cookbook:latest
+      image: ghcr.io/${{ github.repository }}/ubuntu:22.04
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
