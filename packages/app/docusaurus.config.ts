@@ -10,7 +10,7 @@ const config: Config = {
   tagline: 'Tried and true, sure would do',
   favicon: 'img/favicon.svg',
   customFields: {
-    GREAT_SUCCESS: process.env.GREAT_SUCCESS,
+    FAT: process.env.FAT,
   },
   plugins: [
     [

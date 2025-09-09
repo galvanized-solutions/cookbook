@@ -48,7 +48,7 @@ jobs:
       - name: Build with Docusaurus
         run: pnpm run build
         env:
-          GREAT_SUCCESS: ${{ secrets.GREAT_SUCCESS }}
+          FAT: ${{ secrets.FAT }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

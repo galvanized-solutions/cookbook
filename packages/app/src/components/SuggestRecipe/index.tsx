@@ -26,7 +26,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
   const [submitMessage, setSubmitMessage] = useState<string>({ message: '', link: '' });
   const [submitError, setSubmitError] = useState<string>('');
   const { siteConfig } = useDocusaurusContext();
-  const key = siteConfig.customFields?.GREAT_SUCCESS as string | undefined;
+  const key = siteConfig.customFields?.FAT as string | undefined;
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -81,11 +81,11 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
 
     try {
       // GitHub API configuration
-      const GREAT_SUCCESS = key;
+      const FAT = key;
       const REPO_OWNER = 'galvanized-solutions';
       const REPO_NAME = 'cookbook';
 
-      if (!GREAT_SUCCESS) {
+      if (!FAT) {
         throw new Error('GitHub token not configured');
       }
 
@@ -122,7 +122,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
         {
           method: 'POST',
           headers: {
-            'Authorization': `token ${GREAT_SUCCESS}`,
+            'Authorization': `token ${FAT}`,
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json',
             'X-GitHub-Api-Version': '2022-11-28',

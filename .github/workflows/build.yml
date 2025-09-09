@@ -5,24 +5,12 @@ on:
     branches: ["main"]
     paths:
       # Docusaurus configuration files
-      - packages/app/recipes/**/*
-      - packages/app/suggestions/**/*
-      - packages/app/docusaurus.config.ts
-      - packages/app/sidebars.ts
-      - packages/app/tsconfig.json
-      
+      - packages/app/**/*
       # Package and dependency files
       - "package.json"
       - packages/app/package.json
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
-      
-      # Source code (components, pages, CSS)
-      - packages/app/src/**/*
-      
-      # Static assets
-      - packages/app/static/**/*
-      
       # GitHub workflows (to rebuild when workflow changes)
       - ".github/workflows/build.yml"
 
@@ -63,7 +51,7 @@ jobs:
       - name: Build with Docusaurus
         run: pnpm run build
         env:
-          GREAT_SUCCESS: ${{ secrets.GREAT_SUCCESS }}
+          FAT: ${{ secrets.FAT }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
