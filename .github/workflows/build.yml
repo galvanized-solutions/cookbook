@@ -50,6 +50,7 @@ jobs:
     container:
       image: ghcr.io/${{ github.repository }}/node:22-alpine
       credentials:
+        registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     environment:
