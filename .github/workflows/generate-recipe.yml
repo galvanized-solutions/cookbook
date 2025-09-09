@@ -39,31 +39,47 @@ jobs:
         run: |
           cd /workspace
 
-          # Debug: Show what we received
-          echo "Raw issue body:"
-
           # Write issue body to file with proper escaping
           cat > /tmp/issue.json << 'EOF'
           ${{ github.event.issue.body }}
           EOF
 
-          # Use the containerized recipe fetcher
-          CATEGORY="$(node ./scripts/recipe-fetch.js)"
+          echo "Issue body written to /tmp/issue.json"
+          cat /tmp/issue.json
 
-          # Verify the output file was created
-          if [[ ! -f "/tmp/html.json" ]]; then
-            echo "Error: html.json was not created"
+          # Debug Chrome setup
+          echo "Chrome executable path: $PUPPETEER_EXECUTABLE_PATH"
+          ls -la /usr/bin/chromium* || echo "No chromium found in /usr/bin"
+          /usr/bin/chromium --version || echo "Chromium version check failed"
+
+          # Set error handling
+          set -e
+
+          # Use the containerized recipe fetcher
+          echo "Starting recipe fetch..."
+          CATEGORY="$(node ./scripts/recipe-fetch.js)"
+          echo "Recipe fetch completed with category: $CATEGORY"
+
+          # Verify output files
+          echo "Checking output files:"
+          ls -la /tmp/
+
+          if [[ -f "/tmp/jsonld.json" ]]; then
+            echo "✓ /tmp/jsonld.json created"
+            echo "Preview of jsonld.json:"
+            head -20 /tmp/jsonld.json
+          fi
+
+          if [[ -f "/tmp/html.json" ]]; then
+            echo "✓ /tmp/html.json created (size: $(wc -c < /tmp/html.json) bytes)"
+          fi
+
+          if [[ ! -f "/tmp/html.json" ]] && [[ ! -f "/tmp/jsonld.json" ]]; then
+            echo "ERROR: Neither html.json nor jsonld.json was created"
             exit 1
           fi
 
-          # Verify the output file was created
-          if [[ -f "/tmp/jsonld.json" ]]; then
-            echo "Info: /tmp/jsonld.json will be used"
-          else
-            echo "Warn: /tmp/jsonld.json was not created"
-          fi
-
-          echo "CATEGORY=${CATEGORY:-main}" >> $GITHUB_OUTPUT
+          echo "CATEGORY=${CATEGORY:-entrees}" >> $GITHUB_OUTPUT
 
       - name: Run Claude Code
         id: claude

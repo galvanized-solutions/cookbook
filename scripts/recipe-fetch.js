@@ -49,12 +49,36 @@ export async function fetchWithStructuredData() {
   const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
   const body = JSON.parse(issueBody, null, 2);
 
-  if (!body?.prompt?.url) {
-    throw new ReferenceError('url is required on body');
+  console.log('Parsed issue body:', body);
+
+  // Handle different possible issue body formats
+  let url, category;
+  
+  if (body?.prompt?.url) {
+    url = body.prompt.url;
+    category = body.prompt.category;
+  } else if (body?.url) {
+    url = body.url;
+    category = body.category;
+  } else if (typeof body === 'string') {
+    // If it's just a plain string, try to parse as JSON again
+    try {
+      const parsed = JSON.parse(body);
+      url = parsed.url;
+      category = parsed.category;
+    } catch (e) {
+      throw new ReferenceError('Could not parse issue body format');
+    }
+  } else {
+    throw new ReferenceError('url is required in issue body');
   }
 
-  if (!body?.prompt?.category) {
-    throw new ReferenceError('url is required on body');
+  if (!url) {
+    throw new ReferenceError('url is required');
+  }
+
+  if (!category) {
+    category = 'entrees'; // default fallback
   }
 
   const browser = await puppeteer.launch({
@@ -84,8 +108,8 @@ export async function fetchWithStructuredData() {
       const url = req.url();
 
       // Only allow document and essential scripts/stylesheets from the main domain
-      const mainDomain = new URL(body.prompt.url).hostname;
-      const requestDomain = new URL(url).hostname;
+      const mainDomain = new URL(url).hostname;
+      const requestDomain = new URL(req.url()).hostname;
 
       // Allow main document
       if (resourceType === 'document') {
@@ -135,8 +159,8 @@ export async function fetchWithStructuredData() {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
     });
 
-    console.log(`Navigating to: ${body.prompt.url}`);
-    await page.goto(body.prompt.url, {
+    console.log(`Navigating to: ${url}`);
+    await page.goto(url, {
       waitUntil: 'networkidle0',
       timeout: 60000
     });
@@ -191,8 +215,15 @@ export async function fetchWithStructuredData() {
       console.log('Found recipe JSON-LD data');
       fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(jsonLd, null, 2));
 
-      // Handle image URL (could be string or object)
-      const imageUrl = typeof jsonLd.image === 'string' ? jsonLd.image : jsonLd.image?.url;
+      // Handle image URL (could be string, object, or array)
+      let imageUrl;
+      if (typeof jsonLd.image === 'string') {
+        imageUrl = jsonLd.image;
+      } else if (Array.isArray(jsonLd.image)) {
+        imageUrl = jsonLd.image[0];
+      } else if (jsonLd.image?.url) {
+        imageUrl = jsonLd.image.url;
+      }
       
       if (imageUrl) {
         console.log('Downloading recipe image:', imageUrl);
@@ -204,8 +235,9 @@ export async function fetchWithStructuredData() {
       console.log('No recipe JSON-LD data found');
     }
 
-    console.log(body.prompt.category);
+    console.log(category);
   } catch (error) {
+    console.error('Recipe fetch error:', error);
     throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
     if (browser) {
