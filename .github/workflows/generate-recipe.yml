@@ -47,8 +47,9 @@ jobs:
           ${{ github.event.issue.body }}
           EOF
 
-          # Use the containerized recipe fetcher
-          CATEGORY="$(node ./scripts/recipe-fetch.js ${URL})"
+          # Setup Chrome path and run recipe fetcher
+          source /usr/local/bin/setup-chrome.sh
+          CATEGORY="$(node ./scripts/recipe-fetch.js)"
 
           # Verify the output file was created
           if [[ ! -f "/tmp/html.json" ]]; then
