@@ -47,32 +47,31 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - name: Checkout packages/app and workspace files
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          path: /workspace/packages/app
-          sparse-checkout: packages/app
-          sparse-checkout-cone-mode: false
-          fetch-depth: 0
-      - name: Build with Docusaurus
-        run: pnpm run build
-        env:
-          FAT: ${{ secrets.FAT }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: /workspace/packages/app/build
+      - name: List directories
+        run: ls -la /workspace
+  #     - name: Checkout packages/app and workspace files
+  #       uses: actions/checkout@v4
+  #       with:
+  #         sparse-checkout-cone-mode: false
+  #         fetch-depth: 0
+  #     - name: Build with Docusaurus
+  #       run: pnpm run build
+  #       env:
+  #         FAT: ${{ secrets.FAT }}
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
+  #     - name: Upload artifact
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: /workspace/packages/app/build
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-24.04
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-24.04
+  #   needs: build
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
