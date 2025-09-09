@@ -34,14 +34,14 @@ export async function fetchWithStructuredData() {
     const issueBody = fs.readFileSync('/tmp/issue.json');
     const body = JSON.stringify(issueBody, null, 2);
 
-    if (!body?.url) {
+    if (!body?.prompt?.url) {
       throw new ReferenceError('url is required on body');
     }
 
-    if (!body?.category) {
+    if (!body?.prompt?.category) {
       throw new ReferenceError('url is required on body');
     }
-    const url = body.url;
+    const url = body.prompt.url;
 
     browser = await puppeteer.launch({
       headless: 'new',
@@ -113,7 +113,7 @@ export async function fetchWithStructuredData() {
       }
     }
 
-    console.log(body.category);
+    console.log(body.prompt.category);
   } catch (error) {
     throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
