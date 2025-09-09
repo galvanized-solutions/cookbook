@@ -45,10 +45,16 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - name: List directories
+      - name: Check workspace contents
         run: | 
-          ls -la /
-          echo "Where is my config??"
+          echo "Contents of /workspace:"
+          ls -la /workspace/
+          echo "Current working directory:"
+          pwd
+          echo "Checking for pnpm:"
+          which pnpm
+          echo "Checking for node_modules:"
+          ls -la /workspace/node_modules/ | head -10
           
   #     - name: Checkout packages/app and workspace files
   #       uses: actions/checkout@v4
