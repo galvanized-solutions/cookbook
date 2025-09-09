@@ -115,7 +115,7 @@ export async function fetchWithStructuredData() {
 
     console.log(body.category);
   } catch (error) {
-    throw new Error(`Failed to scrape ${url}: ${error.message}`);
+    throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
     if (browser) {
       await browser.close();
