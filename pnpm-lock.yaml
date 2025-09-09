@@ -8,16 +8,6 @@ importers:
 
   .:
     dependencies:
-      puppeteer:
-        specifier: ^24.18.0
-        version: 24.18.0(typescript@5.6.3)
-    devDependencies:
-      typescript:
-        specifier: ~5.6.2
-        version: 5.6.3
-
-  packages/app:
-    dependencies:
       '@docusaurus/core':
         specifier: 3.8.1
         version: 3.8.1(@mdx-js/react@3.1.1(@types/react@19.1.12)(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(typescript@5.6.3)
@@ -36,6 +26,9 @@ importers:
       prism-react-renderer:
         specifier: ^2.3.0
         version: 2.4.1(react@19.1.1)
+      puppeteer:
+        specifier: ^24.18.0
+        version: 24.18.0(typescript@5.6.3)
       react:
         specifier: ^19.0.0
         version: 19.1.1
@@ -55,6 +48,8 @@ importers:
       typescript:
         specifier: ~5.6.2
         version: 5.6.3
+
+  packages/app: {}
 
 packages:
 
