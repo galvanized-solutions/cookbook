@@ -39,8 +39,6 @@ jobs:
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/${{ github.repository }}/node:22-alpine
-      volumes:
-        - /workspace:/workspace
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +46,10 @@ jobs:
       name: github-pages
     steps:
       - name: List directories
-        run: ls -la /workspace
+        run: | 
+          ls -la /
+          echo "Where is my config??"
+          
   #     - name: Checkout packages/app and workspace files
   #       uses: actions/checkout@v4
   #       with:
