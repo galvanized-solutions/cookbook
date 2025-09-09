@@ -53,29 +53,35 @@ jobs:
             packages/app
           sparse-checkout-cone-mode: false
           fetch-depth: 0
-      - name: Copy source files to workspace
+      - name: Move source files to workspace
         run: |
-          cp -r packages/app /workspace/packages/
+          echo "Creating packages directory structure in /workspace/"
+          mkdir -p /workspace/packages
+          mv packages/app /workspace/packages/
+          echo "Verifying structure:"
+          ls -la /workspace/packages/
+          echo "Checking if pnpm workspace can find projects:"
+          cd /workspace && pnpm list --depth=0
       - name: Build with Docusaurus
         run: |
           cd /workspace
           pnpm run build
         env:
           FAT: ${{ secrets.FAT }}
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: /workspace/packages/app/build
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
+  #     - name: Upload artifact
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: /workspace/packages/app/build
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-24.04
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # deploy:
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+  #   runs-on: ubuntu-24.04
+  #   needs: build
+  #   steps:
+  #     - name: Deploy to GitHub Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
