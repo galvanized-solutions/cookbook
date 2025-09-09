@@ -41,6 +41,8 @@ jobs:
 
           echo "{{ github.event.issue.body }}" > /tmp/issue.json
 
+          cat /tmp/issue.json
+
           # Use the containerized recipe fetcher
           CATEGORY="$(node ./scripts/recipe-fetch.js ${URL})"
           echo "CATEGORY: $CATEGORY"
