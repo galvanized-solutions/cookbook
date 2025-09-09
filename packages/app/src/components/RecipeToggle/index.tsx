@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ServingsSlider from '../ServingsSlider';
 import styles from './styles.module.css';
 
+// Legacy types for backward compatibility
 type Measurement = {
   quantity: string | null;
   unit: string | null;
@@ -153,10 +154,16 @@ const parseIngredient = (ingredient: string): Ingredient => {
   };
 };
 
-// Convert JSON-LD recipe to internal format
+// Simplified conversion for JSON-LD recipes - just store the ingredient arrays
 const convertJSONLDToRecipeData = (jsonldRecipe: JSONLDRecipe): RecipeData => {
-  // Parse ingredients - use combined format from recipeIngredient
-  const ingredients = jsonldRecipe.recipeIngredient.map(parseIngredient);
+  // For new JSON-LD format, we'll bypass the old ingredient parsing completely
+  // Just create a simplified structure that holds the raw ingredient strings
+  const ingredients = jsonldRecipe.recipeIngredient.map((ingredient, index) => ({
+    name: ingredient,
+    original: ingredient,
+    metric: { quantity: null, unit: null },
+    imperial: { quantity: null, unit: null }
+  }));
   
   // Parse directions from recipeInstructions
   const baseDirections = jsonldRecipe.recipeInstructions.map(instruction => instruction.text);
@@ -299,20 +306,38 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
     return quantity;
   };
 
-  // Process ingredients for current measurement system with scaling
-  const multiplier = currentServings / defaultServings;
-  const currentIngredients = recipeData.ingredients.map(ingredient => {
-    const measurement = isMetric ? ingredient.metric : ingredient.imperial;
-    const scaledMeasurement = {
-      quantity: scaleQuantity(measurement.quantity, multiplier),
-      unit: measurement.unit
-    };
+  // Get current ingredients based on measurement preference
+  const getCurrentIngredients = () => {
+    // For JSON-LD recipes, use the separate metric/imperial arrays directly
+    if (isJSONLDRecipe(recipe)) {
+      const { customProperties } = recipe;
+      if (customProperties?.metricIngredients && customProperties?.imperialIngredients) {
+        return isMetric ? customProperties.metricIngredients : customProperties.imperialIngredients;
+      }
+      // Fallback to combined format in recipeIngredient
+      return recipe.recipeIngredient;
+    }
+    
+    // For legacy recipes, use the old complex ingredient processing
+    const multiplier = currentServings / defaultServings;
+    return recipeData.ingredients.map(ingredient => {
+      const measurement = isMetric ? ingredient.metric : ingredient.imperial;
+      const scaledMeasurement = {
+        quantity: scaleQuantity(measurement.quantity, multiplier),
+        unit: measurement.unit
+      };
 
-    return {
-      ...ingredient,
-      currentMeasurement: scaledMeasurement
-    };
-  });
+      const displayText = measurement.quantity && measurement.unit
+        ? `${scaleQuantity(measurement.quantity, multiplier)} ${measurement.unit} ${ingredient.name}`
+        : measurement.quantity
+        ? `${scaleQuantity(measurement.quantity, multiplier)} ${ingredient.name}`
+        : ingredient.original;
+        
+      return displayText;
+    });
+  };
+
+  const currentIngredients = getCurrentIngredients();
 
   // Process directions with base + overrides
   const processDirections = () => {
@@ -453,28 +478,11 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
         <div className={styles.section}>
           <h3>Ingredients</h3>
           <ul className={styles.ingredientsList}>
-            {currentIngredients.map((ingredient, index) => {
-              const { quantity, unit } = ingredient.currentMeasurement;
-
-              // Handle scaled ingredients with quantities
-              if (quantity) {
-                const displayText = unit
-                  ? `${quantity} ${unit} ${ingredient.name}`
-                  : `${quantity} ${ingredient.name}`;
-                return (
-                  <li key={index} className={styles.ingredient}>
-                    {displayText}
-                  </li>
-                );
-              }
-
-              // Fallback to original text for ingredients without quantities
-              return (
-                <li key={index} className={styles.ingredient}>
-                  {ingredient.original}
-                </li>
-              );
-            })}
+            {currentIngredients.map((ingredient, index) => (
+              <li key={index} className={styles.ingredient}>
+                {ingredient}
+              </li>
+            ))}
           </ul>
         </div>
 

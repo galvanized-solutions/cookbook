@@ -29,11 +29,15 @@ category: string - Recipe category
   - If no local image: use remote image URL from recipe data (more common)
   - Image path in MDX: use `/img/{slug}.{format}` for local, full URL for remote
 
-- Parse ingredients with both metric/imperial measurements
-- Weight preferred over volume (grams > cups, oz > cups)
-- Convert spoons to ml/grams, keep original in parenthesis
-- Domain-based cup conversions: .com = US cup, .co.uk = UK cup
-- Temperature conversions: F→C for metric, C→F for imperial
+- **Ingredient Processing**: Create TWO separate arrays - one metric, one imperial
+  - `recipeIngredient`: Combined format for JSON-LD compliance (e.g., "1 cup (240ml) water")
+  - `metricIngredients`: Clean metric-only strings (e.g., "240ml water")
+  - `imperialIngredients`: Clean imperial-only strings (e.g., "1 cup water")
+- **Measurement Conversion Rules**:
+  - Weight preferred over volume (grams > cups, oz > cups)
+  - Convert spoons: 1 tbsp = 15ml, 1 tsp = 5ml
+  - Domain-based cup conversions: .com = US cup (237ml), .co.uk = UK cup (284ml)
+  - Temperature conversions: F→C for metric, C→F for imperial
 - Extract timing information when available (prep, cook, total times)
 
 # Measurement Priority
@@ -98,14 +102,29 @@ For internal processing, extend JSON-LD with custom properties:
 ```json
 {
   "customProperties": {
-    "metricIngredients": ["240ml ingredient name", "30ml ingredient name"],
-    "imperialIngredients": ["1 cup ingredient name", "2 tbsp ingredient name"],
+    "metricIngredients": [
+      "240ml water", 
+      "30ml olive oil",
+      "500g flour"
+    ],
+    "imperialIngredients": [
+      "1 cup water", 
+      "2 tbsp olive oil",
+      "4 cups flour"
+    ],
     "metricInstructions": [{"step": 1, "text": "Metric instruction"}],
     "imperialInstructions": [{"step": 1, "text": "Imperial instruction"}],
-    "sourceUrl": "https://original-recipe-url.com",
-    "internalCategory": "category-name"
+    "sourceUrl": "https://original-recipe-url.com"
   }
 }
+```
+
+## Important: Simplified Ingredient Handling
+- **No complex parsing required**: RecipeToggle component directly displays the appropriate ingredient array
+- **metricIngredients**: Array of complete ingredient strings with metric measurements  
+- **imperialIngredients**: Array of complete ingredient strings with imperial measurements
+- **Direct display**: Toggle simply switches between showing `metricIngredients` vs `imperialIngredients`
+- **No conversion logic needed**: Each array contains ready-to-display strings
 
 # MDX Template Structure
 ```mdx
@@ -254,7 +273,22 @@ Additional notes, tips, substitutions, or storage information.
    - Handle large files (>250KB) with streaming/grep rather than full file reads
    ```
 
-3. **Process images**
+3. **Process ingredients into three formats**
+   ```
+   For each ingredient, create:
+   
+   A. recipeIngredient (JSON-LD standard): "1 cup (240ml) water"
+   B. metricIngredients: "240ml water"  
+   C. imperialIngredients: "1 cup water"
+   
+   Example conversion:
+   Original: "2 tablespoons olive oil"
+   → recipeIngredient: ["2 tbsp (30ml) olive oil"]
+   → metricIngredients: ["30ml olive oil"] 
+   → imperialIngredients: ["2 tbsp olive oil"]
+   ```
+
+4. **Process images**
    ```bash
    # Check for local images
    find /tmp -name "image.*" -o -name "recipe.*" -o -name "*.jpg" -o -name "*.png" -o -name "*.jpeg"
@@ -263,14 +297,14 @@ Additional notes, tips, substitutions, or storage information.
    # If not found: use remote URL from recipe data
    ```
 
-4. **Generate filename and slug**
+5. **Generate filename and slug**
    ```
    - Generate: YYYY-MM-DD-kebab-case-title
    - Use for: output JSON filename and MDX filename
    - Extract slug: kebab-case-title (without date prefix)
    ```
 
-5. **Create output files**
+6. **Create output files**
    - Save `./packages/app/output/${FILE_NAME}.json` using Recipe JSON-LD schema
    - Save `./packages/app/suggestions/${FILE_NAME}.mdx` using template with JSON-LD format
    - Update `./packages/app/suggestions/tags.yml` if new tags needed
@@ -313,6 +347,25 @@ head -50 /tmp/html.json | grep -A 100 '"@type".*"Recipe"'
 - Provide reasonable defaults where possible
 - Log warnings for missing critical fields (name, ingredients, instructions)  
 - Continue processing rather than failing completely
+```
+
+### Scenario 5: Creating proper ingredient arrays
+```
+Input: "2 tablespoons olive oil"
+
+Output in JSON-LD:
+{
+  "recipeIngredient": ["2 tbsp (30ml) olive oil"],
+  "customProperties": {
+    "metricIngredients": ["30ml olive oil"],
+    "imperialIngredients": ["2 tbsp olive oil"]
+  }
+}
+
+RecipeToggle behavior:
+- Metric toggle: shows "30ml olive oil"
+- Imperial toggle: shows "2 tbsp olive oil"  
+- No parsing or conversion needed in component
 ```
 
 # JSON-LD Migration Notes
