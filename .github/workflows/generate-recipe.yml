@@ -24,9 +24,19 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Move source files to workspace
+        run: |
+          echo "Moving source files to preserve /workspace dependencies"
+          # Copy all repo files to /workspace, preserving existing node_modules
+          cp -r * /workspace/
+          cd /workspace
+          echo "Contents of /workspace after copy:"
+          ls -la
+
       - name: Parse issue inputs and fetch recipe
         id: fetch
         run: |
+          cd /workspace
           # Extract URL and category from issue body
           URL=$(echo '${{ github.event.issue.body }}' | jq -r '.url // empty')
           CATEGORY=$(echo '${{ github.event.issue.body }}' | jq -r '.category // empty')
@@ -61,9 +71,18 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
+          working_directory: /workspace
           prompt: |
-            Use the @scripts/instructions.md file and the category: ${CATEGORY} input to complete the instructions
+            Use the @scripts/instructions.md file and the category: ${{ steps.fetch.outputs.CATEGORY }} input to complete the task
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+      - name: Copy changes back to git repo
+        run: |
+          echo "Copying generated files back to git working directory"
+          # Copy generated files from /workspace back to the git checkout directory
+          cp -r /workspace/packages/app/output/* ./packages/app/output/ 2>/dev/null || echo "No output files to copy"
+          cp -r /workspace/packages/app/suggestions/* ./packages/app/suggestions/ 2>/dev/null || echo "No suggestion files to copy"
+          echo "Files copied back to git directory"
 
       - name: Create PR from Claude response
         id: pr
