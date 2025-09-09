@@ -5,23 +5,36 @@ Use the @/tmp/jsonld.json if available to create the new page. Otherwise, use th
 category: string - Recipe category
 
 # Validation
-<!-- - Evaluate permissions needed for instruction before processing -->
-<!-- - EXIT 1 if the @settings.json exists and does not have sufficient permissions and log why and an example file with the permissions that are REQUIRED -->
 - EXIT 1 with log message IF url input not HTTPS
 - EXIT 1 with a detailed message if you cannot access the recipe webpage due to connectivity
 - EXIT 1 with log message IF webpage does not contain recipe, you should evaluate this as efficiently as possible
+- WARN and continue IF neither @/tmp/jsonld.json nor @/tmp/html.json exist
+- WARN and continue IF image files are missing from /tmp/ (use remote image URLs instead)
 
 # Core Rules
-- If there is a @/tmp/jsonld.json use the JSON-LD schema this otherwise attempt to gather the information using the schema and the @/tmp/html.json
+- **File Processing Priority**: 
+  1. If @/tmp/jsonld.json exists, use it directly
+  2. If @/tmp/html.json exists, extract JSON-LD from HTML content using grep/search
+  3. If neither exists, log error and exit
+
+- **HTML Processing**: When using @/tmp/html.json:
+  - File may be very large (>250KB), use grep/search tools instead of reading entire file
+  - Look for `<script type="application/ld+json">` containing Recipe schema
+  - Extract JSON-LD structured data from HTML
+  - Parse the extracted JSON-LD as if it were from /tmp/jsonld.json
+
+- **Image Handling**: 
+  - Check for local image files: `/tmp/image.*`, `/tmp/recipe.*`, etc.
+  - If local image found: copy to `/packages/app/static/img/{slug}.{format}` and use relative path
+  - If no local image: use remote image URL from recipe data (more common)
+  - Image path in MDX: use `/img/{slug}.{format}` for local, full URL for remote
+
 - Parse ingredients with both metric/imperial measurements
 - Weight preferred over volume (grams > cups, oz > cups)
 - Convert spoons to ml/grams, keep original in parenthesis
 - Domain-based cup conversions: .com = US cup, .co.uk = UK cup
 - Temperature conversions: F→C for metric, C→F for imperial
 - Extract timing information when available (prep, cook, total times)
-- The downloaded image file will be located in @/tmp/, we will not know the format though it will always be called @/tmp/image.{format}:
-  - Where {format} is the format as located in the JSON-LD @/tmp/jsonld.json on the image.url path when the @/tmp/jsonld.json is created.
-- This file must be copied to the @/packages/app/static/img/{filename}.{format}
 
 # Measurement Priority
 1. **Weight over volume** (454g not 2 cups)
@@ -185,13 +198,18 @@ Additional notes, tips, substitutions, or storage information.
 - **date**: YYYY-MM-DD format, extracted from filename or current date
 - **authors**: Always `[claude]` for parsed recipes
 - **tags**: Array of 3-6 tags including category + descriptive tags
-- **image**: Relative path `/img/{slug}.{format}` matching copied image file
+- **image**: 
+  - If local image exists: `/img/{slug}.{format}` (relative path)
+  - If remote image only: `https://...` (full URL)
+  - Most common case: remote URLs from recipe websites
 
 ## Content Structure
 - **Import statement**: Always include `import RecipeToggle from '@site/src/components/RecipeToggle';`
 - **H1 title**: Must match frontmatter title exactly
 - **Description**: 1-2 sentence summary with origin/characteristics
-- **Image**: `![Title](/img/{slug}.{format})` using relative path matching copied image file
+- **Image**: 
+  - Local: `![Title](/img/{slug}.{format})` (relative path)
+  - Remote: `![Title](https://full-url-to-image.jpg)` (full URL)
 - **Meta info**: Servings, Category, Source with link
 - **Truncate**: `<!--truncate-->` after meta info for blog list previews
 
@@ -220,11 +238,82 @@ Additional notes, tips, substitutions, or storage information.
 - **customProperties**: Internal extension for metric/imperial separation (internal use)
 
 # Output Process
-1. **Generate a FILE_NAME** → store `YYYY-MM-DD-title` to use below
-2. **Copy image file** → copy `/tmp/image.{format}` to `/packages/app/static/img/{slug}.{format}` (format extracted from jsonld.json image.url)
-3. **Save JSON-LD output** → save `./packages/app/output/${FILE_NAME}.json` using Recipe JSON-LD schema
-4. **Generate MDX** → save `./packages/app/suggestions/${FILE_NAME}.mdx` using template above with JSON-LD format
-5. **Add tags** to `tags.yml` if missing (shared between blogs)
+
+## Step-by-Step Implementation
+1. **Check input files availability**
+   ```
+   - Check if /tmp/jsonld.json exists
+   - If not, check if /tmp/html.json exists  
+   - If neither exists, EXIT 1 with error message
+   ```
+
+2. **Extract recipe data**
+   ```
+   - If jsonld.json: read and parse directly
+   - If html.json: use grep to find JSON-LD script tags, extract and parse
+   - Handle large files (>250KB) with streaming/grep rather than full file reads
+   ```
+
+3. **Process images**
+   ```bash
+   # Check for local images
+   find /tmp -name "image.*" -o -name "recipe.*" -o -name "*.jpg" -o -name "*.png" -o -name "*.jpeg"
+   
+   # If found: copy to static directory
+   # If not found: use remote URL from recipe data
+   ```
+
+4. **Generate filename and slug**
+   ```
+   - Generate: YYYY-MM-DD-kebab-case-title
+   - Use for: output JSON filename and MDX filename
+   - Extract slug: kebab-case-title (without date prefix)
+   ```
+
+5. **Create output files**
+   - Save `./packages/app/output/${FILE_NAME}.json` using Recipe JSON-LD schema
+   - Save `./packages/app/suggestions/${FILE_NAME}.mdx` using template with JSON-LD format
+   - Update `./packages/app/suggestions/tags.yml` if new tags needed
+
+## Error Handling
+- **Missing files**: Log warnings, continue with available data
+- **Large files**: Use grep/search instead of full file reads  
+- **Parse errors**: Log specific error, attempt to continue or exit gracefully
+- **Image failures**: Default to remote URLs, don't fail entire process
+
+## Common Scenarios and Solutions
+
+### Scenario 1: Only /tmp/html.json available (large file)
+```bash
+# Use grep to find JSON-LD without reading entire file
+grep -o '<script type="application/ld+json"[^>]*>.*</script>' /tmp/html.json
+# Or use head to get first 50 lines containing structured data
+head -50 /tmp/html.json | grep -A 100 '"@type".*"Recipe"'
+```
+
+### Scenario 2: No image files in /tmp/
+```
+- Extract image URL from recipe JSON-LD data
+- Use remote URL directly in MDX (https://...)  
+- Set image field in frontmatter to remote URL
+- Do not attempt to copy non-existent local files
+```
+
+### Scenario 3: Recipe data embedded in HTML
+```
+- Search for JSON-LD script tags in HTML
+- Extract structured data between script tags
+- Parse as standard JSON-LD recipe format
+- Common patterns: "@type": "Recipe", "recipeIngredient", "recipeInstructions"
+```
+
+### Scenario 4: Missing or incomplete recipe data
+```
+- Use available fields, set missing fields to null
+- Provide reasonable defaults where possible
+- Log warnings for missing critical fields (name, ingredients, instructions)  
+- Continue processing rather than failing completely
+```
 
 # JSON-LD Migration Notes
 - Output JSON files now use standard Schema.org Recipe format

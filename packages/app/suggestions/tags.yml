@@ -50,3 +50,27 @@ cauliflower:
 beans:
   label: Beans
   permalink: /beans
+
+appetizers:
+  label: Appetizers
+  permalink: /appetizers
+
+south-african:
+  label: South African
+  permalink: /south-african
+
+beef:
+  label: Beef
+  permalink: /beef
+
+dried-meat:
+  label: Dried Meat
+  permalink: /dried-meat
+
+cured:
+  label: Cured
+  permalink: /cured
+
+snack:
+  label: Snack
+  permalink: /snack

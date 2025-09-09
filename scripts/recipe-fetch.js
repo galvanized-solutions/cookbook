@@ -32,7 +32,7 @@ export async function fetchWithStructuredData() {
   let browser;
   try {
     const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
-    const body = JSON.stringify(issueBody, null, 2);
+    const body = JSON.parse(issueBody, null, 2);
 
     console.error(body)
 
@@ -58,24 +58,22 @@ export async function fetchWithStructuredData() {
     const page = await browser.newPage();
 
     // Block images for faster loading
-    if (options.blockImages !== false) {
-      await page.setRequestInterception(true);
-      page.on('request', (req) => {
-        const resourceType = req.resourceType();
-        if (resourceType === 'image' || resourceType === 'media' || resourceType === 'font') {
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
-    }
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+      const resourceType = req.resourceType();
+
+      if (resourceType === 'image' || resourceType === 'media' || resourceType === 'font') {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
 
     await page.setViewport({ width: 1920, height: 1080 });
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-
     await page.goto(url, {
       waitUntil: 'networkidle2',
-      timeout: options.timeout || 30000
+      timeout: 30000
     });
 
     // Extract JSON-LD data
@@ -102,7 +100,7 @@ export async function fetchWithStructuredData() {
 
     fs.writeFileSync('/tmp/html.json', JSON.stringify(html, null, 2));
 
-    if (jsonLd.length) {
+    if (jsonLd?.length) {
       const [recipeJsonLd] = jsonLd;
 
       fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(recipeJsonLd, null, 2));
