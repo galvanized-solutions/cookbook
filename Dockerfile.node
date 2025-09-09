@@ -1,8 +1,9 @@
 FROM node:22-alpine
 
 # Set environment variables
-ENV PNPM_HOME="/pnpm"
+ENV PNPM_HOME="/workspace"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV PUPPETEER_CACHE_DIR="/workspace"
 
 # Install basic system dependencies (Alpine uses apk)
 RUN apk add --no-cache git tar jq
@@ -21,16 +22,7 @@ COPY ./package.json ./pnpm-lock.yaml pnpm-workspace.yaml ./
 # Install all dependencies directly in the root (no workspace)
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
 
-# Install Chrome for Puppeteer
-RUN npx puppeteer browsers install chrome
-
-# Create script to find and export Chrome path at runtime
-RUN echo '#!/bin/sh' > /usr/local/bin/setup-chrome.sh && \
-    echo 'export PUPPETEER_EXECUTABLE_PATH=$(find /root/.cache/puppeteer -name chrome -type f -executable | head -1)' >> /usr/local/bin/setup-chrome.sh && \
-    chmod +x /usr/local/bin/setup-chrome.sh
-
-# Source the script in profile
-RUN echo 'source /usr/local/bin/setup-chrome.sh' >> /etc/profile
+RUN pnpm puppeteer browsers install chrome
 
 # Labels for metadata
 LABEL org.opencontainers.image.title="Cookbook Build Dependencies"
