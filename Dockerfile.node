@@ -5,7 +5,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 # Install basic system dependencies (Alpine uses apk)
-RUN apk add --no-cache git tar
+RUN apk add --no-cache git tar jq
 
 # Enable corepack and install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
