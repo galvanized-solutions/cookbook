@@ -24,13 +24,25 @@ function getRecipeImage(imageUrl) {
 
 /**
  * Enhanced version that also extracts JSON-LD structured data
- * @param {string} url - The URL to scrape
+ * @param {string} issueBody - The URL to scrape
  * @param {Object} options - Configuration options
  * @returns {Promise<{html: string, jsonLd: Object[]}>} The rendered HTML and extracted JSON-LD data
  */
-export async function fetchWithStructuredData(url, options = {}) {
+export async function fetchWithStructuredData() {
   let browser;
   try {
+    const issueBody = fs.readFileSync('/tmp/issue.json');
+    const body = JSON.stringify(issueBody, null, 2);
+
+    if (!body?.url) {
+      throw new ReferenceError('url is required on body');
+    }
+
+    if (!body?.category) {
+      throw new ReferenceError('url is required on body');
+    }
+    const url = body.url;
+
     browser = await puppeteer.launch({
       headless: 'new',
       args: [
@@ -77,7 +89,7 @@ export async function fetchWithStructuredData(url, options = {}) {
             data = parsed
           }
         } catch (e) {
-          console.warn('Failed to parse JSON-LD:', e);
+          console.error('Failed to parse JSON-LD:', e);
         }
       });
 
@@ -97,9 +109,11 @@ export async function fetchWithStructuredData(url, options = {}) {
         console.log('Getting image', recipeJsonLd?.image?.url)
         getRecipeImage(recipeJsonLd.image.url);
       } else {
-        console.warn('Unable to locate image', jsonLd?.image?.url);
+        console.error('Unable to locate image', jsonLd?.image?.url);
       }
     }
+
+    console.log(body.category);
   } catch (error) {
     throw new Error(`Failed to scrape ${url}: ${error.message}`);
   } finally {

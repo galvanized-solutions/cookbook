@@ -38,19 +38,12 @@ jobs:
         id: fetch
         run: |
           cd /workspace
-          # Extract URL and category from issue body
-          URL=$(echo '${{ github.event.issue.body }}' | jq -r '.url // empty')
-          CATEGORY=$(echo '${{ github.event.issue.body }}' | jq -r '.category // empty')
-          
-          if [[ -z "$URL" ]]; then
-            echo "Error: No URL found in issue"
-            exit 1
-          fi
 
           echo "{{ github.event.issue.body }}" > /tmp/issue.json
 
           # Use the containerized recipe fetcher
-          node ./scripts/recipe-fetch.js "$URL"
+          CATEGORY="$(node ./scripts/recipe-fetch.js ${URL})"
+          echo "CATEGORY: $CATEGORY"
 
           # Verify the output file was created
           if [[ ! -f "/tmp/html.json" ]]; then
@@ -65,7 +58,6 @@ jobs:
             echo "Warn: /tmp/jsonld.json was not created"
           fi
 
-          echo "URL=$URL" >> $GITHUB_OUTPUT
           echo "CATEGORY=${CATEGORY:-main}" >> $GITHUB_OUTPUT
 
       - name: Run Claude Code
@@ -76,14 +68,6 @@ jobs:
           prompt: |
             Use the @scripts/instructions.md file and the category: ${{ steps.fetch.outputs.CATEGORY }} input to complete the task
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-
-      - name: Copy changes back to git repo
-        run: |
-          echo "Copying generated files back to git working directory"
-          # Copy generated files from /workspace back to the git checkout directory
-          cp -r /workspace/packages/app/output/* ./packages/app/output/ 2>/dev/null || echo "No output files to copy"
-          cp -r /workspace/packages/app/suggestions/* ./packages/app/suggestions/ 2>/dev/null || echo "No suggestion files to copy"
-          echo "Files copied back to git directory"
 
       - name: Create PR from Claude response
         id: pr
