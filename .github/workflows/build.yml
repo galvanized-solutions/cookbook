@@ -86,32 +86,57 @@ jobs:
         run: |
           # Get list of suggestion files
           cd /workspace/packages/app/suggestions
-          SUGGESTIONS=$(ls *.mdx 2>/dev/null | sort)
+          SUGGESTION_FILES=$(ls *.mdx 2>/dev/null | sort | sed 's/^/          - "/' | sed 's/$/"/' | tr '\n' '\n')
           
-          if [ -z "$SUGGESTIONS" ]; then
+          if [ -z "$SUGGESTION_FILES" ]; then
             echo "No suggestion files found, skipping workflow update"
             exit 0
           fi
           
-          echo "Found suggestions: $SUGGESTIONS"
+          echo "Found suggestion files:"
+          echo "$SUGGESTION_FILES"
           
           # Check out the full repo to update workflow
           cd /tmp
           git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git repo-update
           cd repo-update
           
-          # Generate the options list
-          OPTIONS_LIST=""
-          for file in $SUGGESTIONS; do
-            OPTIONS_LIST="${OPTIONS_LIST}          - \"${file}\"\n"
-          done
+          # Update the promote-recipe.yml with current suggestions
+          cat > .github/workflows/promote-recipe.yml << 'EOF'
+          name: Promote Recipe from Suggestions to Recipes
+
+          on:
+            workflow_dispatch:
+              inputs:
+                filename:
+                  description: 'Select recipe to promote'
+                  required: true
+                  type: choice
+                  options:
+          $SUGGESTION_FILES
+                update_description:
+                  description: 'Optional: Update recipe description or add notes'
+                  required: false
+                  type: string
+                  default: ''
+          EOF
           
-          # Update the workflow file using sed to replace the options section
-          # Find the line with "type: choice" and replace the options section
-          sed -i '/type: choice/,/update_description:/c\
-                  type: choice\
-                  options:\
-'"${OPTIONS_LIST}"'                update_description:' .github/workflows/promote-recipe.yml
+          # Append the rest of the workflow file (jobs section)
+          cat >> .github/workflows/promote-recipe.yml << 'JOBS_EOF'
+          
+          jobs:
+            promote-recipe:
+              runs-on: ubuntu-24.04
+              defaults:
+                run:
+                  shell: bash
+              
+              steps:
+              - name: Checkout repository
+                uses: actions/checkout@v4
+                with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+          JOBS_EOF
           
           # Check if there are changes
           if git diff --quiet .github/workflows/promote-recipe.yml; then
