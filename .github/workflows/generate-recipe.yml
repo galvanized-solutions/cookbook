@@ -37,11 +37,10 @@ jobs:
 
       - name: Parse issue inputs and fetch recipe
         env:
-          PNPM_HOME: /pnpm
+          PLAYWRIGHT_BROWSERS_PATH: /root/.cache/ms-playwright
         id: fetch
         run: |
           cd /workspace
-          export PATH="/pnpm:$PATH"
 
           # Write issue body to file with proper escaping
           cat > /tmp/issue.json << 'EOF'

@@ -6,6 +6,10 @@
   "description": "AI powered cookbook with recipes for every occasion",
   "scripts": {
     "build": "pnpm --filter @cookbook/app build",
+    "build:node": "docker build -f ./Dockerfile.node -t  ghcr.io/galvanized-solutions/cookbook/node:22-alpine .",
+    "build:ubuntu": "docker build -f ./Dockerfile.ubuntu -t  ghcr.io/galvanized-solutions/cookbook/ubuntu:22.04 . ",
+    "run:ubuntu": "docker run --platform=linux/arm64 -it ghcr.io/galvanized-solutions/cookbook/ubuntu:22.04 /bin/sh",
+    "run:node": "docker run --platform=linux/arm64 -it ghcr.io/galvanized-solutions/cookbook/ubuntu:22.04 /bin/bash",
     "start": "pnpm --filter @cookbook/app start",
     "clear": "pnpm --filter @cookbook/app clear",
     "run-fetch": "node ./scripts/run-fetch.js"
