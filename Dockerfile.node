@@ -14,17 +14,12 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /workspace
 
 # Copy the app's package.json and root pnpm-lock.yaml
-COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./playwright.config.js ./
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
 
 RUN --mount=type=cache,target=/pnpm-store pnpm fetch
 
 # Install all dependencies directly in the root (no workspace)
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
-
-# Install Puppeteer globally for more reliable container usage
-RUN  pnpm playwright install chromium --with-deps
-
-COPY ./scripts ./scripts
 
 # Labels for metadata
 LABEL org.opencontainers.image.title="Cookbook Build Dependencies"

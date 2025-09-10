@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     gnupg \
-    vi \
+    vim \
     git \
     tar \
     jq \
