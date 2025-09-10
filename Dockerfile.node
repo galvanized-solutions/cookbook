@@ -25,7 +25,6 @@ RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
 RUN pnpm playwright install chromium-headless-shell
 
 COPY ./scripts ./scripts
-COPY ./issue.json /tmp/issue.json
 
 # Labels for metadata
 LABEL org.opencontainers.image.title="Cookbook Build Dependencies"
