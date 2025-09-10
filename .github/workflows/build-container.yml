@@ -106,7 +106,6 @@ jobs:
           labels: ${{ steps.meta-ubuntu.outputs.labels }}
           cache-from: type=gha,scope=ubuntu
           cache-to: type=gha,mode=max,scope=ubuntu
-          options: --platform=linux/amd64
   build-node:
     runs-on: ubuntu-latest
     permissions:
