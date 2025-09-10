@@ -5,9 +5,9 @@
   "type": "module",
   "description": "AI powered cookbook with recipes for every occasion",
   "scripts": {
-    "build": "pnpm -r build",
-    "start": "pnpm -r start",
-    "clear": "pnpm -r clear",
+    "build": "pnpm --filter @cookbook/app build",
+    "start": "pnpm --filter @cookbook/app start",
+    "clear": "pnpm --filter @cookbook/app clear",
     "run-fetch": "node ./scripts/run-fetch.js"
   },
   "dependencies": {
