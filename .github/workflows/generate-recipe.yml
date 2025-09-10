@@ -63,23 +63,6 @@ jobs:
             node ./scripts/run-fetch.js || exit 1
           fi
 
-          # Verify output files
-          echo "Checking output files:"
-          if [ -f "/tmp/jsonld.json" ]; then
-            echo "/tmp/jsonld.json created"
-          fi
-
-          if [ -f "/tmp/html.json" ]; then
-            echo "/tmp/html.json created (size: $(wc -c < /tmp/html.json) bytes)"
-          fi
-
-          if [ ! -f "/tmp/html.json" ] && [ ! -f "/tmp/jsonld.json" ]; then
-            echo "ERROR: Neither html.json nor jsonld.json was created"
-            exit 1
-          fi
-
-          echo "CATEGORY=${CATEGORY:-entrees}" >> $GITHUB_OUTPUT
-
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1

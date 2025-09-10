@@ -81,6 +81,49 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: /workspace/packages/app/build
+      
+      - name: Update promote-recipe workflow with current suggestions
+        run: |
+          # Get list of suggestion files
+          cd /workspace/packages/app/suggestions
+          SUGGESTIONS=$(ls *.mdx 2>/dev/null | sort)
+          
+          if [ -z "$SUGGESTIONS" ]; then
+            echo "No suggestion files found, skipping workflow update"
+            exit 0
+          fi
+          
+          echo "Found suggestions: $SUGGESTIONS"
+          
+          # Check out the full repo to update workflow
+          cd /tmp
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git repo-update
+          cd repo-update
+          
+          # Generate the options list
+          OPTIONS_LIST=""
+          for file in $SUGGESTIONS; do
+            OPTIONS_LIST="${OPTIONS_LIST}          - \"${file}\"\n"
+          done
+          
+          # Update the workflow file using sed to replace the options section
+          # Find the line with "type: choice" and replace the options section
+          sed -i '/type: choice/,/update_description:/c\
+                  type: choice\
+                  options:\
+'"${OPTIONS_LIST}"'                update_description:' .github/workflows/promote-recipe.yml
+          
+          # Check if there are changes
+          if git diff --quiet .github/workflows/promote-recipe.yml; then
+            echo "No changes to promote-recipe.yml"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/workflows/promote-recipe.yml
+            git commit -m "Auto-update promote-recipe workflow with current suggestions"
+            git push
+            echo "Updated promote-recipe.yml with current suggestions"
+          fi
 
   deploy:
     environment:

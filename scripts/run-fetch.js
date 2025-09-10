@@ -16,7 +16,7 @@ function getRecipeImage(imageUrl) {
     });
   }).on('error', (err) => {
     fs.unlink(imageName); // Remove the file if the download fails
-    console.error(`Error downloading image: ${err.message}`);
+    console.warn(`Error downloading image: ${err.message}`);
   });
 }
 
@@ -162,7 +162,7 @@ export async function fetchWithStructuredData() {
               return recipeJsonLd;
             }
           } catch (e) {
-            console.error(`Failed to parse JSON-LD script:`, e.message);
+            console.warn(`Failed to parse JSON-LD script:`, e.message);
           }
         }
       }
@@ -198,7 +198,7 @@ export async function fetchWithStructuredData() {
 
     console.log(category);
   } catch (error) {
-    console.error('Recipe fetch error:', error);
+    console.warn('Recipe fetch error:', error);
     throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
     if (browser) {

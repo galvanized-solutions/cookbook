@@ -9,6 +9,9 @@
 - Correct information if it appears wrong after careful verification
 - Speak to me like you're an equal not merely a collaboration partner
 
+## Restrictions
+- DO NO USE emojis unless I specifically ask
+
 ## Measurement Conversions
 @scripts/instructions.md
 @scripts/conversions.yaml

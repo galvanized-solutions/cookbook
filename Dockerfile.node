@@ -3,9 +3,10 @@ FROM --platform=$BUILDPLATFORM node:22-alpine
 # Set environment variables
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV SHELL="/bin/bash"
 
-# Install basic system dependencies including Chrome (Alpine uses apk)
-RUN apk add --no-cache git tar jq
+# Install basic system dependencies including bash (Alpine uses apk)
+RUN apk add --no-cache git tar jq bash
 
 # Enable corepack and install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
