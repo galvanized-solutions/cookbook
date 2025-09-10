@@ -16,8 +16,6 @@ WORKDIR /workspace
 # Copy the app's package.json and root pnpm-lock.yaml
 COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
 
-RUN --mount=type=cache,target=/pnpm-store pnpm fetch
-
 # Install all dependencies directly in the root (no workspace)
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
 

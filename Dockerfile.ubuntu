@@ -34,9 +34,7 @@ WORKDIR /workspace
 # Copy workspace config and package files
 COPY ./pnpm-workspace.yaml ./package.json ./pnpm-lock.yaml ./
 
-RUN --mount=type=cache,target=/pnpm-store pnpm fetch
-
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
 
 RUN  pnpm playwright install chromium --with-deps
 
