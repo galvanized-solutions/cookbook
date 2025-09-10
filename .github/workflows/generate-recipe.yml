@@ -65,12 +65,8 @@ jobs:
 
           # Verify output files
           echo "Checking output files:"
-          ls -la /tmp/
-
           if [ -f "/tmp/jsonld.json" ]; then
             echo "/tmp/jsonld.json created"
-            echo "Preview of jsonld.json:"
-            head -20 /tmp/jsonld.json
           fi
 
           if [ -f "/tmp/html.json" ]; then
@@ -107,13 +103,13 @@ jobs:
           git push --set-upstream origin "${BRANCH_NAME}"
           gh pr create --head "${BRANCH_NAME}" --base main --title "${{ github.event.issue.number }} recipe suggestion" --body "New Recipe processed by Claude"
 
-      # - name: Upload artifacts even if Build failed
-      #   if: ${{ always() }}              # runs on success or failure (not if job is cancelled)
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: build-artifacts
-      #     path: |
-      #       ./output/**
-      #       ./suggestions/**
-      #     if-no-files-found: ignore
-      #     retention-days: 7
+      - name: Upload artifacts even if Build failed
+        if: ${{ always() }}              # runs on success or failure (not if job is cancelled)
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            ./output/**
+            ./suggestions/**
+          if-no-files-found: ignore
+          retention-days: 7

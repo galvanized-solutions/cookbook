@@ -111,7 +111,7 @@ export async function fetchWithStructuredData() {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
     });
 
-    console.log(`Navigating to: ${url}`);
+    console.warn(`Navigating to: ${url}`);
     await page.goto(url, {
       waitUntil: 'networkidle',
       timeout: 60000
@@ -126,7 +126,7 @@ export async function fetchWithStructuredData() {
         timeout: 5000
       });
     } catch (e) {
-      console.log('Recipe selectors not found, proceeding anyway...');
+      console.warn('Recipe selectors not found, proceeding anyway...');
     }
 
     // Extract JSON-LD data
@@ -173,7 +173,7 @@ export async function fetchWithStructuredData() {
     fs.writeFileSync('/tmp/html.json', JSON.stringify(html, null, 2));
 
     if (jsonLd) {
-      console.log('Found recipe JSON-LD data');
+      console.warn('Found recipe JSON-LD data');
       fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(jsonLd, null, 2));
 
       // Handle image URL (could be string, object, or array)
@@ -187,13 +187,13 @@ export async function fetchWithStructuredData() {
       }
 
       if (imageUrl) {
-        console.log('Downloading recipe image:', imageUrl);
+        console.warn('Downloading recipe image:', imageUrl);
         getRecipeImage(imageUrl);
       } else {
-        console.log('No recipe image found in JSON-LD');
+        console.warn('No recipe image found in JSON-LD');
       }
     } else {
-      console.log('No recipe JSON-LD data found');
+      console.warn('No recipe JSON-LD data found');
     }
 
     console.log(category);
