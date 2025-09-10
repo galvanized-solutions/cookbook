@@ -63,6 +63,8 @@ jobs:
             node ./scripts/run-fetch.js || exit 1
           fi
 
+          echo "CATEGORY=${CATEGORY:-entrees}" >> $GITHUB_OUTPUT
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
