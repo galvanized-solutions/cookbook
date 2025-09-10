@@ -7,7 +7,7 @@ on:
 jobs:
   claude:
     runs-on: ubuntu-24.04
-    container: 
+    container:
       image: ghcr.io/${{ github.repository }}/ubuntu:22.04
       options: --platform=linux/amd64
       credentials:

@@ -95,6 +95,8 @@ jobs:
       - name: Build and push Ubuntu Docker image
         if: steps.should-build-ubuntu.outputs.should_build == 'true'
         uses: docker/build-push-action@v5
+        env:
+          BUILDPLATFORM: linux/amd64
         with:
           context: .
           file: ./Dockerfile.ubuntu
@@ -162,6 +164,8 @@ jobs:
       - name: Build and push Node Docker image
         if: steps.should-build-node.outputs.should_build == 'true'
         uses: docker/build-push-action@v5
+        env:
+          BUILDPLATFORM: linux/amd64
         with:
           context: .
           file: ./Dockerfile.node
