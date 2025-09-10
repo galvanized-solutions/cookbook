@@ -67,17 +67,17 @@ jobs:
           echo "Checking output files:"
           ls -la /tmp/
 
-          if [[ -f "/tmp/jsonld.json" ]]; then
-            echo "✓ /tmp/jsonld.json created"
+          if [ -f "/tmp/jsonld.json" ]; then
+            echo "/tmp/jsonld.json created"
             echo "Preview of jsonld.json:"
             head -20 /tmp/jsonld.json
           fi
 
-          if [[ -f "/tmp/html.json" ]]; then
-            echo "✓ /tmp/html.json created (size: $(wc -c < /tmp/html.json) bytes)"
+          if [ -f "/tmp/html.json" ]; then
+            echo "/tmp/html.json created (size: $(wc -c < /tmp/html.json) bytes)"
           fi
 
-          if [[ ! -f "/tmp/html.json" ]] && [[ ! -f "/tmp/jsonld.json" ]]; then
+          if [ ! -f "/tmp/html.json" ] && [ ! -f "/tmp/jsonld.json" ]; then
             echo "ERROR: Neither html.json nor jsonld.json was created"
             exit 1
           fi
