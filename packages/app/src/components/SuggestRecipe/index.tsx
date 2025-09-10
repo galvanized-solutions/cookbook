@@ -26,7 +26,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
   const [submitMessage, setSubmitMessage] = useState<string>({ message: '', link: '' });
   const [submitError, setSubmitError] = useState<string>('');
   const { siteConfig } = useDocusaurusContext();
-  const key = siteConfig.customFields?.FAT as string | undefined;
+  const FAT = siteConfig.customFields?.FAT as string | undefined;
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -81,7 +81,6 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
 
     try {
       // GitHub API configuration
-      const FAT = key;
       const REPO_OWNER = 'galvanized-solutions';
       const REPO_NAME = 'cookbook';
 
@@ -155,7 +154,7 @@ export default function SuggestRecipe({ className }: SuggestRecipeProps): ReactN
     } catch (error) {
       console.error('Error submitting recipe suggestion:', error);
       if (error.message.includes('GitHub token not configured')) {
-        setSubmitError('GitHub integration is not configured. Please contact the site administrator.');
+        setSubmitError('Unable to submit a request. Please create a Github issue manually');
       } else {
         setSubmitError(`Failed to submit recipe suggestion: ${error.message}`);
       }

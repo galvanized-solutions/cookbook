@@ -9,34 +9,15 @@ function getRecipeImage(imageUrl) {
   const file = fs.createWriteStream(imageName);
 
   https.get(imageUrl, (response) => {
-    console.log('Getting image file', response);
-
     response.pipe(file);
 
     file.on('finish', () => {
       file.close();
-      console.log(`Image downloaded as ${imageName}`);
     });
   }).on('error', (err) => {
     fs.unlink(imageName); // Remove the file if the download fails
     console.error(`Error downloading image: ${err.message}`);
   });
-}
-
-function recursiveGetJsonLd(parsedLd) {
-  if (Array.isArray(parsedLd)) {
-    const newLd = parsedLd?.[0];
-
-    if (newLd) {
-      return recursiveGetJsonLd(newLd);
-    }
-  } else if (typeof parsedLd === 'object') {
-    if (parsedLd) {
-      return parsedLd;
-    }
-  }
-
-  return null;
 }
 
 /**
@@ -49,11 +30,9 @@ export async function fetchWithStructuredData() {
   const issueBody = fs.readFileSync('/tmp/issue.json').toString('utf-8');
   const body = JSON.parse(issueBody, null, 2);
 
-  console.log('Parsed issue body:', body);
-
   // Handle different possible issue body formats
   let url, category;
-  
+
   if (body?.prompt?.url) {
     url = body.prompt.url;
     category = body.prompt.category;
@@ -111,11 +90,12 @@ export async function fetchWithStructuredData() {
     const page = await browser.newPage();
 
     // Set page timeouts
-    await page.setDefaultTimeout(60000);
-    await page.setDefaultNavigationTimeout(60000);
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
 
     // Only allow essential resources for JSON-LD extraction
     await page.setRequestInterception(true);
+
     page.on('request', (req) => {
       const resourceType = req.resourceType();
       const url = req.url();
@@ -123,6 +103,11 @@ export async function fetchWithStructuredData() {
       // Only allow document and essential scripts/stylesheets from the main domain
       const mainDomain = new URL(url).hostname;
       const requestDomain = new URL(req.url()).hostname;
+      const isOrigin = requestDomain === mainDomain;
+      // Shorten the if statements.
+      const isScript = resourceType === 'script';
+      const isDoc = resourceType === 'stylesheet';
+      const acceptResource = isScript || isDoc;
 
       // Allow main document
       if (resourceType === 'document') {
@@ -131,8 +116,7 @@ export async function fetchWithStructuredData() {
       }
 
       // Allow scripts and stylesheets from the main domain only
-      if ((resourceType === 'script' || resourceType === 'stylesheet') && 
-          (requestDomain === mainDomain || requestDomain.includes(mainDomain))) {
+      if (acceptResource && (isOrigin || requestDomain.includes(mainDomain))) {
         req.continue();
         return;
       }
@@ -145,8 +129,7 @@ export async function fetchWithStructuredData() {
         'ajax.googleapis.com'
       ];
 
-      if ((resourceType === 'script' || resourceType === 'stylesheet') && 
-          allowedCDNs.some(cdn => url.includes(cdn))) {
+      if (acceptResource && allowedCDNs.some((cdn) => url.includes(cdn))) {
         req.continue();
         return;
       }
@@ -158,12 +141,12 @@ export async function fetchWithStructuredData() {
     // Debug response errors
     page.on('response', response => {
       if (response.status() >= 400) {
-        console.log(`HTTP ${response.status()}: ${response.url()}`);
+        console.warn(`HTTP ${response.status()}: ${response.url()}`);
       }
     });
 
     await page.setViewport({ width: 1920, height: 1080 });
-    
+
     // More realistic browser headers
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     await page.setExtraHTTPHeaders({
@@ -172,7 +155,7 @@ export async function fetchWithStructuredData() {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
     });
 
-    console.log(`Navigating to: ${url}`);
+    console.warn(`Navigating to: ${url}`);
     await page.goto(url, {
       waitUntil: 'networkidle0',
       timeout: 60000
@@ -187,37 +170,51 @@ export async function fetchWithStructuredData() {
         timeout: 10000
       });
     } catch (e) {
-      console.log('Recipe selectors not found, proceeding anyway...');
+      console.warn('Recipe selectors not found, proceeding anyway...');
     }
 
     // Extract JSON-LD data with better error handling
     const jsonLd = await page.evaluate(() => {
       const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-      console.log(`Found ${scripts.length} JSON-LD scripts`);
-      
-      let recipeData = null;
+      function getRecipe(input) {
+        if (Array.isArray(input)) {
+          for (const value of input) {
+            const newVal = getRecipe(value);
 
-      scripts.forEach((script, index) => {
-        try {
-          const parsed = JSON.parse(script.textContent);
-          console.log(`Script ${index}:`, parsed['@type'] || 'No @type');
-
-          // Look for Recipe type in various structures
-          if (parsed['@type'] === 'Recipe') {
-            recipeData = parsed;
-          } else if (Array.isArray(parsed)) {
-            const recipe = parsed.find(item => item['@type'] === 'Recipe');
-            if (recipe) recipeData = recipe;
-          } else if (parsed['@graph']) {
-            const recipe = parsed['@graph'].find(item => item['@type'] === 'Recipe');
-            if (recipe) recipeData = recipe;
+            if (newVal) {
+              return newVal;
+            }
           }
-        } catch (e) {
-          console.error(`Failed to parse JSON-LD script ${index}:`, e.message);
         }
-      });
 
-      return recipeData;
+        // If we have an object then we need to examine it to see if it has a recipe
+        if (input && typeof input === "object") {
+          if (input?.['@type'] === 'Recipe') {
+            return input;
+          }
+
+          const isGraph = input?.['@graph'];
+
+          if (isGraph) {
+            return getRecipe(isGraph);
+          }
+        }
+      }
+
+      if (scripts?.length) {
+        for (const script of scripts.values()) {
+          try {
+            const parsed = JSON.parse(script.textContent);
+            const recipeJsonLd = getRecipe(parsed);
+
+            if (recipeJsonLd) {
+              return recipeJsonLd;
+            }
+          } catch (e) {
+            console.error(`Failed to parse JSON-LD script:`, e.stack);
+          }
+        }
+      }
     });
 
     const html = await page.content();
@@ -225,7 +222,7 @@ export async function fetchWithStructuredData() {
     fs.writeFileSync('/tmp/html.json', JSON.stringify(html, null, 2));
 
     if (jsonLd) {
-      console.log('Found recipe JSON-LD data');
+      console.warn('Found recipe JSON-LD data');
       fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(jsonLd, null, 2));
 
       // Handle image URL (could be string, object, or array)
@@ -237,20 +234,20 @@ export async function fetchWithStructuredData() {
       } else if (jsonLd.image?.url) {
         imageUrl = jsonLd.image.url;
       }
-      
+
       if (imageUrl) {
-        console.log('Downloading recipe image:', imageUrl);
+        console.warn('Downloading recipe image:', imageUrl);
         getRecipeImage(imageUrl);
       } else {
-        console.log('No recipe image found in JSON-LD');
+        console.warn('No recipe image found in JSON-LD');
       }
     } else {
-      console.log('No recipe JSON-LD data found');
+      console.warn('No recipe JSON-LD data found');
     }
 
     console.log(category);
   } catch (error) {
-    console.error('Recipe fetch error:', error);
+    console.error('Recipe fetch error:', error.stack);
     throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
     if (browser) {

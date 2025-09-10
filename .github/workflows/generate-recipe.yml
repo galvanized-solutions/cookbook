@@ -35,9 +35,14 @@ jobs:
           ls -la
 
       - name: Parse issue inputs and fetch recipe
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+          PNPM_HOME: /pnpm
         id: fetch
         run: |
           cd /workspace
+          export PATH="/pnpm:$PATH"
 
           # Write issue body to file with proper escaping
           cat > /tmp/issue.json << 'EOF'

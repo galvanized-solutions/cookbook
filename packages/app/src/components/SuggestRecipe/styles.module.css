@@ -63,7 +63,7 @@
 }
 
 .successMessage {
-  color: var(--ifm-font-color-base);
+  color: var(--ifm-color-success-darkest);
   font-size: 0.875rem;
   margin-top: 0.25rem;
   padding: 0.75rem;
@@ -71,6 +71,34 @@
   border: 1px solid var(--ifm-color-success-light);
   border-radius: var(--ifm-global-radius);
   font-weight: 600;
+}
+
+/* Dark mode: use light text on dark green background */
+[data-theme='dark'] .successMessage {
+  color: #ffffff;
+  background-color: var(--ifm-color-success-dark);
+  border-color: var(--ifm-color-success);
+}
+
+/* Style links within success messages */
+.successMessage a {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.successMessage a:hover {
+  color: var(--ifm-color-primary-darkest);
+}
+
+/* Dark mode link styling */
+[data-theme='dark'] .successMessage a {
+  color: var(--ifm-color-primary-lighter);
+  text-decoration: underline;
+}
+
+[data-theme='dark'] .successMessage a:hover {
+  color: var(--ifm-color-primary-lightest);
 }
 
 .submitButton {

@@ -8,14 +8,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Install basic system dependencies including Chrome (Alpine uses apk)
-RUN apk add --no-cache git tar jq \
-    chromium \
-    nss \
-    freetype \
-    freetype-dev \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
+RUN apk add --no-cache git tar jq chromium
 
 # Enable corepack and install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -30,6 +23,9 @@ COPY ./package.json ./pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install all dependencies directly in the root (no workspace)
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
+
+# Install Puppeteer globally for more reliable container usage
+RUN npm install -g puppeteer@24.19.0
 
 COPY ./scripts ./scripts
 COPY ./issue.json /tmp/issue.json
