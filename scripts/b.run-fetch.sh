@@ -12,7 +12,7 @@ if [[ -z "$URL" ]]; then
 fi
 
 # Use the containerized recipe fetcher
-node ./scripts/recipe-fetch.js "$URL"
+node ./scripts/run-fetch.js "$URL"
 
 # Verify the output file was created
 if [[ ! -f "/tmp/html.json" ]]; then

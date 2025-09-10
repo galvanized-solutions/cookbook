@@ -59,13 +59,13 @@ jobs:
 
           # Use the containerized recipe fetcher (don't exit on error yet)
           echo "Starting recipe fetch..."
-          if CATEGORY="$(node ./scripts/recipe-fetch.js 2>&1)"; then
+          if CATEGORY="$(node ./scripts/run-fetch.js 2>&1)"; then
             echo "Recipe fetch completed with category: $CATEGORY"
           else
             echo "Recipe fetch failed with error:"
             echo "$CATEGORY"
             echo "Retrying with debugging..."
-            node ./scripts/recipe-fetch.js || exit 1
+            node ./scripts/run-fetch.js || exit 1
           fi
 
           # Verify output files

@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import puppeteer from 'puppeteer';
 import fs from 'node:fs';
 import https from 'node:https';
 import { URL } from 'node:url';
@@ -21,7 +21,9 @@ function getRecipeImage(imageUrl) {
 }
 
 /**
- * Enhanced version that also extracts JSON-LD structured data using Playwright
+ * Enhanced version that also extracts JSON-LD structured data
+ * @param {string} issueBody - The URL to scrape
+ * @param {Object} options - Configuration options
  * @returns {Promise<{html: string, jsonLd: Object[]}>} The rendered HTML and extracted JSON-LD data
  */
 export async function fetchWithStructuredData() {
@@ -58,96 +60,143 @@ export async function fetchWithStructuredData() {
     category = 'entrees'; // default fallback
   }
 
-  // Launch browser with Playwright - much simpler configuration
-  const browser = await chromium.launch({
-    headless: true
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu',
+      '--disable-web-security',
+      '--disable-features=VizDisplayCompositor',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding',
+      '--disable-extensions',
+      '--disable-plugins',
+      '--disable-default-apps',
+      '--disable-hang-monitor',
+      '--disable-prompt-on-repost',
+      '--disable-sync',
+      '--metrics-recording-only',
+      '--no-default-browser-check'
+    ]
   });
-
   try {
     const page = await browser.newPage();
 
-    // Set timeouts
+    // Set page timeouts
     page.setDefaultTimeout(60000);
     page.setDefaultNavigationTimeout(60000);
 
-    // Block unnecessary resources for faster loading
-    await page.route('**/*', (route) => {
-      const request = route.request();
-      const resourceType = request.resourceType();
-      const requestUrl = request.url();
+    // Only allow essential resources for JSON-LD extraction
+    await page.setRequestInterception(true);
 
-      // Allow document and essential resources
+    page.on('request', (req) => {
+      const resourceType = req.resourceType();
+      const url = req.url();
+
+      // Only allow document and essential scripts/stylesheets from the main domain
+      const mainDomain = new URL(url).hostname;
+      const requestDomain = new URL(req.url()).hostname;
+      const isOrigin = requestDomain === mainDomain;
+      // Shorten the if statements.
+      const isScript = resourceType === 'script';
+      const isDoc = resourceType === 'stylesheet';
+      const acceptResource = isScript || isDoc;
+
+      // Allow main document
       if (resourceType === 'document') {
-        return route.continue();
+        req.continue();
+        return;
       }
 
-      // Only allow scripts and stylesheets from main domain or trusted CDNs
-      const mainDomain = new URL(url).hostname;
-      const requestDomain = new URL(requestUrl).hostname;
-      
+      // Allow scripts and stylesheets from the main domain only
+      if (acceptResource && (isOrigin || requestDomain.includes(mainDomain))) {
+        req.continue();
+        return;
+      }
+
+      // Allow common CDNs that might contain essential scripts
       const allowedCDNs = [
         'cdn.jsdelivr.net',
-        'cdnjs.cloudflare.com', 
+        'cdnjs.cloudflare.com',
         'unpkg.com',
         'ajax.googleapis.com'
       ];
 
-      if ((resourceType === 'script' || resourceType === 'stylesheet') && 
-          (requestDomain === mainDomain || 
-           requestDomain.includes(mainDomain) ||
-           allowedCDNs.some(cdn => requestUrl.includes(cdn)))) {
-        return route.continue();
+      if (acceptResource && allowedCDNs.some((cdn) => url.includes(cdn))) {
+        req.continue();
+        return;
       }
 
-      // Block everything else
-      route.abort();
+      // Block everything else (images, fonts, tracking, ads, etc.)
+      req.abort();
     });
 
-    // Set realistic browser properties
-    await page.setViewportSize({ width: 1920, height: 1080 });
+    // Debug response errors
+    page.on('response', response => {
+      if (response.status() >= 400) {
+        console.warn(`HTTP ${response.status()}: ${response.url()}`);
+      }
+    });
+
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    // More realistic browser headers
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US,en;q=0.9',
       'Accept-Encoding': 'gzip, deflate, br',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
     });
 
-    console.log(`Navigating to: ${url}`);
+    console.warn(`Navigating to: ${url}`);
     await page.goto(url, {
-      waitUntil: 'networkidle',
+      waitUntil: 'networkidle0',
       timeout: 60000
     });
 
     // Human-like delay after navigation
-    await page.waitForTimeout(Math.random() * 1000 + 500);
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
 
-    // Wait for recipe content to load
+    // Wait for recipe content to load (try multiple selectors)
     try {
-      await page.waitForSelector('script[type="application/ld+json"]', {
-        timeout: 5000
+      await page.waitForSelector('[itemtype*="Recipe"], script[type="application/ld+json"], .recipe', {
+        timeout: 10000
       });
     } catch (e) {
-      console.log('Recipe selectors not found, proceeding anyway...');
+      console.warn('Recipe selectors not found, proceeding anyway...');
     }
 
-    // Extract JSON-LD data
+    // Extract JSON-LD data with better error handling
     const jsonLd = await page.evaluate(() => {
       const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-      
       function getRecipe(input) {
         if (Array.isArray(input)) {
           for (const value of input) {
-            const recipe = getRecipe(value);
-            if (recipe) return recipe;
+            const newVal = getRecipe(value);
+
+            if (newVal) {
+              return newVal;
+            }
           }
         }
 
+        // If we have an object then we need to examine it to see if it has a recipe
         if (input && typeof input === "object") {
           if (input?.['@type'] === 'Recipe') {
             return input;
           }
 
-          if (input?.['@graph']) {
-            return getRecipe(input['@graph']);
+          const isGraph = input?.['@graph'];
+
+          if (isGraph) {
+            return getRecipe(isGraph);
           }
         }
       }
@@ -162,7 +211,7 @@ export async function fetchWithStructuredData() {
               return recipeJsonLd;
             }
           } catch (e) {
-            console.error(`Failed to parse JSON-LD script:`, e.message);
+            console.error(`Failed to parse JSON-LD script:`, e.stack);
           }
         }
       }
@@ -173,7 +222,7 @@ export async function fetchWithStructuredData() {
     fs.writeFileSync('/tmp/html.json', JSON.stringify(html, null, 2));
 
     if (jsonLd) {
-      console.log('Found recipe JSON-LD data');
+      console.warn('Found recipe JSON-LD data');
       fs.writeFileSync('/tmp/jsonld.json', JSON.stringify(jsonLd, null, 2));
 
       // Handle image URL (could be string, object, or array)
@@ -187,18 +236,18 @@ export async function fetchWithStructuredData() {
       }
 
       if (imageUrl) {
-        console.log('Downloading recipe image:', imageUrl);
+        console.warn('Downloading recipe image:', imageUrl);
         getRecipeImage(imageUrl);
       } else {
-        console.log('No recipe image found in JSON-LD');
+        console.warn('No recipe image found in JSON-LD');
       }
     } else {
-      console.log('No recipe JSON-LD data found');
+      console.warn('No recipe JSON-LD data found');
     }
 
     console.log(category);
   } catch (error) {
-    console.error('Recipe fetch error:', error);
+    console.error('Recipe fetch error:', error.stack);
     throw new Error(`Failed to get recipe: ${error.message}`);
   } finally {
     if (browser) {
