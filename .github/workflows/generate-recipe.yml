@@ -8,7 +8,8 @@ jobs:
   claude:
     runs-on: ubuntu-24.04
     container: 
-      image: ghcr.io/${{ github.repository }}/node:22-alpine
+      image: ghcr.io/${{ github.repository }}/ubuntu:22.04
+      options: --platform=linux/amd64
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -36,8 +37,6 @@ jobs:
 
       - name: Parse issue inputs and fetch recipe
         env:
-          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
           PNPM_HOME: /pnpm
         id: fetch
         run: |
@@ -53,9 +52,6 @@ jobs:
           cat /tmp/issue.json
 
           # Debug Chrome setup
-          echo "Chrome executable path: $PUPPETEER_EXECUTABLE_PATH"
-          ls -la /usr/bin/chromium* || echo "No chromium found in /usr/bin"
-          /usr/bin/chromium --version || echo "Chromium version check failed"
 
           # Use the containerized recipe fetcher (don't exit on error yet)
           echo "Starting recipe fetch..."

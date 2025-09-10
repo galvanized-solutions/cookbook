@@ -1,4 +1,4 @@
-FROM node:22-alpine
+FROM --platform=$BUILDPLATFORM node:22-alpine
 
 # Set environment variables
 ENV PNPM_HOME="/pnpm"
@@ -13,16 +13,16 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # Set working directory
 WORKDIR /workspace
 
-RUN --mount=type=cache,target=/pnpm-store pnpm fetch
-
 # Copy the app's package.json and root pnpm-lock.yaml
 COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./playwright.config.js ./
+
+RUN --mount=type=cache,target=/pnpm-store pnpm fetch
 
 # Install all dependencies directly in the root (no workspace)
 RUN --mount=type=cache,target=/pnpm-store pnpm install --frozen-lockfile
 
 # Install Puppeteer globally for more reliable container usage
-RUN pnpm playwright install chromium-headless-shell
+RUN  pnpm playwright install chromium --with-deps
 
 COPY ./scripts ./scripts
 
