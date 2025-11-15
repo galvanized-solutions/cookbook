@@ -306,33 +306,64 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
     return quantity;
   };
 
+  // Parse and scale JSON-LD ingredient strings
+  const parseAndScaleJSONLDIngredient = (ingredient: string, multiplier: number): string => {
+    // Match patterns like "57g unsalted butter", "4 tablespoons olive oil", "2 shallots, finely chopped"
+    // Handles fractions like "3/4 cup" or mixed numbers like "1 1/2 cups" or decimals like "2.5ml"
+    // Pattern explanation:
+    // - Captures leading number (whole, decimal, fraction, or mixed)
+    // - Optional space after number
+    // - Captures everything after the number
+    const pattern = /^(\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+)\s*(.+)$/;
+    const match = ingredient.match(pattern);
+
+    if (!match) {
+      // No quantity found (e.g., "Salt to taste"), return as-is
+      return ingredient;
+    }
+
+    const [, quantityStr, rest] = match;
+    const scaledQuantity = scaleQuantity(quantityStr, multiplier);
+
+    // Check if original had a space after the quantity
+    const hasSpace = ingredient.match(/^\d+(?:\.\d+)?(?:\s+\d+\/\d+)?\s+/);
+
+    // Reconstruct with or without space to match original format
+    if (hasSpace) {
+      return `${scaledQuantity} ${rest}`;
+    } else {
+      return `${scaledQuantity}${rest}`;
+    }
+  };
+
   // Get current ingredients based on measurement preference
   const getCurrentIngredients = () => {
     // For JSON-LD recipes, use the separate metric/imperial arrays directly
     if (isJSONLDRecipe(recipe)) {
       const { customProperties } = recipe;
+      const multiplier = currentServings / defaultServings;
+
       if (customProperties?.metricIngredients && customProperties?.imperialIngredients) {
-        return isMetric ? customProperties.metricIngredients : customProperties.imperialIngredients;
+        const ingredientArray = isMetric ? customProperties.metricIngredients : customProperties.imperialIngredients;
+        // Scale each ingredient
+        return ingredientArray.map(ingredient => parseAndScaleJSONLDIngredient(ingredient, multiplier));
       }
       // Fallback to combined format in recipeIngredient
-      return recipe.recipeIngredient;
+      return recipe.recipeIngredient.map(ingredient => parseAndScaleJSONLDIngredient(ingredient, multiplier));
     }
     
     // For legacy recipes, use the old complex ingredient processing
     const multiplier = currentServings / defaultServings;
     return recipeData.ingredients.map(ingredient => {
       const measurement = isMetric ? ingredient.metric : ingredient.imperial;
-      const scaledMeasurement = {
-        quantity: scaleQuantity(measurement.quantity, multiplier),
-        unit: measurement.unit
-      };
+      const scaledQuantity = scaleQuantity(measurement.quantity, multiplier);
 
       const displayText = measurement.quantity && measurement.unit
-        ? `${scaleQuantity(measurement.quantity, multiplier)} ${measurement.unit} ${ingredient.name}`
+        ? `${scaledQuantity} ${measurement.unit} ${ingredient.name}`
         : measurement.quantity
-        ? `${scaleQuantity(measurement.quantity, multiplier)} ${ingredient.name}`
+        ? `${scaledQuantity} ${ingredient.name}`
         : ingredient.original;
-        
+
       return displayText;
     });
   };
@@ -357,9 +388,6 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
 
   const currentDirections = processDirections();
 
-  // Check if all steps are completed (must be after currentDirections)
-  const allStepsCompleted = completedSteps.size > 0 && completedSteps.size === currentDirections.length;
-
   const handleServingsChange = (newServings: number) => {
     setCurrentServings(newServings);
   };
@@ -373,7 +401,7 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
   };
 
   const handleStepToggle = (stepIndex: number) => {
-    setCompletedSteps(prev => {
+    setCompletedSteps((prev: Set<number>) => {
       const newSet = new Set(prev);
       if (newSet.has(stepIndex)) {
         newSet.delete(stepIndex);
