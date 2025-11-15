@@ -120,6 +120,10 @@ const config: Config = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          type: 'custom-keepScreenOn',
+          position: 'right',
+        }
       ],
     },
     footer: {
