@@ -193,16 +193,59 @@ const convertJSONLDToRecipeData = (jsonldRecipe: JSONLDRecipe): RecipeData => {
 export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeToggleProps): JSX.Element {
   // Convert JSON-LD to internal format if needed
   const recipeData: RecipeData = isJSONLDRecipe(recipe) ? convertJSONLDToRecipeData(recipe) : recipe;
-  
+
   const defaultServings = recipeData.servings || 1;
 
   // Local storage keys
   const MEASUREMENT_KEY = 'cookbook-measurement-preference';
   const getServingsKey = (id: string) => `cookbook-servings-${id}`;
 
-  // Initialize state from localStorage or defaults
+  // Helper: Read URL parameters
+  const getURLParams = () => {
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    return {
+      servings: params.get('servings'),
+      metric: params.get('metric'),
+      steps: params.get('steps'),
+    };
+  };
+
+  // Helper: Update URL parameters without page reload
+  const updateURLParams = (servings: number, metric: boolean, steps: Set<number>) => {
+    if (typeof window === 'undefined') return;
+
+    const params = new URLSearchParams(window.location.search);
+
+    // Update parameters
+    if (servings !== defaultServings) {
+      params.set('servings', servings.toString());
+    } else {
+      params.delete('servings');
+    }
+
+    params.set('metric', metric.toString());
+
+    if (steps.size > 0) {
+      params.set('steps', Array.from(steps).sort((a, b) => a - b).join(','));
+    } else {
+      params.delete('steps');
+    }
+
+    // Update URL without reload
+    const newURL = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+    window.history.replaceState({}, '', newURL);
+  };
+
+  // Initialize state from URL params, then localStorage, then defaults
   const [isMetric, setIsMetric] = useState(() => {
     if (typeof window !== 'undefined') {
+      const urlParams = getURLParams();
+      if (urlParams?.metric !== null) {
+        return urlParams.metric === 'true';
+      }
       const saved = localStorage.getItem(MEASUREMENT_KEY);
       return saved ? JSON.parse(saved) : true;
     }
@@ -211,6 +254,10 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
 
   const [currentServings, setCurrentServings] = useState(() => {
     if (typeof window !== 'undefined' && recipeId) {
+      const urlParams = getURLParams();
+      if (urlParams?.servings) {
+        return parseInt(urlParams.servings);
+      }
       const saved = localStorage.getItem(getServingsKey(recipeId));
       return saved ? parseInt(saved) : defaultServings;
     }
@@ -235,6 +282,10 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
   const getStepsKey = (id: string) => `cookbook-steps-${id}`;
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => {
     if (typeof window !== 'undefined' && recipeId) {
+      const urlParams = getURLParams();
+      if (urlParams?.steps) {
+        return new Set(urlParams.steps.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)));
+      }
       const saved = localStorage.getItem(getStepsKey(recipeId));
       return saved ? new Set(JSON.parse(saved)) : new Set();
     }
@@ -247,6 +298,11 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
       localStorage.setItem(getStepsKey(recipeId), JSON.stringify([...completedSteps]));
     }
   }, [completedSteps, recipeId]);
+
+  // Update URL parameters when state changes
+  useEffect(() => {
+    updateURLParams(currentServings, isMetric, completedSteps);
+  }, [currentServings, isMetric, completedSteps, defaultServings]);
 
   // State for celebration message
   const [showCelebration, setShowCelebration] = useState(false);
@@ -306,16 +362,71 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
     return quantity;
   };
 
+  // Helper: Convert Unicode fractions to decimal
+  const unicodeFractionToDecimal = (str: string): string => {
+    const fractionMap: { [key: string]: string } = {
+      '¼': '0.25',
+      '½': '0.5',
+      '¾': '0.75',
+      '⅐': '0.142857',
+      '⅑': '0.111111',
+      '⅒': '0.1',
+      '⅓': '0.333333',
+      '⅔': '0.666667',
+      '⅕': '0.2',
+      '⅖': '0.4',
+      '⅗': '0.6',
+      '⅘': '0.8',
+      '⅙': '0.166667',
+      '⅚': '0.833333',
+      '⅛': '0.125',
+      '⅜': '0.375',
+      '⅝': '0.625',
+      '⅞': '0.875',
+    };
+
+    return str.replace(/[¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, match => fractionMap[match] || match);
+  };
+
+  // Helper: Convert decimal back to common fractions for display
+  const decimalToFraction = (decimal: number): string => {
+    if (decimal === 0.25) return '¼';
+    if (decimal === 0.5) return '½';
+    if (decimal === 0.75) return '¾';
+    if (decimal === 0.125) return '⅛';
+    if (decimal === 0.375) return '⅜';
+    if (decimal === 0.625) return '⅝';
+    if (decimal === 0.875) return '⅞';
+    if (decimal === 0.333333 || Math.abs(decimal - 0.333333) < 0.001) return '⅓';
+    if (decimal === 0.666667 || Math.abs(decimal - 0.666667) < 0.001) return '⅔';
+
+    // Check for whole numbers
+    if (Number.isInteger(decimal)) return decimal.toString();
+
+    // Check for mixed numbers with common fractions
+    const whole = Math.floor(decimal);
+    const frac = decimal - whole;
+
+    if (whole > 0 && frac > 0) {
+      const fracStr = decimalToFraction(frac);
+      if (fracStr.match(/[¼½¾⅛⅜⅝⅞⅓⅔]/)) {
+        return `${whole} ${fracStr}`;
+      }
+    }
+
+    // Return as decimal if no clean fraction found
+    return decimal.toString();
+  };
+
   // Parse and scale JSON-LD ingredient strings
   const parseAndScaleJSONLDIngredient = (ingredient: string, multiplier: number): string => {
-    // Match patterns like "57g unsalted butter", "4 tablespoons olive oil", "2 shallots, finely chopped"
-    // Handles fractions like "3/4 cup" or mixed numbers like "1 1/2 cups" or decimals like "2.5ml"
-    // Pattern explanation:
-    // - Captures leading number (whole, decimal, fraction, or mixed)
-    // - Optional space after number
-    // - Captures everything after the number
+    // First convert any Unicode fractions to decimals for processing
+    const normalizedIngredient = unicodeFractionToDecimal(ingredient);
+
+    // Match patterns like "57g unsalted butter", "4 tablespoons olive oil", "0.25 cup flour"
+    // Handles decimals, fractions, and mixed numbers
     const pattern = /^(\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+)\s*(.+)$/;
-    const match = ingredient.match(pattern);
+    const match = normalizedIngredient.match(pattern);
 
     if (!match) {
       // No quantity found (e.g., "Salt to taste"), return as-is
@@ -325,14 +436,18 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
     const [, quantityStr, rest] = match;
     const scaledQuantity = scaleQuantity(quantityStr, multiplier);
 
+    // Convert scaled quantity back to fraction if it's a clean fraction
+    const scaledNum = parseFloat(scaledQuantity || '0');
+    const displayQuantity = decimalToFraction(scaledNum);
+
     // Check if original had a space after the quantity
-    const hasSpace = ingredient.match(/^\d+(?:\.\d+)?(?:\s+\d+\/\d+)?\s+/);
+    const hasSpace = ingredient.match(/^[\d¼½¾⅛⅜⅝⅞⅓⅔]+\s+/);
 
     // Reconstruct with or without space to match original format
     if (hasSpace) {
-      return `${scaledQuantity} ${rest}`;
+      return `${displayQuantity} ${rest}`;
     } else {
-      return `${scaledQuantity}${rest}`;
+      return `${displayQuantity}${rest}`;
     }
   };
 
