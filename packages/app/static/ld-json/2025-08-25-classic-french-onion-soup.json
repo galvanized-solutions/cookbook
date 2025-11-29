@@ -1,0 +1,259 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Recipe",
+      "name": "French Onion Soup",
+      "author": {
+        "@id": "https://cafedelites.com/#/schema/person/41fb006b06c4b8e6baf2d320ebc85292"
+      },
+      "description": "Classic French Onion Soup is one of the most delicious soups in the world! Caramelised onions create a stock filled with an intense depth of flavour. Simmered with fresh herbs, optional white wine and finished off with garlic bread slices, topped with two types of melted cheese.",
+      "datePublished": "2020-02-18T03:33:29+00:00",
+      "image": [
+        "https://cafedelites.com/wp-content/uploads/2019/01/French-Onion-Soup-IMAGE-104.jpg",
+        "https://cafedelites.com/wp-content/uploads/2019/01/French-Onion-Soup-IMAGE-104-500x500.jpg",
+        "https://cafedelites.com/wp-content/uploads/2019/01/French-Onion-Soup-IMAGE-104-500x375.jpg",
+        "https://cafedelites.com/wp-content/uploads/2019/01/French-Onion-Soup-IMAGE-104-480x270.jpg"
+      ],
+      "recipeYield": [
+        "4",
+        "4 - 6 people"
+      ],
+      "prepTime": "PT20M",
+      "cookTime": "PT80M",
+      "totalTime": "PT100M",
+      "recipeIngredient": [
+        "4 tablespoons unsalted butter",
+        "2 tablespoons olive oil",
+        "6 large yellow onions (peeled, halved and thinly sliced )",
+        "1 tablespoon garlic (minced, or 4 cloves garlic, minced)",
+        "1/4 cup flour, (plain or all purpose)",
+        "1/2 cup dry white wine ( or red wine)",
+        "2 sprigs fresh thyme (roughly chopped)",
+        "6 cups beef stock",
+        "1 teaspoon beef bouillon powder",
+        "2 whole bay leaves (dried or fresh)",
+        "1 pinch salt (to taste)",
+        "1 pinch pepper",
+        "1 batch cheesy garlic bread"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "text": "In a large pot over medium-low heat, heat olive oil and melt butter. Add the onions and stir well to evenly coat with oil and butter. Cover and cook for 20 minutes, stirring every five minutes or so, until the onions have softened.",
+          "name": "In a large pot over medium-low heat, heat olive oil and melt butter. Add the onions and stir well to evenly coat with oil and butter. Cover and cook for 20 minutes, stirring every five minutes or so, until the onions have softened.",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-0"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Increase heat to medium-high and add 1/2 teaspoon of salt. Stir and continue cooking for a further 15 minutes or until onions are golden browned, soft and caramelized. (The bottom of the pan will also brown during the cooking process. This is where all of the flavour is).",
+          "name": "Increase heat to medium-high and add 1/2 teaspoon of salt. Stir and continue cooking for a further 15 minutes or until onions are golden browned, soft and caramelized. (The bottom of the pan will also brown during the cooking process. This is where all of the flavour is).",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-1"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Stir in garlic and cook for one minute, then add in flour and cook for about 4 minutes to brown slightly.&nbsp;Add wine to deglaze the pan, and scrape up the browned bits stuck on the bottom of the pan. Add in the thyme and simmer wine for 2 minutes until reduced by half.",
+          "name": "Stir in garlic and cook for one minute, then add in flour and cook for about 4 minutes to brown slightly.&nbsp;Add wine to deglaze the pan, and scrape up the browned bits stuck on the bottom of the pan. Add in the thyme and simmer wine for 2 minutes until reduced by half.",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-2"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Add beef stock, bouillon and bay leaf; bring to a boil. Reduce heat to low and gently simmer, partially covered with a lid, for 30-40 minutes.",
+          "name": "Add beef stock, bouillon and bay leaf; bring to a boil. Reduce heat to low and gently simmer, partially covered with a lid, for 30-40 minutes.",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-3"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "While the soup is simmering, prepare 1 loaf of cheesy garlic bread, or individually portioned garlic breads.",
+          "name": "While the soup is simmering, prepare 1 loaf of cheesy garlic bread, or individually portioned garlic breads.",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-4"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "To serve, taste test and season with a little extra salt and pepper, to taste. Ladle into bowls and top with 1 or 2 slices of cheesy toast.",
+          "name": "To serve, taste test and season with a little extra salt and pepper, to taste. Ladle into bowls and top with 1 or 2 slices of cheesy toast.",
+          "url": "https://cafedelites.com/french-onion-soup/#wprm-recipe-62452-step-0-5"
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "11",
+        "reviewCount": "11"
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "I love this soup!  You are a great chef Karina!  I follow your recipes.  Thanks for share it! 🙏🌹",
+          "author": {
+            "@type": "Person",
+            "name": "Mery"
+          },
+          "datePublished": "2024-08-21"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Have to say... Thank you!\r\nJust tried this recipe tonight and it was great.  I added some finely chopped cremini mushrooms to the end of the caramelized onions (just my liking).  so easy to make and the family loved it.\r\n\r\nThanks again and I really like your YT channel.  Easy to follow and yummy!",
+          "author": {
+            "@type": "Person",
+            "name": "Manie"
+          },
+          "datePublished": "2022-11-12"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Such delicious soup, so tasty and filling. The whole family loved it. Definitely going into the regular recipe pile. Thank you xx",
+          "author": {
+            "@type": "Person",
+            "name": "Michaela"
+          },
+          "datePublished": "2022-03-14"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Loved this. It was sooo yummy.",
+          "author": {
+            "@type": "Person",
+            "name": "Amy"
+          },
+          "datePublished": "2021-01-26"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Delicious!\r\nFollowed recipe as written except no fresh thyme, used dried. Thanks",
+          "author": {
+            "@type": "Person",
+            "name": "Donna"
+          },
+          "datePublished": "2020-11-20"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Made this today...YUMMO! I normally follow the recipe exactly for the first time but didn't have wine and in the past I used Balsamic Vinegar. I substituted the balsamic for the wine. It turned out wonderful! The cheesy garlic bread is perfect in this as well. I added extra mozzarella on the top of the bread in the cup of soup (oven proof cup) and placed it beneath the broiler). Very very good!",
+          "author": {
+            "@type": "Person",
+            "name": "Dolores Deehr"
+          },
+          "datePublished": "2020-10-20"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "If you're following the recipe pretty closely, the biggest contributors to saltiness would most likely be the beef stock/broth and the bouillon. Bouillon is often very salty, but a lot of store-bought/premade broths are pretty salty as well, so maybe look for a reduced sodium version!\r\n\r\nThis is such a simple soup, with so few ingredients, I feel like it's a perfect recipe for a home-made soup stock to really shine! I like to save the carcasses of (usually grocery store rotisserie) chickens, and any \"waste\" ends of onions, carrots, and celery in the freezer until I've got a hankering to make soup, then stick it all in a big stock pot, add water until everything is covered, and let it simmer all day. The gelatin from the connective tissue in the chicken carcasses makes for a lovely mouth feel an heartiness in a soup, and you just can't beat that depth of flavour!",
+          "author": {
+            "@type": "Person",
+            "name": "Jesse"
+          },
+          "datePublished": "2020-10-07"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "This is delicious but too salty. What can I substitute or take out so that it is not too salty?",
+          "author": {
+            "@type": "Person",
+            "name": "Sandi Howe"
+          },
+          "datePublished": "2020-06-10"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "3rd time making it (since I have been home during self isolation) and I love it more and more each time. Thank you for another great recipe Karina. Love your website.",
+          "author": {
+            "@type": "Person",
+            "name": "Brittany"
+          },
+          "datePublished": "2020-05-20"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Carmelizing those onions is the whole deal--takes 30-45 min, and pretty much constant attention, but is really worth it!",
+          "author": {
+            "@type": "Person",
+            "name": "Janet"
+          },
+          "datePublished": "2019-03-06"
+        },
+        {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5"
+          },
+          "reviewBody": "Great recipe. I've been using your recipe for about  year. I have not been disappointing in any one recipe. \r\nThank You. \r\n\r\nLou",
+          "author": {
+            "@type": "Person",
+            "name": "Ludwig Wilczak"
+          },
+          "datePublished": "2019-02-20"
+        }
+      ],
+      "recipeCategory": [
+        "Appetizer",
+        "Soup"
+      ],
+      "recipeCuisine": [
+        "French"
+      ],
+      "keywords": "french onion soup, Onion soup",
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "358 kcal",
+        "carbohydrateContent": "33 g",
+        "proteinContent": "11 g",
+        "fatContent": "19 g",
+        "saturatedFatContent": "8 g",
+        "cholesterolContent": "30 mg",
+        "sodiumContent": "865 mg",
+        "fiberContent": "4 g",
+        "sugarContent": "12 g",
+        "transFatContent": "0.5 g",
+        "unsaturatedFatContent": "9 g",
+        "servingSize": "1 serving"
+      },
+      "@id": "https://cafedelites.com/french-onion-soup/#recipe",
+      "isPartOf": {
+        "@id": "https://cafedelites.com/french-onion-soup/#article"
+      },
+      "mainEntityOfPage": "https://cafedelites.com/french-onion-soup/"
+    }
+  ]
+}

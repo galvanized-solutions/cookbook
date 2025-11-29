@@ -1,0 +1,117 @@
+{
+  "@context": "http://schema.org",
+  "@graph": [
+    {
+      "@type": "Recipe",
+      "headline": "Milk Tart",
+      "datePublished": "2000-02-17T09:24:03.000-05:00",
+      "dateModified": "2022-07-14T17:44:09.000-04:00",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Rene Conradie"
+        }
+      ],
+      "description": "The sugary crust dough is pressed into the pie tin and baked. The sweet, milky thick custard filling is then poured into the baked shell, sprinkled with cinnamon and chilled. Makes two lovely pies.",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://www.allrecipes.com/thmb/io7sCkXhHBobTvSlmvRv8imugBU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/2106127-0288bd8cb0ea45888b193bcf696764e0.jpg",
+        "height": 960,
+        "width": 960
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Allrecipes",
+        "url": "https://www.allrecipes.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.allrecipes.com/thmb/Z9lwz1y0B5aX-cemPiTgpn5YB0k=/112x112/filters:no_upscale():max_bytes(150000):strip_icc()/allrecipes_logo_schema-867c69d2999b439a9eba923a445ccfe3.png",
+          "width": 112,
+          "height": 112
+        },
+        "brand": "Allrecipes",
+        "publishingPrinciples": "https://www.allrecipes.com/about-us-6648102#toc-editorial-guidelines",
+        "sameAs": [
+          "https://www.facebook.com/allrecipes",
+          "https://www.instagram.com/allrecipes/",
+          "https://www.pinterest.com/allrecipes/",
+          "https://www.tiktok.com/@allrecipes",
+          "https://www.youtube.com/user/allrecipes/videos",
+          "https://flipboard.com/@Allrecipes",
+          "https://en.wikipedia.org/wiki/Allrecipes.com",
+          "http://linkedin.com/company/allrecipes.com"
+        ]
+      },
+      "name": "Milk Tart",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.6",
+        "ratingCount": "150"
+      },
+      "cookTime": "PT20M",
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "241 kcal",
+        "carbohydrateContent": "36 g",
+        "cholesterolContent": "57 mg",
+        "fiberContent": "1 g",
+        "proteinContent": "5 g",
+        "saturatedFatContent": "5 g",
+        "sodiumContent": "146 mg",
+        "sugarContent": "22 g",
+        "fatContent": "9 g",
+        "unsaturatedFatContent": "0 g"
+      },
+      "prepTime": "PT30M",
+      "recipeCategory": [
+        "Dessert"
+      ],
+      "recipeCuisine": [
+        "South African"
+      ],
+      "recipeIngredient": [
+        "0.5 cup butter, softened",
+        "1 cup white sugar",
+        "1 egg",
+        "2 cups all-purpose flour",
+        "2 teaspoons baking powder",
+        "1 pinch salt",
+        "4 cups milk",
+        "1 teaspoon vanilla extract",
+        "1 tablespoon butter",
+        "2.5 tablespoons all-purpose flour",
+        "2.5 tablespoons cornstarch",
+        "0.5 cup white sugar",
+        "2 eggs, beaten",
+        "0.5 teaspoon ground cinnamon"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "text": "Preheat oven to 350 degrees F (175 degrees C)."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "In a medium mixing bowl, cream together 1/2 cup butter or margarine and 1 cup sugar. Add 1 egg and beat until mixture is smooth. In a separate bowl, mix together 2 cups flour, baking powder, and salt. Stir flour mixture into sugar mixture just until ingredients are thoroughly combined. Press mixture into bottom and sides of two 9-inch pie pans."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Bake in preheated oven for 10 to 15 minutes, until golden brown."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "In a large saucepan, combine milk, vanilla extract, and 1 tablespoon butter or margarine. Bring to a boil over medium heat, then remove from burner."
+        },
+        {
+          "@type": "HowToStep",
+          "text": "In a separate bowl, mix together 2 1/2 tablespoons flour, cornstarch, and 1/2 cup sugar. Add beaten eggs to sugar mixture and whisk until smooth. Slowly whisk mixture into milk. Return pan to heat and bring to a boil, stirring constantly. Boil and stir 5 minutes. Pour half of mixture into each pastry shell. Sprinkle with cinnamon. Chill before serving."
+        }
+      ],
+      "recipeYield": [
+        "16",
+        "9 - inch tarts"
+      ],
+      "totalTime": "PT50M"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ImageObject",
+      "inLanguage": "en-US",
+      "@id": "https://www.culinaryhill.com/three-bean-salad/#primaryimage",
+      "url": "https://www.culinaryhill.com/wp-content/uploads/2020/12/Three-Bean-Salad-Culinary-Hill-1200x800-1.jpg",
+      "contentUrl": "https://www.culinaryhill.com/wp-content/uploads/2020/12/Three-Bean-Salad-Culinary-Hill-1200x800-1.jpg",
+      "width": 1200,
+      "height": 800,
+      "caption": "A platter of three bean salad."
+    },
+    {
+      "@type": "Recipe",
+      "name": "Bean Salad",
+      "author": {
+        "@id": "https://www.culinaryhill.com/#/schema/person/f679b198bbcabd7e1145e79a9d54fd7b"
+      },
+      "description": "This classic Bean Salad recipe is even more delicious with fresh string beans, but you can keep it exactly as it was meant to be and use canned.  Whatever you do, just make it. The longer it sits, the better it gets.",
+      "datePublished": "2023-10-11T09:54:33+00:00",
+      "image": [
+        "https://www.culinaryhill.com/wp-content/uploads/2019/10/Three-Bean-Salad-Recipe-Culinary-Hill-LR-03SQ.jpg",
+        "https://www.culinaryhill.com/wp-content/uploads/2019/10/Three-Bean-Salad-Recipe-Culinary-Hill-LR-03SQ-500x500.jpg",
+        "https://www.culinaryhill.com/wp-content/uploads/2019/10/Three-Bean-Salad-Recipe-Culinary-Hill-LR-03SQ-500x375.jpg",
+        "https://www.culinaryhill.com/wp-content/uploads/2019/10/Three-Bean-Salad-Recipe-Culinary-Hill-LR-03SQ-480x270.jpg"
+      ],
+      "video": {
+        "name": "Three Bean Salad Recipe-Culinary Hill",
+        "description": "This classic Three Bean Salad recipe is like a time machine for your tastebuds. The updated party favorite is even more delicious with fresh string beans, but you can keep it exactly as it was meant to be and use canned.  Whatever you do, just make it for your next get-together!",
+        "thumbnailUrl": "https://content.jwplatform.com/thumbs/kIm3bCyv-720.jpg",
+        "contentUrl": "https://content.jwplatform.com/videos/kIm3bCyv.mp4",
+        "uploadDate": "2019-12-12T20:33:24.000Z",
+        "@type": "VideoObject"
+      },
+      "recipeYield": [
+        "8",
+        "8 servings (1 cup each)"
+      ],
+      "prepTime": "PT5M",
+      "cookTime": "PT5M",
+      "totalTime": "PT10M",
+      "recipeIngredient": [
+        "1 cup red wine vinegar",
+        "¾ cup granulated sugar ((see note 1))",
+        "½ cup olive oil",
+        "2 cloves garlic (minced)",
+        "Salt and freshly ground black pepper",
+        "1 (15-ounce) can cut green beans (drained, (see note 2))",
+        "1 (15-ounce) can cut yellow wax beans (drained (see note 2))",
+        "1 (15-ounce) can kidney beans (drained and rinsed (see note 3))",
+        "½ cup chopped red onion ( (see note 4))",
+        "¼ cup minced fresh parsley"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "text": "In a small saucepan, combine vinegar, sugar, oil, garlic, 1 teaspoon salt, and 1/2 teaspoon pepper. Cook over medium heat until sugar dissolves, about 3 minutes. Remove from heat and pour into a bowl with a cover that is large enough to hold the salad.",
+          "name": "In a small saucepan, combine vinegar, sugar, oil, garlic, 1 teaspoon salt, and 1/2 teaspoon pepper. Cook over medium heat until sugar dissolves, about 3 minutes. Remove from heat and pour into a bowl with a cover that is large enough to hold the salad.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-0"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Stir in green beans, wax beans, kidney beans, red onion, and parsley and toss until evenly coated. Cover and refrigerate at least 4 hours or overnight to blend flavors.",
+          "name": "Stir in green beans, wax beans, kidney beans, red onion, and parsley and toss until evenly coated. Cover and refrigerate at least 4 hours or overnight to blend flavors.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-1"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Remove from refrigerator at least 30 minutes before serving and bring to room temperature.",
+          "name": "Remove from refrigerator at least 30 minutes before serving and bring to room temperature.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        }
+      ],
+      "recipeCategory": [
+        "Salad"
+      ],
+      "recipeCuisine": [
+        "American"
+      ],
+      "keywords": "black bean salad, three bean salad",
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "204 kcal",
+        "servingSize": "1  cup",
+        "carbohydrateContent": "20 g",
+        "proteinContent": "1 g",
+        "fatContent": "14 g",
+        "saturatedFatContent": "2 g",
+        "sodiumContent": "5 mg",
+        "fiberContent": "1 g",
+        "sugarContent": "19 g"
+      },
+      "@id": "https://www.culinaryhill.com/three-bean-salad/#recipe",
+      "isPartOf": {
+        "@id": "https://www.culinaryhill.com/three-bean-salad/#article"
+      },
+      "mainEntityOfPage": "https://www.culinaryhill.com/three-bean-salad/"
+    }
+  ]
+}

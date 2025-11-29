@@ -307,148 +307,163 @@ export default function RecipeToggle({ recipe, recipeId, sourceUrl }: RecipeTogg
   // State for celebration message
   const [showCelebration, setShowCelebration] = useState(false);
 
-  // Helper function to scale ingredient quantities
-  const scaleQuantity = (quantity: string | null, multiplier: number): string | null => {
-    if (!quantity || quantity === null) return null;
+  // Fraction utility functions using proper mathematical algorithms
+  const gcd = (a: number, b: number): number => {
+    return b === 0 ? a : gcd(b, a % b);
+  };
 
-    // Handle fractions like "1/2", "3/4", etc.
-    if (quantity.includes('/')) {
-      const [numerator, denominator] = quantity.split('/').map(num => parseFloat(num.trim()));
-      if (!isNaN(numerator) && !isNaN(denominator)) {
-        const decimal = numerator / denominator;
-        const scaled = decimal * multiplier;
+  // Convert decimal to fraction using continued fractions algorithm
+  const decimalToFraction = (decimal: number, maxDenominator: number = 16): { whole: number; numerator: number; denominator: number } => {
+    const whole = Math.floor(decimal);
+    let remaining = decimal - whole;
 
-        // Convert back to fraction if it results in common fractions
-        if (scaled === 0.25) return '1/4';
-        if (scaled === 0.5) return '1/2';
-        if (scaled === 0.75) return '3/4';
-        if (scaled === 1.25) return '1 1/4';
-        if (scaled === 1.5) return '1 1/2';
-        if (scaled === 1.75) return '1 3/4';
-        if (scaled === 2.25) return '2 1/4';
-        if (scaled === 2.5) return '2 1/2';
-        if (scaled === 2.75) return '2 3/4';
+    if (remaining < 0.001) {
+      return { whole, numerator: 0, denominator: 1 };
+    }
 
-        // Round to nearest whole number for other values, minimum 1
-        const rounded = Math.round(scaled);
-        return (rounded < 1 ? 1 : rounded).toString();
+    // Use continued fractions to find best rational approximation
+    let numerator = 1;
+    let denominator = Math.round(1 / remaining);
+
+    // Limit denominator to common cooking fractions
+    if (denominator > maxDenominator) {
+      // Find best approximation within maxDenominator
+      let bestNum = 0;
+      let bestDen = 1;
+      let bestError = Math.abs(remaining);
+
+      for (let den = 2; den <= maxDenominator; den++) {
+        const num = Math.round(remaining * den);
+        const error = Math.abs(remaining - num / den);
+        if (error < bestError) {
+          bestError = error;
+          bestNum = num;
+          bestDen = den;
+        }
+      }
+
+      numerator = bestNum;
+      denominator = bestDen;
+    } else {
+      numerator = Math.round(remaining * denominator);
+    }
+
+    // Reduce fraction to simplest form
+    const divisor = gcd(numerator, denominator);
+    numerator = numerator / divisor;
+    denominator = denominator / divisor;
+
+    return { whole, numerator, denominator };
+  };
+
+  // Parse fraction string to decimal (handles Unicode fractions too)
+  const parseFractionToDecimal = (str: string): number => {
+    // First convert Unicode fractions to numeric form
+    const unicodeToDecimalMap: { [key: string]: number } = {
+      '¼': 0.25, '½': 0.5, '¾': 0.75,
+      '⅛': 0.125, '⅜': 0.375, '⅝': 0.625, '⅞': 0.875,
+      '⅓': 1/3, '⅔': 2/3,
+      '⅕': 0.2, '⅖': 0.4, '⅗': 0.6, '⅘': 0.8,
+      '⅙': 1/6, '⅚': 5/6,
+      '⅐': 1/7, '⅑': 1/9, '⅒': 0.1,
+    };
+
+    // Handle Unicode fractions like "1½" or just "½"
+    for (const [unicode, decimal] of Object.entries(unicodeToDecimalMap)) {
+      if (str.includes(unicode)) {
+        // Extract whole number if present
+        const wholeMatch = str.match(/^(\d+)/);
+        const whole = wholeMatch ? parseFloat(wholeMatch[1]) : 0;
+        return whole + decimal;
       }
     }
 
     // Handle mixed numbers like "1 1/2"
-    if (quantity.includes(' ') && quantity.includes('/')) {
-      const parts = quantity.split(' ');
-      if (parts.length === 2) {
-        const whole = parseFloat(parts[0]);
-        const [fracNum, fracDen] = parts[1].split('/').map(num => parseFloat(num.trim()));
-        if (!isNaN(whole) && !isNaN(fracNum) && !isNaN(fracDen)) {
-          const total = whole + (fracNum / fracDen);
-          const scaled = total * multiplier;
-          const rounded = Math.round(scaled);
-          return (rounded < 1 ? 1 : rounded).toString();
-        }
-      }
+    if (str.includes(' ') && str.includes('/')) {
+      const parts = str.trim().split(' ');
+      const whole = parseFloat(parts[0]);
+      const [num, den] = parts[1].split('/').map(n => parseFloat(n.trim()));
+      return whole + (num / den);
     }
 
-    // Handle decimal numbers
-    const numericValue = parseFloat(quantity);
-    if (!isNaN(numericValue)) {
-      const scaled = numericValue * multiplier;
-      const rounded = Math.round(scaled);
-      return (rounded < 1 ? 1 : rounded).toString();
+    // Handle simple fractions like "1/2"
+    if (str.includes('/')) {
+      const [num, den] = str.split('/').map(n => parseFloat(n.trim()));
+      return num / den;
     }
 
-    // If we can't parse it, return original
-    return quantity;
+    // Handle decimals and whole numbers
+    return parseFloat(str);
   };
 
-  // Helper: Convert Unicode fractions to decimal
-  const unicodeFractionToDecimal = (str: string): string => {
-    const fractionMap: { [key: string]: string } = {
-      '¼': '0.25',
-      '½': '0.5',
-      '¾': '0.75',
-      '⅐': '0.142857',
-      '⅑': '0.111111',
-      '⅒': '0.1',
-      '⅓': '0.333333',
-      '⅔': '0.666667',
-      '⅕': '0.2',
-      '⅖': '0.4',
-      '⅗': '0.6',
-      '⅘': '0.8',
-      '⅙': '0.166667',
-      '⅚': '0.833333',
-      '⅛': '0.125',
-      '⅜': '0.375',
-      '⅝': '0.625',
-      '⅞': '0.875',
-    };
+  // Format fraction for display
+  const formatFraction = (value: number): string => {
+    if (value < 0.001) return '0';
 
-    return str.replace(/[¼½¾⅐⅑⅒⅓⅔⅕⅖⅗⅘⅙⅚⅛⅜⅝⅞]/g, match => fractionMap[match] || match);
-  };
+    const { whole, numerator, denominator } = decimalToFraction(value);
 
-  // Helper: Convert decimal back to common fractions for display
-  const decimalToFraction = (decimal: number): string => {
-    if (decimal === 0.25) return '¼';
-    if (decimal === 0.5) return '½';
-    if (decimal === 0.75) return '¾';
-    if (decimal === 0.125) return '⅛';
-    if (decimal === 0.375) return '⅜';
-    if (decimal === 0.625) return '⅝';
-    if (decimal === 0.875) return '⅞';
-    if (decimal === 0.333333 || Math.abs(decimal - 0.333333) < 0.001) return '⅓';
-    if (decimal === 0.666667 || Math.abs(decimal - 0.666667) < 0.001) return '⅔';
-
-    // Check for whole numbers
-    if (Number.isInteger(decimal)) return decimal.toString();
-
-    // Check for mixed numbers with common fractions
-    const whole = Math.floor(decimal);
-    const frac = decimal - whole;
-
-    if (whole > 0 && frac > 0) {
-      const fracStr = decimalToFraction(frac);
-      if (fracStr.match(/[¼½¾⅛⅜⅝⅞⅓⅔]/)) {
-        return `${whole} ${fracStr}`;
-      }
+    if (numerator === 0) {
+      return whole.toString();
     }
 
-    // Return as decimal if no clean fraction found
-    return decimal.toString();
+    // Format as mixed number if whole part exists
+    const fractionPart = `${numerator}/${denominator}`;
+    return whole > 0 ? `${whole} ${fractionPart}` : fractionPart;
+  };
+
+  // Helper function to scale ingredient quantities
+  const scaleQuantity = (quantity: string | null, multiplier: number): string | null => {
+    if (!quantity || quantity === null) return null;
+
+    try {
+      const decimal = parseFractionToDecimal(quantity);
+      if (isNaN(decimal)) return quantity;
+
+      const scaled = decimal * multiplier;
+      return scaled < 1 ? '1' : formatFraction(scaled);
+    } catch {
+      return quantity;
+    }
   };
 
   // Parse and scale JSON-LD ingredient strings
   const parseAndScaleJSONLDIngredient = (ingredient: string, multiplier: number): string => {
-    // First convert any Unicode fractions to decimals for processing
-    const normalizedIngredient = unicodeFractionToDecimal(ingredient);
+    // Improved regex patterns to handle various formats:
+    // - "2 cups flour" | "2cups flour"
+    // - "1.5 tbsp oil" | "1½ tbsp oil"
+    // - "500g butter" | "500 g butter"
+    // - "1 1/2 cups" | "1½ cups"
+    // - "2-3 cloves garlic" (ranges)
+    const patterns = [
+      // Unicode fractions with optional whole number: "1½ cups", "½ tsp"
+      /^(\d*[¼½¾⅛⅜⅝⅞⅓⅔⅕⅖⅗⅘⅙⅚])\s*(.+)$/,
+      // Decimal or fraction with optional space: "1.5 cups", "1 1/2 cups", "1/2 cup"
+      /^([\d.]+(?:\s+\d+\/\d+)?|\d+\/\d+)\s*(.+)$/,
+      // Ranges (use first number): "2-3 cloves"
+      /^([\d.]+)\s*-\s*[\d.]+\s+(.+)$/,
+    ];
 
-    // Match patterns like "57g unsalted butter", "4 tablespoons olive oil", "0.25 cup flour"
-    // Handles decimals, fractions, and mixed numbers
-    const pattern = /^(\d+(?:\.\d+)?(?:\s+\d+\/\d+)?|\d+\/\d+)\s*(.+)$/;
-    const match = normalizedIngredient.match(pattern);
+    for (const pattern of patterns) {
+      const match = ingredient.match(pattern);
 
-    if (!match) {
-      // No quantity found (e.g., "Salt to taste"), return as-is
-      return ingredient;
+      if (match) {
+        const [, quantityStr, rest] = match;
+        const scaledQuantity = scaleQuantity(quantityStr.trim(), multiplier);
+
+        if (!scaledQuantity) {
+          return ingredient;
+        }
+
+        // Preserve original spacing format
+        const originalHasSpace = ingredient.match(/^[^\s]+\s+/);
+        const spacer = originalHasSpace ? ' ' : '';
+
+        return `${scaledQuantity}${spacer}${rest.trim()}`;
+      }
     }
 
-    const [, quantityStr, rest] = match;
-    const scaledQuantity = scaleQuantity(quantityStr, multiplier);
-
-    // Convert scaled quantity back to fraction if it's a clean fraction
-    const scaledNum = parseFloat(scaledQuantity || '0');
-    const displayQuantity = decimalToFraction(scaledNum);
-
-    // Check if original had a space after the quantity
-    const hasSpace = ingredient.match(/^[\d¼½¾⅛⅜⅝⅞⅓⅔]+\s+/);
-
-    // Reconstruct with or without space to match original format
-    if (hasSpace) {
-      return `${displayQuantity} ${rest}`;
-    } else {
-      return `${displayQuantity}${rest}`;
-    }
+    // No quantity found (e.g., "Salt to taste", "Pepper"), return as-is
+    return ingredient;
   };
 
   // Get current ingredients based on measurement preference

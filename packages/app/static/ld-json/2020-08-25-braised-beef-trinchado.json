@@ -1,0 +1,113 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ImageObject",
+      "inLanguage": "en-US",
+      "@id": "https://www.easyportugueserecipes.com/trinchado-braised-beef/#primaryimage",
+      "url": "https://www.easyportugueserecipes.com/wp-content/uploads/2014/08/dsc_0035.jpg",
+      "contentUrl": "https://www.easyportugueserecipes.com/wp-content/uploads/2014/08/dsc_0035.jpg",
+      "width": 4288,
+      "height": 2848
+    },
+    {
+      "@type": "Recipe",
+      "name": "Braised Beef (Trinchado)",
+      "author": {
+        "@id": "https://www.easyportugueserecipes.com/#/schema/person/d17f6fe8b3893ec3350a123c2de87023"
+      },
+      "description": "Trinchado is a Braised Beef dish that is very popular in South Africa and has strong Portuguese influences in its origin.",
+      "datePublished": "2014-08-09T01:18:45+00:00",
+      "dateModified": "2016-01-11T00:48:22+00:00",
+      "image": [
+        "https://www.easyportugueserecipes.com/wp-content/uploads/2014/08/dsc_0035.jpg"
+      ],
+      "recipeYield": [
+        "3"
+      ],
+      "prepTime": "PT5M",
+      "cookTime": "PT5M",
+      "totalTime": "PT10M",
+      "recipeIngredient": [
+        "1 pound cubed beef tenderloin",
+        "3 tablespoons butter",
+        "1/2 teaspoon salt",
+        "1/2 teaspoon black pepper",
+        "1/2 teaspoon paprika",
+        "1 onion, sliced",
+        "2 1/2 tablespoons Worcestershire sauce",
+        "2 small hot red chili peppers, stemmed and chopped (retain the seeds)",
+        "4 garlic cloves, minced",
+        "1 tablespoon flour",
+        "1/2 cup beef stock",
+        "1/2 cup Portuguese red wine",
+        "3 Portuguese bread rolls, for dipping",
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToStep",
+          "text": "In a bowl, mix together the Worcestershire sauce, chilies, paprika, 1/2 teaspoon salt, and 1/2 teaspoon black pepper. Now add the cubed beef and let it marinate for 2 hours in the refrigerator to ensure that even the tougher cuts of meat are tender. Rinse marinade off meat and set aside in a bowl.",
+          "name": "In a bowl, mix together the Worcestershire sauce, chilies, paprika, 1/2 teaspoon salt, and 1/2 teaspoon black pepper. Now add the cubed beef and let it marinate for 2 hours in the refrigerator to ensure that even the tougher cuts of meat are tender. Rinse marinade off meat and set aside in a bowl.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-0"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "In a large saucepan on medium to high heat, heat 1 tablespoon of the butter. When the butter is melted and sizzling, add about 1/2 of the beef and brown well.",
+          "name": "In a large saucepan on medium to high heat, heat 1 tablespoon of the butter. When the butter is melted and sizzling, add about 1/2 of the beef and brown well.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-1"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Remove the beef cubes from the saucepan, place in a bowl and set aside. Add 1 tablespoon of butter and cook the remaining beef until browned. Set aside in the same bowl.",
+          "name": "Remove the beef cubes from the saucepan, place in a bowl and set aside. Add 1 tablespoon of butter and cook the remaining beef until browned. Set aside in the same bowl.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Once done cooking the beef, reduce the heat and add the final tablespoon of butter and sliced onion and cook for about 5 minutes, or until soft. Add the garlic and cook for another minute or so. Sprinkle the flour over the onion/garlic mixture and stir for about 2 minutes or until thick.",
+          "name": "Once done cooking the beef, reduce the heat and add the final tablespoon of butter and sliced onion and cook for about 5 minutes, or until soft. Add the garlic and cook for another minute or so. Sprinkle the flour over the onion/garlic mixture and stir for about 2 minutes or until thick.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Add the set aside marinade, stock, and red wine to the pan. Stir until the sauce thickens and simmer for about 10 minutes.",
+          "name": "Add the set aside marinade, stock, and red wine to the pan. Stir until the sauce thickens and simmer for about 10 minutes.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Now add all of the beef set aside in the bowl to the saucepan. Leave to simmer for about 20 to 25 minutes on low heat or until beef is tender and cooked. Season with salt and pepper to taste.",
+          "name": "Now add all of the beef set aside in the bowl to the saucepan. Leave to simmer for about 20 to 25 minutes on low heat or until beef is tender and cooked. Season with salt and pepper to taste.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        },
+        {
+          "@type": "HowToStep",
+          "text": "Serve while hot in bowls with fresh Portuguese bread rolls or fries on the side.",
+          "name": "Serve while hot in bowls with fresh Portuguese bread rolls or fries on the side.",
+          "url": "https://www.culinaryhill.com/three-bean-salad/#wprm-recipe-30363-step-0-2"
+        }
+      ],
+      "recipeCategory": [
+        "Stew"
+      ],
+      "recipeCuisine": [
+        "South African"
+      ],
+      "keywords": "black bean salad, three bean salad",
+      "nutrition": {
+        "@type": "NutritionInformation",
+        "calories": "600 cal",
+        "servingSize": "1 cup",
+        "carbohydrateContent": "80 g",
+        "proteinContent": "20 g",
+        "fatContent": "17.5 g",
+        "saturatedFatContent": "9.2 g",
+        "sodiumContent": "7750 mg",
+        "fiberContent": "7.2 g",
+        "sugarContent": "21.3 g"
+      },
+      "@id": "https://www.easyportugueserecipes.com/trinchado-braised-beef",
+      "mainEntityOfPage": "https://www.easyportugueserecipes.com/trinchado-braised-beef/"
+    }
+  ]
+}
